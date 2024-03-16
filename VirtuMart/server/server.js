@@ -3,6 +3,7 @@ import React from "react";
 //import { StaticRouter } from "react-router-dom/server";
 import express from "express";
 import session from "express-session";
+import * as mysql from "./database.js"; //importing the connection to the database
 
 import dotenv from "dotenv";
 dotenv.config();
