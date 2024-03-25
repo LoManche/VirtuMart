@@ -14,6 +14,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router";
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -53,6 +55,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function Topbar() {
+  const navigate = useNavigate();
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -65,9 +68,9 @@ export default function Topbar() {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
-  function ICONBUTTON({ icon, props }) {
+  function ICONBUTTON({ icon, props, navigateTo }) {
     return (
-      <IconButton size="large" color="inherit" {...props}>
+      <IconButton size="large" color="inherit" {...props} onClick={() => navigate(navigateTo)}>
         {icon}
       </IconButton>
     );
@@ -90,12 +93,12 @@ export default function Topbar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}>
       <MenuItem>
-        <ICONBUTTON icon={<ShoppingCartIcon />} />
+        <ICONBUTTON icon={<ShoppingCartIcon />} navigateTo={"/shoppingCart"} />
         <p>Shopping Cart</p>
       </MenuItem>
 
       <MenuItem>
-        <ICONBUTTON icon={<AccountCircle />} />
+        <ICONBUTTON icon={<AccountCircle />} navigateTo={"/account"} />
         <p>Account</p>
       </MenuItem>
     </Menu>
@@ -106,14 +109,11 @@ export default function Topbar() {
       <AppBar position="static">
         <Toolbar>
           <ICONBUTTON icon={<MenuIcon />} props={{ sx: { mr: 2 } }} />
-
-          <Typography
-            variant="h2"
-            noWrap
-            component="div"
-            sx={{ display: { xs: "none", sm: "block" } }}>
-            VirtuMart
-          </Typography>
+          <Button onClick={() => navigate("/")} variant="text" color="inherit">
+            <Typography variant="h2" noWrap sx={{ display: { xs: "none", sm: "block" } }}>
+              VirtuMart
+            </Typography>
+          </Button>
           <Box sx={{ flexGrow: 1 }}>
             <Search>
               <SearchIconWrapper>
@@ -122,10 +122,9 @@ export default function Topbar() {
               <StyledInputBase placeholder="Search…" inputProps={{ "aria-label": "search" }} />
             </Search>
           </Box>
-
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <ICONBUTTON icon={<ShoppingCartIcon />} />
-            <ICONBUTTON icon={<AccountCircle />} />
+            <ICONBUTTON icon={<ShoppingCartIcon />} navigateTo={"/shoppingCart"} />
+            <ICONBUTTON icon={<AccountCircle />} navigateTo={"/account"} />
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
