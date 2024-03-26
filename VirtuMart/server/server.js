@@ -16,6 +16,9 @@ app.use(express.urlencoded({
 	extended: true
 }));
 
+// serve the app in dist(create by npm run build)
+app.use(express.static('dist'));
+
 const pool = mysql.createPool({
   host     : process.env.DB_HOST || '127.0.0.2',
   user     : process.env.DB_USER || 'Mart',

@@ -1,3 +1,4 @@
+-- setting up SQL(not finished)
 create database if not exist virtumartdb;
 use virtumartdb;
 SET global local_infile = 1;
