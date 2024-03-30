@@ -4,19 +4,23 @@ import React from "react";
 import express from "express";
 import session from "express-session";
 import mysql from "mysql2/promise";
-
+import {cors} from "cors";
 import dotenv from "dotenv";
+
+import queries from "./queries.js";
+
 dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 const app = express();
 
+app.use(cors()); 
 app.use(express.json());
 app.use(express.urlencoded({
 	extended: true
 }));
 
-// serve the app in dist(create by npm run build)
+// serve the app in dist(created by npm run build)
 app.use(express.static('dist'));
 
 const pool = mysql.createPool({
@@ -27,6 +31,8 @@ const pool = mysql.createPool({
   database : process.env.DB_NAME || 'virtumartdb'
 });
 const connection = await pool.getConnection();
+
+app.get('/api/products', queries.getAllProducts);
 
 // async function dummyQ(){
 //   const [rows, fields] = await connection.query('SELECT * FROM products limit 5');
