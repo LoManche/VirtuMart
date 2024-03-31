@@ -9,12 +9,12 @@ create table if not exists products (
 	asin varchar(10) NOT NULL,
 	title text,
 	imgURL text,
-	rating float,
+	rating float default 0,
 	price float,
-	discount float,
+	discount float default 0,
 	category_id int,
 	description text,
-	stock int,
+	stock int default 0,
 	primary key (asin)
 );
 create table if not exists customers (
@@ -50,7 +50,7 @@ create table if not exists reviews (
 	rating int not null,
 	customer_id int not null,
 	review varchar(255) not null,
-	dateOfReview date default curdate() not null,
+	dateOfReview date not null default (CURRENT_DATE),
 	primary key (review_id),
 	foreign key (product_id) references products(asin),
 	foreign key (customer_id) references customers(customer_id)
@@ -96,7 +96,7 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS 
-(asin,title,imgUrl,rating,price,category_id);
+(asin,title,imgUrl,price,category_id);
 
 LOAD DATA LOCAL INFILE 'G:/Codes/3100Project/db_setup/selected_categories.csv' 
 INTO TABLE categories
