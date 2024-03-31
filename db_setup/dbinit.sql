@@ -2,7 +2,7 @@
 create database if not exists virtumartdb;
 create user if not exists 'Mart'@'localhost' identified by 'Mart1234';
 use virtumartdb;
-grant all privileges on virtumartdb to 'Mart'@'localhost';
+grant all privileges on virtumartdb.* to 'Mart'@'localhost';
 SET global local_infile = true;
 -- Creating tables
 create table if not exists products (

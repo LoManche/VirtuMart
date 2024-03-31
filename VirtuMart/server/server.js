@@ -34,11 +34,11 @@ const connection = await pool.getConnection();
 
 app.get('/api/products', queries.getAllProducts);
 
-// async function dummyQ(){
-//   const [rows, fields] = await connection.query('SELECT * FROM products limit 5');
-//   console.log(rows)
-// }
-// dummyQ();
+async function dummyQ(){
+  const [rows, fields] = await connection.query('SELECT * FROM products limit 5');
+  console.log(rows)
+}
+dummyQ();
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
