@@ -4,7 +4,7 @@ import React from "react";
 import express from "express";
 import session from "express-session";
 import mysql from "mysql2/promise";
-import {cors} from "cors";
+import cors from "cors";
 import dotenv from "dotenv";
 
 import queries from "./queries.js";

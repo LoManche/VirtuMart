@@ -5,7 +5,6 @@ const getAllProducts = async (request, response) => {
 }
 
 
-
-export {
+export default {
     getAllProducts
 }
