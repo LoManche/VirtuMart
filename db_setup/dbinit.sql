@@ -1,57 +1,59 @@
 -- setting up SQL(not finished)
 create database if not exists virtumartdb;
+create user if not exists 'Mart'@'localhost' identified by 'Mart1234';
 use virtumartdb;
-SET global local_infile = 1;
+grant all privileges on virtumartdb to 'Mart'@'localhost';
+SET global local_infile = true;
 -- Creating tables
 create table if not exists products (
-  asin varchar(10) NOT NULL,
-  title varchar(255),
-  imgURL varchar(255),
-  rating float,
-  price float,
-  discount float,
-  category_id int,
-  description varchar(255),
-  stock int,
-  primary key (asin)
+	asin varchar(10) NOT NULL,
+	title text,
+	imgURL text,
+	rating float,
+	price float,
+	discount float,
+	category_id int,
+	description text,
+	stock int,
+	primary key (asin)
 );
 create table if not exists customers (
-  customer_id int not null auto_increment,
-  firstName varchar(20) not null,
-  lastName varchar(20) not null,
-  phone varchar(20) not null,
-  city varchar(20) not null,
-  state varchar(20) not null,
-  password varchar(20) not null,
-  email varchar(255) not null,
-  created_at date not null,
-  primary key (customer_id)
+	customer_id int not null auto_increment,
+	firstName varchar(20) not null,
+	lastName varchar(20) not null,
+	phone varchar(20) not null,
+	city varchar(20) not null,
+	state varchar(20) not null,
+	password varchar(20) not null,
+	email varchar(255) not null,
+	created_at timestamp default current_timestamp not null,
+	primary key (customer_id)
 );
 create table if not exists Admin (
 	admin_id int not null auto_increment,
-  adminname varchar(20) not null,
-  password varchar(20) not null,
-  primary key (admin_id)
+	adminname varchar(20) not null,
+	password varchar(20) not null,
+	primary key (admin_id)
 );
 create table if not exists shopping_cart (
-  cart_id int not null auto_increment,
-  customer_id int not null,
-  product_id varchar(10) not null,
-  quantity int not null,
-  primary key (cart_id),
-  foreign key (customer_id) references customers(customer_id),
-  foreign key (product_id) references products(asin)
+	cart_id int not null auto_increment,
+	customer_id int not null,
+	product_id varchar(10) not null,
+	quantity int not null,
+	primary key (cart_id),
+	foreign key (customer_id) references customers(customer_id),
+	foreign key (product_id) references products(asin)
 );
 create table if not exists reviews (
-  review_id int not null auto_increment,
-  product_id varchar(10) not null,
-  rating int not null,
-  customer_id int not null,
-  review varchar(255) not null,
-  dateOfReview date not null,
-  primary key (review_id),
-  foreign key (product_id) references products(asin),
-  foreign key (customer_id) references customers(customer_id)
+	review_id int not null auto_increment,
+	product_id varchar(10) not null,
+	rating int not null,
+	customer_id int not null,
+	review varchar(255) not null,
+	dateOfReview date default curdate() not null,
+	primary key (review_id),
+	foreign key (product_id) references products(asin),
+	foreign key (customer_id) references customers(customer_id)
 );
 create table if not exists categories (
     category_id int not null,
@@ -64,10 +66,10 @@ create table if not exists martorder(
     customer_id int not null,
     subTotal float not null,
     shippingCost float not null,
-    orderStatus varchar(20) not null,
-    dateOfOrder date not null,
+    orderStatus enum('Ordered','Shipped','Delivering','Delivered') not null,
+    dateOfOrder timestamp default current_timestamp not null,
     flat varchar(20) not null,
-    address varchar(255) not null,
+    address text not null,
     city varchar(20) not null,
     country varchar(30) not null,
     postalCode varchar(10) not null,
@@ -88,7 +90,7 @@ create table if not exists martorder_products (
     foreign key (product_id) references products(asin)
 );
 -- Inserting data from csv files
-LOAD DATA LOCAL INFILE 'G:/Codes/3100Project/db_setup/amazon_products_sample_ansi.csv' 
+LOAD DATA LOCAL INFILE 'G:/Codes/3100Project/db_setup/amazon_products_sample_utf8.csv' 
 INTO TABLE products 
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"'
