@@ -1,7 +1,5 @@
 // Desc: This file contains all the queries that are used to interact with the database
 //       Each function must release the connection for better performance.
-
-// TODO: Implement searchProducts
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
 dotenv.config();
@@ -39,6 +37,7 @@ const getProductById = async (req, res) => {
   }
 }
 
+// TODO: Implement searchProducts
 const searchProducts = async (req, res) => {
   let connection
   try {
@@ -109,6 +108,7 @@ const updateCart = async (req, res) => {
     if (connection) connection.release();
   }
 } 
+
 
 export default {
     getAllProducts,
