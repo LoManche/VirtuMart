@@ -19,6 +19,7 @@ create table if not exists products (
 );
 create table if not exists customers (
 	customer_id int not null auto_increment,
+  username varchar(20) not null,
 	firstName varchar(20) not null,
 	lastName varchar(20) not null,
 	phone varchar(20) not null,
@@ -96,7 +97,7 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS 
-(asin,title,imgUrl,price,category_id);
+(asin,title,imgUrl,rating,price,category_id);
 
 LOAD DATA LOCAL INFILE 'G:/Codes/3100Project/db_setup/selected_categories.csv' 
 INTO TABLE categories
@@ -106,3 +107,6 @@ LINES TERMINATED BY '\n'
 IGNORE 1 ROWS 
 (category_id,category_name);
 -- Inserting data manually
+INSERT INTO customers (username, firstName, lastName, phone, city, state, password, email) 
+VALUES ('sampleUser', 'John', 'Doe', '1234567890', 'SampleCity', 'SampleState', 'password123', 'sampleUser@example.com');
+insert into reviews (customer_id, product_id, rating, review) VALUES (1,"B0002DO1RI",5,"Great Stuff!" );
