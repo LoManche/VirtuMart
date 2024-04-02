@@ -1,11 +1,13 @@
-import React from "react";
+//import React from "react";
 //import { renderToString } from "react-dom/server";
 //import { StaticRouter } from "react-router-dom/server";
 import express from "express";
 import session from "express-session";
 import cors from "cors";
+import process from "process";
 
 import queries from "./queries.js";
+
 
 const PORT = process.env.PORT || 3000;
 const app = express();

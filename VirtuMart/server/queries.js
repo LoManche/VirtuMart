@@ -2,6 +2,7 @@
 //       Each function must release the connection for better performance.
 import mysql from "mysql2/promise";
 import dotenv from "dotenv";
+import process from "process";
 dotenv.config();
 const pool = mysql.createPool({
   host     : process.env.DB_HOST || '127.0.0.2',
@@ -18,18 +19,18 @@ const handleLogin = async (req, res) => {
     // Check if the user has logged in or not
     connection = await pool.getConnection();
     if (req.session.password && req.session.email) {
-      let [rows, fields] = await connection.query('SELECT * FROM customers WHERE email = ? AND password = ?', [req.session.email, req.session.password]);
+      let [rows] = await connection.query('SELECT * FROM customers WHERE email = ? AND password = ?', [req.session.email, req.session.password]);
       if (rows){
         res.status(200).json({ 'role': 'customer', 'customer_id': rows[0].customer_id});
       } else {
-        [rows, fields] = await connection.query('SELECT * FROM admin WHERE adminname = ? AND password = ?', [req.session.email, req.session.password]);
+        [rows] = await connection.query('SELECT * FROM admin WHERE adminname = ? AND password = ?', [req.session.email, req.session.password]);
       if (rows){
         res.status(200).json({ 'role': 'admin', 'admin_id': rows[0].admin_id});
       }} 
     }
     else {
       // Check if the user is a customer
-      let [rows, fields] = await connection.query('SELECT * FROM customers WHERE email = ?', [emailFetch]);
+      let [rows] = await connection.query('SELECT * FROM customers WHERE email = ?', [emailFetch]);
       if (rows && rows[0].password === passwordFetch) {
         req.session.user = rows[0].customer_id;
         req.session.email = emailFetch;
@@ -44,19 +45,19 @@ const handleLogin = async (req, res) => {
         res.status(401).type("text/plain").send("Wrong Password");
       }
       // Check if the user is an admin
-      else {
-        [rows, fields] = await connection.query('SELECT * FROM admin WHERE adminname = ? AND password = ?', [emailFetch, passwordFetch]);
-        if (rows && rows[0].password === passwordFetch) {
-          req.session.users = rows[0].admin_id;
-          req.session.email = emailFetch;
-          req.session.password = passwordFetch;
-          req.session.role = 'admin';
-          res.status(200).json({ 'role': 'admin', 'admin_id': rows[0].admin_id});
+        else {
+          [rows] = await connection.query('SELECT * FROM admin WHERE adminname = ? AND password = ?', [emailFetch, passwordFetch]);
+          if (rows && rows[0].password === passwordFetch) {
+            req.session.users = rows[0].admin_id;
+            req.session.email = emailFetch;
+            req.session.password = passwordFetch;
+            req.session.role = 'admin';
+            res.status(200).json({ 'role': 'admin', 'admin_id': rows[0].admin_id});
+          }
+          else if (rows && rows[0].password !== passwordFetch) { // Check if the password is wrong
+            res.status(401).type("text/plain").send("Wrong Password");
         }
-        else if (rows && rows[0].password !== passwordFetch) { // Check if the password is wrong
-          res.status(401).type("text/plain").send("Wrong Password");
       }
-    }
     // If the user is not found
     if (!rows) {
       res.status(404).send("No User Exist");
@@ -70,7 +71,7 @@ const handleLogin = async (req, res) => {
     if (connection) connection.release();
   }
 }
-// TODO: Implement handleLogout
+
 const handleLogout = async (req, res) => {
   req.session.destroy((err) => {
     if (err) {
@@ -89,7 +90,7 @@ const getAllProducts = async (req, res) => {
   let connection
   try {
     connection = await pool.getConnection();
-    const [rows, fields] = await connection.query('SELECT * FROM products');
+    const [rows] = await connection.query('SELECT * FROM products');
     res.status(200).json(rows);
   } catch (error) {
     res.status(403).type("text/plain").send(error);
@@ -102,8 +103,11 @@ const getProductById = async (req, res) => {
   let connection
   try {
     connection = await pool.getConnection();
-    const [rows, fields] = await connection.query('SELECT * FROM products WHERE asin = ?', [req.params.id]);
-    res.status(200).json(rows);
+    let sqlquery ='SELECT * FROM products WHERE asin = ?'
+    const [product] = await connection.query(sqlquery, [req.params.id]);
+    sqlquery = 'select rating,review,dateOfReview,username from reviews inner join customers on customers.customer_id = reviews.customer_id';
+    const [reviews] = await connection.query(sqlquery);
+    res.status(200).json({product, reviews});
   } catch (error) {
     res.status(403).type("text/plain").send(error);
   } finally {
@@ -116,13 +120,16 @@ const searchProducts = async (req, res) => {
   let connection
   try {
     connection = await pool.getConnection();
-    const name = req.body.name || '*';
-    const category = req.body.category || '*';
+    const title = req.body.title || '%';
+    let category = req.body.category || '%';
     const minPrice = req.body.minPrice || 0;
     const maxPrice = req.body.maxPrice || 1000000;
     const stock = req.body.stock || 0;
-    let query = 'SELECT * FROM products WHERE name like ? AND category like ? AND price >= ? AND price <= ? AND stock >= ?', [name, category, minPrice, maxPrice, stock];
-    const [rows, fields] = await connection.query(query);
+    if (category !== '%') {
+      const [rows] = await connection.query('SELECT category_id FROM categories WHERE category_name like ?', [category + "%"]);
+      category = rows[0].category_id;
+    }
+    const [rows] = await connection.query('SELECT * FROM products WHERE title like ? AND category_id = ? AND price >= ? AND price <= ? AND stock >= ?', [title, category, minPrice, maxPrice, stock]);
     res.status(200).json(rows);
   } catch (error) {
     res.status(403).type("text/plain").send(error);
@@ -140,7 +147,7 @@ const addReview = async (req, res) => {
     const p_id = req.body.product_id;
     const rating = req.body.rating;
     const review = req.body.review || '';
-    const [rows, fields] = await connection.query('INSERT INTO reviews (customer_id, product_id, rating, review) VALUES (?, ?, ?, ?)', [c_id, p_id, rating, review]);
+    const [rows] = await connection.query('INSERT INTO reviews (customer_id, product_id, rating, review) VALUES (?, ?, ?, ?)', [c_id, p_id, rating, review]);
     res.status(201).type("text/plain").send('Success');
   } catch (error) {
     res.status(404).type("text/plain").send(error);
@@ -154,7 +161,7 @@ const getCart = async (req, res) => {
   try {
     connection = await pool.getConnection();
     const c_id = req.body.customer_id;
-    const [rows, fields] = await connection.query('SELECT * FROM shopping_cart WHERE customer_id = ?', [c_id]);
+    const [rows] = await connection.query('SELECT * FROM shopping_cart WHERE customer_id = ?', [c_id]);
     res.status(200).json(rows);
   } catch (error) {
     res.status(404).type("text/plain").send(error);
@@ -171,7 +178,7 @@ const addToCart = async (req, res) => {
   const qty = req.body.quantity;
   try {
     connection = await pool.getConnection();
-    const [rows, fields] = await connection.query('INSERT INTO shopping_cart (customer_id, product_id, quantity) VALUES (?, ?, ?)', [c_id, p_id, qty]);
+    const [rows] = await connection.query('INSERT INTO shopping_cart (customer_id, product_id, quantity) VALUES (?, ?, ?)', [c_id, p_id, qty]);
     res.status(201).type("text/plain").send('Success');
   } catch (error) {
     res.status(404).type("text/plain").send(error)
@@ -186,7 +193,7 @@ const removeFromCart = async (req, res) => {
     connection = await pool.getConnection();
     const c_id = req.body.customer_id;
     const p_id = req.body.product_id;
-    const [rows, fields] = await connection.query('DELETE FROM shopping_cart WHERE customer_id = ? AND product_id = ?', [c_id, p_id]);
+    const [rows] = await connection.query('DELETE FROM shopping_cart WHERE customer_id = ? AND product_id = ?', [c_id, p_id]);
     res.status(200).type("text/plain").send('Success');
   } catch (error) {
     res.status(404).type("text/plain").send(error);
@@ -202,7 +209,7 @@ const updateCart = async (req, res) => {
     const c_id = req.body.customer_id;
     const p_id = req.body.product_id;
     const qty = req.body.quantity;
-    const [rows, fields] = await connection.query('UPDATE shopping_cart SET quantity = ? WHERE customer_id = ? AND product_id = ?', [qty, c_id, p_id]);
+    const [rows] = await connection.query('UPDATE shopping_cart SET quantity = ? WHERE customer_id = ? AND product_id = ?', [qty, c_id, p_id]);
     res.status(200).type("text/plain").send('Success');
   } catch (error) {
     res.status(404).type("text/plain").send(error);
