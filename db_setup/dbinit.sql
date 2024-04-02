@@ -49,7 +49,7 @@ create table if not exists reviews (
 	product_id varchar(10) not null,
 	rating int not null,
 	customer_id int not null,
-	review varchar(255) not null,
+	review text not null,
 	dateOfReview date not null default (CURRENT_DATE),
 	primary key (review_id),
 	foreign key (product_id) references products(asin),
