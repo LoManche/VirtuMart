@@ -214,6 +214,7 @@ const updateCart = async (req, res) => {
 const getAllOrder = async (req, res) => {
 
 }
+// TODO: remains to join the tables
 const getOrderById = async (req, res) => {
   let connection
   try {
@@ -228,6 +229,7 @@ const getOrderById = async (req, res) => {
     if (connection) connection.release();
   }
 }
+// TODO: Implementation of this function
 const placeOrder = async (req, res) => {
 
 }
