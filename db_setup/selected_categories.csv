@@ -1,16 +1,16 @@
-id,category_name
-6,Sewing Products
-20,Oils & Fluids
-48,Makeup
-56,Computer Monitors
-63,Computer Components
-69,Televisions & Video Products
-71,Headphones & Earbuds
-75,Cell Phones & Accessories
+category_id,category_name
 110,Men's Clothing
+48,Makeup
+71,Headphones & Earbuds
+56,Computer Monitors
 116,Women's Clothing
-136,Sports Nutrition Products
+270,Toys & Games
 166,Furniture
 227,Puzzles
+136,Sports Nutrition Products
+69,Televisions & Video Products
+63,Computer Components
+20,Oils & Fluids
 255,Video Games
-270,Toys & Games
+6,Sewing Products
+75,Cell Phones & Accessories
