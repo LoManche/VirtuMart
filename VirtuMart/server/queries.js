@@ -12,7 +12,7 @@ const pool = mysql.createPool({
   database : process.env.DB_NAME || 'virtumartdb'
 });
 // Login related functions
-const handleLogin = async (req, res) => {
+export const handleLogin = async (req, res) => {
   const {email: emailFetch, password: passwordFetch, rememberMe} = req.body;
   let connection 
   try {
@@ -72,7 +72,7 @@ const handleLogin = async (req, res) => {
   }
 }
 
-const handleLogout = async (req, res) => {
+export const handleLogout = async (req, res) => {
   req.session.destroy((err) => {
     if (err) {
       res.status(500).type("text/plain").send("Server Error");
@@ -82,11 +82,11 @@ const handleLogout = async (req, res) => {
     }
   });
 }
-const signUp = async (req, res) => {
+export const signUp = async (req, res) => {
 
 } 
 // Customer functions
-const getAllProducts = async (req, res) => {
+export const getAllProducts = async (req, res) => {
   let connection
   try {
     connection = await pool.getConnection();
@@ -99,7 +99,7 @@ const getAllProducts = async (req, res) => {
   }
 }
 
-const getProductById = async (req, res) => {
+export const getProductById = async (req, res) => {
   let connection
   try {
     connection = await pool.getConnection();
@@ -116,7 +116,7 @@ const getProductById = async (req, res) => {
 }
 
 // TODO: Test this function
-const searchProducts = async (req, res) => {
+export const searchProducts = async (req, res) => {
   let connection
   try {
     connection = await pool.getConnection();
@@ -139,7 +139,7 @@ const searchProducts = async (req, res) => {
 }
 
 // TODO: Test this function
-const addReview = async (req, res) => {
+export const addReview = async (req, res) => {
   let connection
   try {
     connection = await pool.getConnection();
@@ -156,7 +156,7 @@ const addReview = async (req, res) => {
   }
 }
 
-const getCart = async (req, res) => {
+export const getCart = async (req, res) => {
   let connection
   try {
     connection = await pool.getConnection();
@@ -171,7 +171,7 @@ const getCart = async (req, res) => {
   
 }
 
-const addToCart = async (req, res) => {
+export const addToCart = async (req, res) => {
   let connection
   const c_id = req.body.customer_id;
   const p_id = req.body.product_id;
@@ -187,7 +187,7 @@ const addToCart = async (req, res) => {
   }
 }
 
-const removeFromCart = async (req, res) => {
+export const removeFromCart = async (req, res) => {
   let connection
   try {
     connection = await pool.getConnection();
@@ -202,7 +202,7 @@ const removeFromCart = async (req, res) => {
   }
 }
 
-const updateCart = async (req, res) => {
+export const updateCart = async (req, res) => {
   let connection
   try {
     connection = await pool.getConnection();
@@ -218,11 +218,11 @@ const updateCart = async (req, res) => {
   }
 } 
 
-const getAllOrder = async (req, res) => {
+export const getAllOrder = async (req, res) => {
 
 }
 // TODO: remains to join the tables
-const getOrderById = async (req, res) => {
+export const getOrderById = async (req, res) => {
   let connection
   try {
     connection = await pool.getConnection();
@@ -237,29 +237,14 @@ const getOrderById = async (req, res) => {
   }
 }
 // TODO: Implementation of this function
-const placeOrder = async (req, res) => {
+export const placeOrder = async (req, res) => {
 
 }
 
 
 // Admin functions
 
-export default {
-    getAllProducts,
-    searchProducts,
-    getProductById,
-    getCart,
-    addToCart,
-    removeFromCart,
-    updateCart,
-    handleLogin,
-    handleLogout,
-    signUp,
-    addReview,
-    getOrderById,
-    getAllOrder,
-    placeOrder
-}
+
 
 // async function dummyQ(){
 //   const [rows, fields] = await connection.query('SELECT * FROM products limit 5');

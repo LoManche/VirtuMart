@@ -6,7 +6,7 @@ import session from "express-session";
 import cors from "cors";
 import process from "process";
 
-import queries from "./queries.js";
+import * as queries from "./queries.js";
 
 
 const PORT = process.env.PORT || 3000;
