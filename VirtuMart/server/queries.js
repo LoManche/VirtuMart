@@ -1,11 +1,10 @@
 // Desc: This file contains all the queries that are used to interact with the database
 //       Each function must release the connection for better performance.
 import mysql from "mysql2/promise";
-import dotenv from "dotenv";
+import "dotenv/config";
 import process from "process";
-dotenv.config();
 const pool = mysql.createPool({
-  host     : process.env.DB_HOST || '127.0.0.2',
+  host     : process.env.DB_HOST || 'localhost',
   user     : process.env.DB_USER || 'Mart',
   port     : process.env.DB_PORT || 3306,
   password : process.env.DB_PW || 'Mart1234',
