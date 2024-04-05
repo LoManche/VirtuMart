@@ -65,6 +65,22 @@ app.post('/placeorder', queries.placeOrder);
 app.get('/order', queries.getAllOrder);
 app.get('/order/:id', queries.getOrderById);
 
+// Admin related APIs
+app.get('/admin/product', isAdminAuthenticated, queries.getAllProducts);
+app.post('/admin/product/add', isAdminAuthenticated, queries.addProduct);
+app.put('/admin/product/update', isAdminAuthenticated, queries.updateProduct);
+app.delete('/admin/product/delete', isAdminAuthenticated, queries.deleteProduct);
+
+app.get('/admin/customer', isAdminAuthenticated, queries.getAllCustomers);
+app.get('/admin/customer/:id', isAdminAuthenticated, queries.getCustomerById);
+app.put('/admin/customer/update', isAdminAuthenticated, queries.updateCustomer);
+app.delete('/admin/customer/delete', isAdminAuthenticated, queries.deleteCustomer);
+
+app.get('/admin/category', isAdminAuthenticated, queries.getAllCategories);
+app.post('/admin/category/add', isAdminAuthenticated, queries.addCategory);
+app.put('/admin/category/update', isAdminAuthenticated, queries.updateCategory);
+app.delete('/admin/category/delete', isAdminAuthenticated, queries.deleteCategory);
+
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });

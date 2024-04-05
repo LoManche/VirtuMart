@@ -10,6 +10,7 @@ const pool = mysql.createPool({
   password : process.env.DB_PW || 'Mart1234',
   database : process.env.DB_NAME || 'virtumartdb'
 });
+
 // Login related functions
 export const handleLogin = async (req, res) => {
   const {email: emailFetch, password: passwordFetch, rememberMe} = req.body;
@@ -242,7 +243,57 @@ export const placeOrder = async (req, res) => {
 
 
 // Admin functions
+export const addProduct = async (req, res) => {
+  let connection
+  try {
+    connection = await pool.getConnection();
 
+  } catch (error) {
+    res.status(404).type("text/plain").send(error);
+  } finally {
+    if (connection) connection.release();
+  }
+}
+export const updateProduct = async (req, res) => {
+  let connection
+  try {
+    connection = await pool.getConnection();
+
+  } catch (error) {
+    res.status(404).type("text/plain").send(error);
+  } finally {
+    if (connection) connection.release();
+  }
+}
+export const deleteProduct = async (req, res) => {
+  let connection
+  try {
+    connection = await pool.getConnection();
+
+  } catch (error) {
+    res.status(404).type("text/plain").send(error);
+  } finally {
+    if (connection) connection.release();
+  }
+}
+
+export const getAllCustomers = async (req, res) => {
+}
+export const getCustomerById = async (req, res) => {
+}
+export const updateCustomer = async (req, res) => {
+}
+export const deleteCustomer = async (req, res) => {
+}
+
+export const getAllCategories = async (req, res) => {
+}
+export const addCategory = async (req, res) => {
+}
+export const updateCategory = async (req, res) => {
+}
+export const deleteCategory = async (req, res) => {
+}
 
 
 // async function dummyQ(){
