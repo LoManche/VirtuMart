@@ -152,7 +152,7 @@ export const themeSettings = (mode) => {
       },
     },
     typography: {
-      fontFamily: ["Source Sans Pro", "Sen"].join(","),
+      fontFamily: ["sans-serif", "Source Sans Pro", "Sen"].join(","),
       fontSize: 14, //10,
       h1: {
         fontSize: 40, //36,
