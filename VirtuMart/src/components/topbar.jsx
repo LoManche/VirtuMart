@@ -1,65 +1,26 @@
 /* eslint-disable react/prop-types */
 import * as React from "react";
-import { styled } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import InputBase from "@mui/material/InputBase";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
+import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { Button } from "@mui/material";
+import { Badge, Button, InputAdornment, TextField } from "@mui/material";
 import { useNavigate } from "react-router";
-
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: "lightcyan",
-  "&:hover": {
-    backgroundColor: "lightblue",
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(3),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    width: "100%",
-  },
-}));
+import virtumartLogo from "../assets/VirtuMartLogo.png";
 
 export default function Topbar() {
   const navigate = useNavigate();
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
+  const badgeContent = 0;
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
@@ -106,27 +67,46 @@ export default function Topbar() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" elevation={0}>
         <Toolbar>
-          <ICONBUTTON icon={<MenuIcon />} props={{ sx: { mr: 2 } }} />
-          <Button onClick={() => navigate("/")} variant="text" color="inherit">
-            <Typography variant="h2" noWrap sx={{ display: { xs: "none", sm: "block" } }}>
-              VirtuMart
-            </Typography>
+          <ICONBUTTON icon={<MenuIcon />} />
+          <Button
+            onClick={() => navigate("/")}
+            variant="text"
+            color="inherit"
+            sx={{ minWidth: "182px" }}>
+            <img src={virtumartLogo} onClick={() => navigate("")} height={"50px"} width={"100%"} />
           </Button>
-          <Box sx={{ flexGrow: 1 }}>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase placeholder="Search…" inputProps={{ "aria-label": "search" }} />
-            </Search>
+          <Box sx={{ display: "flex", justifyContent: "end", flexGrow: 1 }}>
+            <Box width="100%" maxWidth={"600px"} minWidth={"130px"}>
+              <TextField
+                label={"Search"}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <SearchIcon />
+                    </InputAdornment>
+                  ),
+                }}
+                fullWidth
+                position="relative"
+                size="small"></TextField>
+            </Box>
           </Box>
-          <Box sx={{ display: { xs: "none", md: "flex" } }}>
+          <Box sx={{ display: { xs: "none", sm: "flex", md: "flex" } }}>
+            <IconButton size="large" color="inherit" onClick={() => {}}>
+              {badgeContent === 0 ? (
+                <NotificationsIcon />
+              ) : (
+                <Badge badgeContent={badgeContent} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              )}
+            </IconButton>
             <ICONBUTTON icon={<ShoppingCartIcon />} navigateTo={"/shoppingCart"} />
             <ICONBUTTON icon={<AccountCircle />} navigateTo={"/account"} />
           </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ display: { xs: "flex", sm: "none", md: "none" } }}>
             <IconButton
               size="large"
               aria-label="show more"
