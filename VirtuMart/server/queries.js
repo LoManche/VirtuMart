@@ -1,5 +1,6 @@
 // Desc: This file contains all the queries that are used to interact with the database
 //       Each function must release the connection for better performance.
+// The following codes are written with the aid of GitHub Copilot
 import mysql from "mysql2/promise";
 
 const pool = mysql.createPool({
@@ -9,7 +10,7 @@ const pool = mysql.createPool({
   password : 'Mart1234',
   database : 'virtumartdb'
 });
-
+// One function to handle all the queries
 async function queryHandler(query, params, errorStatusCode, res) {
   let connection
   try {
@@ -22,67 +23,49 @@ async function queryHandler(query, params, errorStatusCode, res) {
     if (connection) connection.release();
   }
 }
-
 // Login related functions
 export const handleLogin = async (req, res) => {
   const {email: emailFetch, password: passwordFetch, rememberMe} = req.body;
-  let connection 
   try {
     // Check if the user has logged in or not
-    connection = await pool.getConnection();
-    if (req.session.password && req.session.email) {
-      let [rows] = await connection.query('SELECT * FROM customers WHERE email = ? AND password = ?', [req.session.email, req.session.password]);
-      if (rows){
-        res.status(200).json({ 'role': 'customer', 'customer_id': rows[0].customer_id});
-      } else {
-        [rows] = await connection.query('SELECT * FROM admin WHERE adminname = ? AND password = ?', [req.session.email, req.session.password]);
-      if (rows){
-        res.status(200).json({ 'role': 'admin', 'admin_id': rows[0].admin_id});
-      }} 
+    if (req.session.role && req.session.userid) {
+      res.status(200).json({ 'role': req.session.role, 'userid': req.session.userid});
+      return;
     }
-    else {
-      // Check if the user is a customer
-      let [rows] = await connection.query('SELECT * FROM customers WHERE email = ?', [emailFetch]);
-      if (rows && rows[0].password === passwordFetch) {
-        req.session.user = rows[0].customer_id;
-        req.session.email = emailFetch;
-        req.session.password = passwordFetch;
-        req.session.role = 'customer';
-        if (rememberMe) {
-          req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 7; //7 days
-        }
-        res.status(200).json({ 'role': 'customer', 'customer_id': rows[0].customer_id});
-      }
-      else if (rows && rows[0].password !== passwordFetch) { // Check if the password is wrong
+    const adminquery = 'SELECT * FROM admin WHERE adminname = ?';
+    const customerquery = 'SELECT * FROM customers WHERE email = ?';
+    const admin = await queryHandler(adminquery, [emailFetch], 403, res);
+    const customer = await queryHandler(customerquery, [emailFetch], 403, res);
+    if (admin.length === 0 && customer.length === 0) {
+      res.status(404).type("text/plain").send("No User Exist");
+      return;
+    }
+    if (admin.length !== 0) {
+      if (admin[0].password === passwordFetch) {
+        req.session.userid = admin[0].admin_id;
+        req.session.role = 'admin';
+        res.status(200).json({ 'role': 'admin', 'userid': admin[0].admin_id});
+      } else {
         res.status(401).type("text/plain").send("Wrong Password");
       }
-      // Check if the user is an admin
-        else {
-          [rows] = await connection.query('SELECT * FROM admin WHERE adminname = ? AND password = ?', [emailFetch, passwordFetch]);
-          if (rows && rows[0].password === passwordFetch) {
-            req.session.users = rows[0].admin_id;
-            req.session.email = emailFetch;
-            req.session.password = passwordFetch;
-            req.session.role = 'admin';
-            res.status(200).json({ 'role': 'admin', 'admin_id': rows[0].admin_id});
-          }
-          else if (rows && rows[0].password !== passwordFetch) { // Check if the password is wrong
-            res.status(401).type("text/plain").send("Wrong Password");
+    } else if (customer.length !== 0) {
+      if (customer[0].password === passwordFetch) {
+        req.session.userid = customer[0].customer_id;
+        req.session.role = 'customer';
+        if (rememberMe) {
+          req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 7;
         }
+        res.status(200).json({ 'role': 'customer', 'userid': customer[0].customer_id});
+      } else {
+        res.status(401).type("text/plain").send("Wrong Password");
       }
-    // If the user is not found
-    if (!rows) {
-      res.status(404).send("No User Exist");
     }
-    }
-
   } catch (error) {
     console.error(error);
     res.status(500).type("text/plain").send("Server Error");
-  } finally {
-    if (connection) connection.release();
   }
 }
+
 
 export const handleLogout = async (req, res) => {
   req.session.destroy((err) => {

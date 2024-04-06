@@ -21,11 +21,15 @@ app.use(session({
   name: 'sessionId',
   saveUninitialized: false,
   resave: true,
-  rolling: true
+  rolling: true,
+  // cookie: {
+  //   secure: true,
+  //   httpOnly: true
+  // }
 }));
 // Middleware to check if the user is authenticated
 function isAdminAuthenticated(req, res, next) {
-  if (req.session.role === "admin" && req.session.user) {
+  if (req.session.role === "admin" && req.session.admin_id) {
     next();
   } else {
     res.status(401).send("Unauthorized");
@@ -33,7 +37,7 @@ function isAdminAuthenticated(req, res, next) {
 }
 
 function isCustomerAuthenticated(req, res, next) {
-  if (req.session.role === "customer" && req.session.user) {
+  if (req.session.role === "customer" && req.session.customer_id) {
     next();
   } else {
     res.status(401).send("Unauthorized");
@@ -41,6 +45,12 @@ function isCustomerAuthenticated(req, res, next) {
 }
 // Serve the app in dist(created by npm run build)
 app.use(express.static('dist'));
+
+app.get('/dummy', isCustomerAuthenticated, (req, res) => {
+  if (req.session) {
+    res.send(req.session);
+  }
+})
 
 // Login related APIs
 app.post('/login', queries.handleLogin);
@@ -65,20 +75,22 @@ app.get('/order', queries.getAllOrder);
 app.get('/order/:id', queries.getOrderById);
 
 // Admin related APIs
-app.get('/admin/product', isAdminAuthenticated, queries.getAllProducts);
-app.post('/admin/product/add', isAdminAuthenticated, queries.addProduct);
-app.put('/admin/product/update', isAdminAuthenticated, queries.updateProduct);
-app.delete('/admin/product/delete', isAdminAuthenticated, queries.deleteProduct);
+app.use('/admin', isAdminAuthenticated);
 
-app.get('/admin/customer', isAdminAuthenticated, queries.getAllCustomers);
-app.get('/admin/customer/:id', isAdminAuthenticated, queries.getCustomerById);
-app.put('/admin/customer/update', isAdminAuthenticated, queries.updateCustomer);
-app.delete('/admin/customer/delete', isAdminAuthenticated, queries.deleteCustomer);
+app.get('/admin/product', queries.getAllProducts);
+app.post('/admin/product/add', queries.addProduct);
+app.put('/admin/product/update', queries.updateProduct);
+app.delete('/admin/product/delete', queries.deleteProduct);
 
-app.get('/admin/category', isAdminAuthenticated, queries.getAllCategories);
-app.post('/admin/category/add', isAdminAuthenticated, queries.addCategory);
-app.put('/admin/category/update', isAdminAuthenticated, queries.updateCategory);
-app.delete('/admin/category/delete', isAdminAuthenticated, queries.deleteCategory);
+app.get('/admin/customer', queries.getAllCustomers);
+app.get('/admin/customer/:id', queries.getCustomerById);
+app.put('/admin/customer/update', queries.updateCustomer);
+app.delete('/admin/customer/delete', queries.deleteCustomer);
+
+app.get('/admin/category', queries.getAllCategories);
+app.post('/admin/category/add', queries.addCategory);
+app.put('/admin/category/update', queries.updateCategory);
+app.delete('/admin/category/delete', queries.deleteCategory);
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
