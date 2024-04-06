@@ -7,6 +7,7 @@ import Account from "./pages/account";
 import ShoppingCart from "./pages/shoppingCart";
 import Order from "./pages/order";
 import { Box } from "@mui/material";
+import Footer from "./components/footer";
 
 const ROUTES = [
   { path: "*", element: <Navigate to="/" /> },
@@ -22,13 +23,14 @@ export default function Router() {
   return (
     <>
       <Topbar />
-      <Box p={2}>
+      <Box p={2} pb="62px">
         <Routes>
           {ROUTES.map(({ path, element }) => (
             <Route key={path} path={path} element={element} />
           ))}
         </Routes>
       </Box>
+      <Footer />
     </>
   );
 }

@@ -74,8 +74,8 @@ export default function Topbar() {
             onClick={() => navigate("/")}
             variant="text"
             color="inherit"
-            sx={{ minWidth: "182px" }}>
-            <img src={virtumartLogo} onClick={() => navigate("")} height={"50px"} width={"100%"} />
+            sx={{ minWidth: "182px", "&:hover": { backgroundColor: "#FFFFFF" } }}>
+            <img src={virtumartLogo} height={"50px"} width={"100%"} />
           </Button>
           <Box sx={{ display: "flex", justifyContent: "end", flexGrow: 1 }}>
             <Box width="100%" maxWidth={"600px"} minWidth={"130px"}>
