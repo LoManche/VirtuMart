@@ -1,15 +1,27 @@
 // Desc: This file contains all the queries that are used to interact with the database
 //       Each function must release the connection for better performance.
 import mysql from "mysql2/promise";
-import "dotenv/config";
-import process from "process";
+
 const pool = mysql.createPool({
-  host     : process.env.DB_HOST || 'localhost',
-  user     : process.env.DB_USER || 'Mart',
-  port     : process.env.DB_PORT || 3306,
-  password : process.env.DB_PW || 'Mart1234',
-  database : process.env.DB_NAME || 'virtumartdb'
+  host     : '127.0.0.2',
+  user     : 'Mart',
+  port     : 3306,
+  password : 'Mart1234',
+  database : 'virtumartdb'
 });
+
+async function queryHandler(query, params, errorStatusCode, res) {
+  let connection
+  try {
+    connection = await pool.getConnection();
+    const [rows] = await connection.query(query, params);
+    return rows;
+  } catch (error) {
+    res.status(errorStatusCode).type("text/plain").send(error);
+  } finally {
+    if (connection) connection.release();
+  }
+}
 
 // Login related functions
 export const handleLogin = async (req, res) => {
@@ -87,142 +99,87 @@ export const signUp = async (req, res) => {
 } 
 // Customer functions
 export const getAllProducts = async (req, res) => {
-  let connection
-  try {
-    connection = await pool.getConnection();
-    const [rows] = await connection.query('SELECT * FROM products');
-    res.status(200).json(rows);
-  } catch (error) {
-    res.status(403).type("text/plain").send(error);
-  } finally {
-    if (connection) connection.release();
-  }
+  const query = 'SELECT * FROM products';
+  const rows = await queryHandler(query, [], 403, res);
+  res.status(200).json(rows);
 }
 
 export const getProductById = async (req, res) => {
-  let connection
-  try {
-    connection = await pool.getConnection();
-    let sqlquery ='SELECT * FROM products WHERE asin = ?'
-    const [product] = await connection.query(sqlquery, [req.params.id]);
-    sqlquery = 'select rating,review,dateOfReview,username from reviews inner join customers on customers.customer_id = reviews.customer_id';
-    const [reviews] = await connection.query(sqlquery);
-    res.status(200).json({product, reviews});
-  } catch (error) {
-    res.status(403).type("text/plain").send(error);
-  } finally {
-    if (connection) connection.release();
-  }
+  const query1 = 'SELECT * FROM products WHERE asin = ?';
+  const product = await queryHandler(query1, [req.params.id], 403, res);
+  const query2 = 'SELECT rating,review,dateOfReview,username FROM reviews INNER JOIN customers ON customers.customer_id = reviews.customer_id';
+  const reviews = await queryHandler(query2, [], 403, res);
+  res.status(200).json({product, reviews});
 }
 
 // TODO: Test this function
 export const searchProducts = async (req, res) => {
-  let connection
-  try {
-    connection = await pool.getConnection();
-    const title = req.body.title || '%';
-    let category = req.body.category || '%';
-    const minPrice = req.body.minPrice || 0;
-    const maxPrice = req.body.maxPrice || 1000000;
-    const stock = req.body.stock || 0;
-    if (category !== '%') {
-      const [rows] = await connection.query('SELECT category_id FROM categories WHERE category_name like ?', [category + "%"]);
-      category = rows[0].category_id;
-    }
-    const [rows] = await connection.query('SELECT * FROM products WHERE title like ? AND category_id = ? AND price >= ? AND price <= ? AND stock >= ?', [title, category, minPrice, maxPrice, stock]);
-    res.status(200).json(rows);
-  } catch (error) {
-    res.status(403).type("text/plain").send(error);
-  } finally {
-    if (connection) connection.release();
+  const title = req.body.title || '%';
+  let category = req.body.category || '%';
+  const minPrice = req.body.minPrice || 0;
+  const maxPrice = req.body.maxPrice || 1000000;
+  const stock = req.body.stock || 0;
+  if (category !== '%') {
+    const query1 = 'SELECT category_id FROM categories WHERE category_name like ?';
+    const rows = await queryHandler(query1, [req.body.category + "%"], 403, res);
+    category = rows[0].category_id;
   }
+  const query2 = 'SELECT * FROM products WHERE title like ? AND category_id = ? AND price >= ? AND price <= ? AND stock >= ?';
+  const rows = await queryHandler(query2, [title, category, minPrice, maxPrice, stock], 403, res);
+  res.status(200).json(rows);
 }
 
 // TODO: Test this function
 export const addReview = async (req, res) => {
-  let connection
-  try {
-    connection = await pool.getConnection();
-    const c_id = req.body.customer_id;
-    const p_id = req.body.product_id;
-    const rating = req.body.rating;
-    const review = req.body.review || '';
-    const [rows] = await connection.query('INSERT INTO reviews (customer_id, product_id, rating, review) VALUES (?, ?, ?, ?)', [c_id, p_id, rating, review]);
-    res.status(201).type("text/plain").send('Success');
-  } catch (error) {
-    res.status(404).type("text/plain").send(error);
-  } finally {
-    if (connection) connection.release();
-  }
+  const query = 'INSERT INTO reviews (customer_id, product_id, rating, review) VALUES (?, ?, ?, ?)';
+  const review = req.body.review || '';
+  const params = [req.body.customer_id, req.body.product_id, req.body.rating, review];
+  await queryHandler(query, params, 404, res);
+  res.status(201).type("text/plain").send('Success');
 }
 
 export const getCart = async (req, res) => {
-  let connection
-  try {
-    connection = await pool.getConnection();
-    const c_id = req.body.customer_id;
-    const [rows] = await connection.query('SELECT * FROM shopping_cart WHERE customer_id = ?', [c_id]);
-    res.status(200).json(rows);
-  } catch (error) {
-    res.status(404).type("text/plain").send(error);
-  } finally {
-    if (connection) connection.release();
-  }
-  
+  const query = 'SELECT * FROM shopping_cart WHERE customer_id = ?';
+  const rows = await queryHandler(query, [req.body.customer_id], 403, res);
+  res.status(200).json(rows);
 }
 
 export const addToCart = async (req, res) => {
-  let connection
   const c_id = req.body.customer_id;
   const p_id = req.body.product_id;
   const qty = req.body.quantity;
-  try {
-    connection = await pool.getConnection();
-    const [rows] = await connection.query('INSERT INTO shopping_cart (customer_id, product_id, quantity) VALUES (?, ?, ?)', [c_id, p_id, qty]);
-    res.status(201).type("text/plain").send('Success');
-  } catch (error) {
-    res.status(404).type("text/plain").send(error)
-  } finally {
-    if (connection) connection.release();
-  }
+  
+  const query = 'INSERT INTO shopping_cart (customer_id, product_id, quantity) VALUES (?, ?, ?)';
+  await queryHandler(query, [c_id, p_id, qty], 404, res);
+  res.status(201).type("text/plain").send('Success');
 }
 
 export const removeFromCart = async (req, res) => {
-  let connection
-  try {
-    connection = await pool.getConnection();
-    const c_id = req.body.customer_id;
-    const p_id = req.body.product_id;
-    const [rows] = await connection.query('DELETE FROM shopping_cart WHERE customer_id = ? AND product_id = ?', [c_id, p_id]);
-    res.status(200).type("text/plain").send('Success');
-  } catch (error) {
-    res.status(404).type("text/plain").send(error);
-  } finally {
-    if (connection) connection.release();
-  }
+  const c_id = req.body.customer_id;
+  const p_id = req.body.product_id;
+
+  const query = 'DELETE FROM shopping_cart WHERE customer_id = ? AND product_id = ?';
+  await queryHandler(query, [c_id, p_id], 404, res);
+  res.status(200).type("text/plain").send('Success');
 }
 
 export const updateCart = async (req, res) => {
-  let connection
-  try {
-    connection = await pool.getConnection();
-    const c_id = req.body.customer_id;
-    const p_id = req.body.product_id;
-    const qty = req.body.quantity;
-    const [rows] = await connection.query('UPDATE shopping_cart SET quantity = ? WHERE customer_id = ? AND product_id = ?', [qty, c_id, p_id]);
-    res.status(200).type("text/plain").send('Success');
-  } catch (error) {
-    res.status(404).type("text/plain").send(error);
-  } finally {
-    if (connection) connection.release();
-  }
+  const c_id = req.body.customer_id;
+  const p_id = req.body.product_id;
+  const qty = req.body.quantity;
+
+  const query = 'UPDATE shopping_cart SET quantity = ? WHERE customer_id = ? AND product_id = ?';
+  await queryHandler(query, [qty, c_id, p_id], 404, res);
+  res.status(200).type("text/plain").send('Success');
 } 
 
 export const getAllOrder = async (req, res) => {
 
 }
+
 // TODO: remains to join the tables
 export const getOrderById = async (req, res) => {
+  
   let connection
   try {
     connection = await pool.getConnection();
@@ -236,6 +193,7 @@ export const getOrderById = async (req, res) => {
     if (connection) connection.release();
   }
 }
+
 // TODO: Implementation of this function
 export const placeOrder = async (req, res) => {
 
@@ -244,55 +202,59 @@ export const placeOrder = async (req, res) => {
 
 // Admin functions
 export const addProduct = async (req, res) => {
-  let connection
-  try {
-    connection = await pool.getConnection();
-
-  } catch (error) {
-    res.status(404).type("text/plain").send(error);
-  } finally {
-    if (connection) connection.release();
-  }
+  const {asin, title, imgURL, rating, price, discount, category_id, description, stock} = req.body;
+  const query = 'INSERT INTO products (asin, title, imgURL, rating, price, discount, category_id, description, stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const params = [asin, title, imgURL, rating, price, discount, category_id, description, stock];
+  await queryHandler(query, params, 403, res);
+  res.status(201).type("text/plain").send('Success');
 }
 export const updateProduct = async (req, res) => {
-  let connection
-  try {
-    connection = await pool.getConnection();
-
-  } catch (error) {
-    res.status(404).type("text/plain").send(error);
-  } finally {
-    if (connection) connection.release();
-  }
+  
 }
 export const deleteProduct = async (req, res) => {
-  let connection
-  try {
-    connection = await pool.getConnection();
-
-  } catch (error) {
-    res.status(404).type("text/plain").send(error);
-  } finally {
-    if (connection) connection.release();
-  }
+  const asin = req.body.asin;
+  const query = 'DELETE FROM products WHERE asin = ?';
+  await queryHandler(query, [asin], 403, res);
+  res.status(200).type("text/plain").send('Success');
 }
 
 export const getAllCustomers = async (req, res) => {
+  const query = 'SELECT * FROM customers';
+  const rows = await queryHandler(query, [], 403, res);
+  res.status(200).json(rows);
 }
 export const getCustomerById = async (req, res) => {
+  const query = 'SELECT * FROM customers WHERE customer_id = ?';
+  const rows = await queryHandler(query, [req.params.id], 403, res);
+  res.status(200).json(rows);
 }
 export const updateCustomer = async (req, res) => {
+
 }
 export const deleteCustomer = async (req, res) => {
+  const c_id = req.body.customer_id;
+  const query = 'DELETE FROM customers WHERE customer_id = ?';
+  await queryHandler(query, [c_id], 403, res);
+  res.status(200).type("text/plain").send('Success');
 }
 
 export const getAllCategories = async (req, res) => {
+  const query = 'SELECT * FROM categories';
+  const rows = await queryHandler(query, [], 403, res);
+  res.status(200).json(rows);
 }
 export const addCategory = async (req, res) => {
+  const c_id = req.body.category_id;
+  const category = req.body.category_name;
+  const query = 'INSERT INTO categories (category_name) VALUES (?)';
 }
 export const updateCategory = async (req, res) => {
 }
 export const deleteCategory = async (req, res) => {
+  const c_id = req.body.category_id;
+  const query = 'DELETE FROM categories WHERE category_id = ?';
+  await queryHandler(query, [c_id], 403, res);
+  res.status(200).type("text/plain").send('Success');
 }
 
 
