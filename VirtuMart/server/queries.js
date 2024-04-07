@@ -3,14 +3,10 @@
 // The following codes are written with the aid of GitHub Copilot
 
 import mysql from "mysql2/promise";
+import MySQLStore from "express-mysql-session";
 
-const pool = mysql.createPool({
-  host     : '127.0.0.2',
-  user     : 'Mart',
-  port     : 3306,
-  password : 'Mart1234',
-  database : 'virtumartdb'
-});
+import { pool } from './db.js';
+
 // One function to handle all the queries
 async function queryHandler(query, params, errorStatusCode, res) {
   let connection
@@ -78,9 +74,15 @@ export const handleLogout = async (req, res) => {
     }
   });
 }
+
 export const signUp = async (req, res) => {
 
 } 
+
+export const signUpOTP = async (req, res) => {
+  
+}
+
 // Customer functions
 export const getAllProducts = async (req, res) => {
   const query = 'SELECT * FROM products';
@@ -112,27 +114,15 @@ export const searchProducts = async (req, res) => {
   const rows = await queryHandler(query2, [title, category, minPrice, maxPrice, stock], 403, res);
   res.status(200).json(rows);
 }
-
-// TODO: Test addReview
-export const addReview = async (req, res) => {
-  const query = 'INSERT INTO reviews (customer_id, product_id, rating, review) VALUES (?, ?, ?, ?)';
-  const review = req.body.review || '';
-  const params = [req.body.customer_id, req.body.product_id, req.body.rating, review];
-  await queryHandler(query, params, 404, res);
-  res.status(201).type("text/plain").send('Success');
-}
-
+// Cart functions
 export const getCart = async (req, res) => {
-  const query = 'SELECT * FROM shopping_cart WHERE customer_id = ?';
+  const query = 'SELECT product_id, quantity FROM shopping_cart INNER JOIN customers ON shopping_cart.customer_id = customers.customer_id WHERE shopping_cart.customer_id = ?';
   const rows = await queryHandler(query, [req.body.customer_id], 403, res);
   res.status(200).json(rows);
 }
 
 export const addToCart = async (req, res) => {
-  const c_id = req.body.customer_id;
-  const p_id = req.body.product_id;
-  const qty = req.body.quantity;
-  
+  const {c_id, p_id, qty} = req.body;
   const query = 'INSERT INTO shopping_cart (customer_id, product_id, quantity) VALUES (?, ?, ?)';
   await queryHandler(query, [c_id, p_id, qty], 404, res);
   res.status(201).type("text/plain").send('Success');
@@ -141,7 +131,6 @@ export const addToCart = async (req, res) => {
 export const removeFromCart = async (req, res) => {
   const c_id = req.body.customer_id;
   const p_id = req.body.product_id;
-
   const query = 'DELETE FROM shopping_cart WHERE customer_id = ? AND product_id = ?';
   await queryHandler(query, [c_id, p_id], 404, res);
   res.status(200).type("text/plain").send('Success');
@@ -157,8 +146,25 @@ export const updateCart = async (req, res) => {
   res.status(200).type("text/plain").send('Success');
 } 
 
-export const getAllOrder = async (req, res) => {
+// TODO: Test addReview
+export const addReview = async (req, res) => {
+  const query = 'INSERT INTO reviews (customer_id, product_id, rating, review) VALUES (?, ?, ?, ?)';
+  const review = req.body.review || '';
+  const params = [req.body.customer_id, req.body.product_id, req.body.rating, review];
+  await queryHandler(query, params, 404, res);
+  // Update the rating of the product
+  const query2 = 'SELECT AVG(rating) FROM reviews WHERE product_id = ?';
+  const rows = await queryHandler(query2, [req.body.product_id], 404, res);
+  const rating = rows[0]['AVG(rating)'];
+  const query3 = 'UPDATE products SET rating = ? WHERE asin = ?';
+  res.status(201).type("text/plain").send('Success');
+}
 
+export const getAllOrder = async (req, res) => {
+  const {customer_id} = req.body;
+  const query = 'SELECT order_id, subtotal, shippingcost, orderstatus, dateoforder FROM martorder WHERE customer_id = ?';
+  const rows = await queryHandler(query, [customer_id], 404, res);
+  res.status(200).json(rows);
 }
 
 // TODO: remains to join the tables
@@ -194,7 +200,11 @@ export const addProduct = async (req, res) => {
   res.status(201).type("text/plain").send('Success');
 }
 export const updateProduct = async (req, res) => {
-  
+  const {asin, title, imgURL, rating, price, discount, category_id, description, stock} = req.body;
+  const query = 'UPDATE products SET title = ?, imgURL = ?, rating = ?, price = ?, discount = ?, category_id = ?, description = ?, stock = ? WHERE asin = ?';
+  const params = [title, imgURL, rating, price, discount, category_id, description, stock, asin];
+  await queryHandler(query, params, 403, res);
+  res.status(200).type("text/plain").send('Success');
 }
 export const deleteProduct = async (req, res) => {
   const asin = req.body.asin;
@@ -205,16 +215,20 @@ export const deleteProduct = async (req, res) => {
 
 export const getAllCustomers = async (req, res) => {
   const query = 'SELECT * FROM customers';
-  const rows = await queryHandler(query, [], 403, res);
+  const rows = await queryHandler(query, [], 404, res);
   res.status(200).json(rows);
 }
 export const getCustomerById = async (req, res) => {
   const query = 'SELECT * FROM customers WHERE customer_id = ?';
-  const rows = await queryHandler(query, [req.params.id], 403, res);
+  const rows = await queryHandler(query, [req.body.customer_id], 403, res);
   res.status(200).json(rows);
 }
 export const updateCustomer = async (req, res) => {
-
+  const {customer_id, username, firstName, lastName, phone, city, state, password, email} = req.body;
+  const query = 'UPDATE customers SET username = ?, firstName = ?, lastName = ?, phone = ?, city = ?, state = ?, password = ?, email = ? WHERE customer_id = ?';
+  const params = [username, firstName, lastName, phone, city, state, password, email, customer_id];
+  await queryHandler(query, params, 403, res);
+  res.status(200).type("text/plain").send('Success');
 }
 export const deleteCustomer = async (req, res) => {
   const c_id = req.body.customer_id;
@@ -236,6 +250,11 @@ export const addCategory = async (req, res) => {
   res.status(201).type("text/plain").send('Success');
 }
 export const updateCategory = async (req, res) => {
+  const c_id = req.body.category_id;
+  const category = req.body.category_name;
+  const query = 'UPDATE categories SET category_name = ? WHERE category_id = ?';
+  await queryHandler(query, [category, c_id], 403, res);
+  res.status(200).type("text/plain").send('Success');
 }
 export const deleteCategory = async (req, res) => {
   const c_id = req.body.category_id;
