@@ -77,6 +77,11 @@ export const handleLogout = async (req, res) => {
 export const signUp = async (req, res) => {
 
 } 
+
+export const signUpOTP = async (req, res) => {
+  
+}
+
 // Customer functions
 export const getAllProducts = async (req, res) => {
   const query = 'SELECT * FROM products';
@@ -205,16 +210,20 @@ export const deleteProduct = async (req, res) => {
 
 export const getAllCustomers = async (req, res) => {
   const query = 'SELECT * FROM customers';
-  const rows = await queryHandler(query, [], 403, res);
+  const rows = await queryHandler(query, [], 404, res);
   res.status(200).json(rows);
 }
 export const getCustomerById = async (req, res) => {
   const query = 'SELECT * FROM customers WHERE customer_id = ?';
-  const rows = await queryHandler(query, [req.params.id], 403, res);
+  const rows = await queryHandler(query, [req.body.customer_id], 403, res);
   res.status(200).json(rows);
 }
 export const updateCustomer = async (req, res) => {
-
+  const {customer_id, username, firstName, lastName, phone, city, state, password, email} = req.body;
+  const query = 'UPDATE customers SET username = ?, firstName = ?, lastName = ?, phone = ?, city = ?, state = ?, password = ?, email = ? WHERE customer_id = ?';
+  const params = [username, firstName, lastName, phone, city, state, password, email, customer_id];
+  await queryHandler(query, params, 403, res);
+  res.status(200).type("text/plain").send('Success');
 }
 export const deleteCustomer = async (req, res) => {
   const c_id = req.body.customer_id;
@@ -236,6 +245,11 @@ export const addCategory = async (req, res) => {
   res.status(201).type("text/plain").send('Success');
 }
 export const updateCategory = async (req, res) => {
+  const c_id = req.body.category_id;
+  const category = req.body.category_name;
+  const query = 'UPDATE categories SET category_name = ? WHERE category_id = ?';
+  await queryHandler(query, [category, c_id], 403, res);
+  res.status(200).type("text/plain").send('Success');
 }
 export const deleteCategory = async (req, res) => {
   const c_id = req.body.category_id;

@@ -59,6 +59,8 @@ app.get('/dummy', isCustomerAuthenticated, (req, res) => {
 app.post('/login', queries.handleLogin);
 app.post('/logout', queries.handleLogout);
 app.post('/signup', queries.signUp);
+app.post('/signup/otp', queries.signUpOTP);
+
 // Product related APIs
 app.get('/product', queries.getAllProducts);
 app.get('/product/:id', queries.getProductById);
@@ -66,10 +68,11 @@ app.post('/search', queries.searchProducts);
 // Review related APIs
 app.put('/review/add', isCustomerAuthenticated, queries.addReview);
 
+
 // Shopping cart related APIs
 app.get('/cart', queries.getCart);
 app.post('/cart/add', queries.addToCart);
-app.post('/cart/remove', queries.removeFromCart);
+app.delete('/cart/remove', queries.removeFromCart);
 app.post('/cart/update', queries.updateCart);
 
 // Order related APIs
@@ -85,7 +88,7 @@ app.put('/admin/product/update', queries.updateProduct);
 app.delete('/admin/product/delete', queries.deleteProduct);
 
 app.get('/admin/customer', queries.getAllCustomers);
-app.get('/admin/customer/:id', queries.getCustomerById);
+app.get('/admin/customerById', queries.getCustomerById);
 app.put('/admin/customer/update', queries.updateCustomer);
 app.delete('/admin/customer/delete', queries.deleteCustomer);
 
