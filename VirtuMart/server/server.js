@@ -6,7 +6,7 @@ import session from "express-session";
 import cors from "cors";
 import process from "process";
 
-import queries from "./queries.js";
+import * as queries from "./queries.js";
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -25,11 +25,15 @@ app.use(
     saveUninitialized: false,
     resave: true,
     rolling: true,
+    // cookie: {
+    //   secure: true,
+    //   httpOnly: true
+    // }
   }),
 );
 // Middleware to check if the user is authenticated
 function isAdminAuthenticated(req, res, next) {
-  if (req.session.role === "admin" && req.session.user) {
+  if (req.session.role === "admin" && req.session.admin_id) {
     next();
   } else {
     res.status(401).send("Unauthorized");
@@ -37,7 +41,7 @@ function isAdminAuthenticated(req, res, next) {
 }
 
 function isCustomerAuthenticated(req, res, next) {
-  if (req.session.role === "customer" && req.session.user) {
+  if (req.session.role === "customer" && req.session.customer_id) {
     next();
   } else {
     res.status(401).send("Unauthorized");
@@ -45,6 +49,12 @@ function isCustomerAuthenticated(req, res, next) {
 }
 // Serve the app in dist(created by npm run build)
 app.use(express.static("dist"));
+
+app.get("/dummy", isCustomerAuthenticated, (req, res) => {
+  if (req.session) {
+    res.send(req.session);
+  }
+});
 
 // Login related APIs
 app.post("/login", queries.handleLogin);
@@ -67,6 +77,24 @@ app.post("/cart/update", queries.updateCart);
 app.post("/placeorder", queries.placeOrder);
 app.get("/order", queries.getAllOrder);
 app.get("/order/:id", queries.getOrderById);
+
+// Admin related APIs
+app.use("/admin", isAdminAuthenticated);
+
+app.get("/admin/product", queries.getAllProducts);
+app.post("/admin/product/add", queries.addProduct);
+app.put("/admin/product/update", queries.updateProduct);
+app.delete("/admin/product/delete", queries.deleteProduct);
+
+app.get("/admin/customer", queries.getAllCustomers);
+app.get("/admin/customer/:id", queries.getCustomerById);
+app.put("/admin/customer/update", queries.updateCustomer);
+app.delete("/admin/customer/delete", queries.deleteCustomer);
+
+app.get("/admin/category", queries.getAllCategories);
+app.post("/admin/category/add", queries.addCategory);
+app.put("/admin/category/update", queries.updateCategory);
+app.delete("/admin/category/delete", queries.deleteCategory);
 
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);

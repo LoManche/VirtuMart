@@ -110,3 +110,5 @@ IGNORE 1 ROWS
 INSERT INTO customers (username, firstName, lastName, phone, city, state, password, email) 
 VALUES ('sampleUser', 'John', 'Doe', '1234567890', 'SampleCity', 'SampleState', 'password123', 'sampleUser@example.com');
 insert into reviews (customer_id, product_id, rating, review) VALUES (1,"B0002DO1RI",5,"Great Stuff!" );
+INSERT INTO Admin (adminname, password) 
+VALUES ('adminUser', 'password');
