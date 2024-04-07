@@ -6,7 +6,7 @@ import { Email, Password } from "../components/textfields";
 
 export default function Account() {
   // const navigate = useNavigate();
-  const [page, setPage] = useState("enterNewPs");
+  const [page, setPage] = useState("login");
   const [loginForm, setLoginForm] = useState({ email: "", password: "", rememberMe: false });
   const [registerForm, setRegisterForm] = useState({ email: "", password: "", confirmPs: "" });
   const [forgetPsForm, setForgetPsForm] = useState({ email: "" });
@@ -26,276 +26,38 @@ export default function Account() {
     console.log(type, form);
   };
 
-  function Login() {
-    return (
-      <>
-        <Box p={2}>
-          <Typography variant="h3" fontWeight={"bold"}>
-            Sign In
-          </Typography>
-        </Box>
-        <Typography variant="h5" color="grey">
-          Welcome back~
-        </Typography>
-        <Typography variant="h5" color="grey">
-          Please enter your account details
-        </Typography>
+  const Form = {
+    login: { form: loginForm, setForm: setLoginForm },
+    register: { form: registerForm, setForm: setRegisterForm },
+    forgetPassword: { form: forgetPsForm, setForm: setForgetPsForm },
+    enterNewPs: { form: enterNewPsForm, setForm: setEnterNewPsForm },
+  };
 
-        <Box
-          component="form"
-          onSubmit={(e) => {
-            onSubmit(e, "login", loginForm);
-          }}
-          display="flex"
-          flexDirection={"column"}
-          width="100%"
-          maxWidth={"400px"}
-          pt={3}
-          sx={{
-            "& .MuiTextField-root": { my: 1 },
-          }}>
-          <Email
-            id={"email"}
-            name={"email"}
-            value={loginForm.email}
-            onChange={(e) => {
-              onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
-            }}
-          />
-          <Password
-            id={"password"}
-            name={"password"}
-            value={loginForm.password}
-            onChange={(e) => {
-              onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
-            }}
-          />
+  const Header = {
+    login: "Sign In",
+    register: "Sign Up",
+    forgetPassword: "Forget Password",
+    enterNewPs: "Enter Your New Password",
+  };
+  const Description = {
+    login: { 1: "Welcome back~", 2: "Please enter your account details" },
+    register: { 1: "Let's create your account and", 2: "Shop like a pro and save money" },
+    forgetPassword: { 1: "A password reset link will be sent to your email address" },
+    enterNewPs: { 1: "" },
+  };
 
-          <Box width="100%" display="flex" justifyContent={"space-between"} alignItems={"center"}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="rememberMe"
-                  color="info"
-                  checked={loginForm.rememberMe}
-                  onChange={(e) => {
-                    onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
-                  }}
-                />
-              }
-              label="Remember Me"
-            />
-            <Button
-              variant="text"
-              onClick={() => {
-                setPage("forgetPassword");
-              }}
-              color="info"
-              sx={{ "&:hover": { backgroundColor: "#FFFFFF" } }}>
-              Forget Password
-            </Button>
-          </Box>
-          <Button variant="contained" color="info" type={"Submit"}>
-            Sign In
-          </Button>
-        </Box>
-        <Box pt={3} width="100%" display="flex" justifyContent={"center"} alignItems={"center"}>
-          <Typography>{"Don't have an account?"} </Typography>
-          <Button
-            variant="text"
-            onClick={() => {
-              setPage("register");
-            }}
-            color="info"
-            sx={{ "&:hover": { backgroundColor: "#FFFFFF" } }}>
-            Sign Up Now
-          </Button>
-        </Box>
-      </>
-    );
-  }
-
-  function Register() {
-    return (
-      <>
-        <Box p={2}>
-          <Typography variant="h3" fontWeight={"bold"}>
-            Sign Up
-          </Typography>
-        </Box>
-        <Typography variant="h5" color="grey">
-          {"Let's create your account and"}
-        </Typography>
-        <Typography variant="h5" color="grey">
-          Shop like a pro and save money
-        </Typography>
-        <Box
-          component="form"
-          onSubmit={(e) => {
-            onSubmit(e, "register", registerForm);
-          }}
-          display="flex"
-          flexDirection={"column"}
-          width="100%"
-          maxWidth={"400px"}
-          pt={3}
-          sx={{
-            "& .MuiTextField-root": { my: 1 },
-          }}>
-          <Email
-            id={"email"}
-            name={"email"}
-            value={registerForm.email}
-            onChange={(e) => {
-              onUpdateField({ e: e, form: registerForm, setForm: setRegisterForm });
-            }}
-          />
-          <Password
-            id={"password"}
-            name={"password"}
-            value={registerForm.password}
-            onChange={(e) => {
-              onUpdateField({ e: e, form: registerForm, setForm: setRegisterForm });
-            }}
-          />
-          <Password
-            id={"confirmPs"}
-            name={"confirmPs"}
-            value={registerForm.confirmPs}
-            onChange={(e) => {
-              onUpdateField({ e: e, form: registerForm, setForm: setRegisterForm });
-            }}
-            props={{ label: "Confirm Password" }}
-          />
-          <Box pt={3}></Box>
-          <Button variant="contained" color="info" type={"Submit"}>
-            Sign Up
-          </Button>
-        </Box>
-        <Box pt={3} width="100%" display="flex" justifyContent={"center"} alignItems={"center"}>
-          <Typography>Already have an account? </Typography>
-          <Button
-            variant="text"
-            onClick={() => {
-              setPage("login");
-            }}
-            color="info"
-            sx={{ "&:hover": { backgroundColor: "#FFFFFF" } }}>
-            Sign In
-          </Button>
-        </Box>
-      </>
-    );
-  }
-
-  function ForgetPassword() {
-    return (
-      <>
-        <Box p={2}>
-          <Typography variant="h3" fontWeight={"bold"}>
-            Forget Password
-          </Typography>
-        </Box>
-        <Typography variant="h5" color="grey">
-          A password reset link will be sent to your email address
-        </Typography>
-
-        <Box
-          component="form"
-          onSubmit={(e) => {
-            onSubmit(e, "forgetPassword", forgetPsForm);
-          }}
-          display="flex"
-          flexDirection={"column"}
-          width="100%"
-          maxWidth={"400px"}
-          sx={{
-            "& .MuiTextField-root": { my: 3 },
-          }}>
-          <Email
-            id={"email"}
-            name={"email"}
-            value={forgetPsForm.email}
-            onChange={(e) => {
-              onUpdateField({ e: e, form: forgetPsForm, setForm: setForgetPsForm });
-            }}
-            props={{ autoFocus: true }}
-          />
-          <Button variant="contained" color="info" type={"Submit"}>
-            Send Password Reset Link
-          </Button>
-          <Box pt={3} width="100%" display="flex" justifyContent={"center"} alignItems={"center"}>
-            <Typography>{"Don't have an account?"} </Typography>
-            <Button
-              variant="text"
-              onClick={() => {
-                setPage("register");
-              }}
-              color="info"
-              sx={{ "&:hover": { backgroundColor: "#FFFFFF" } }}>
-              Sign Up Now
-            </Button>
-          </Box>
-        </Box>
-      </>
-    );
-  }
-
-  function EnterNewPs() {
-    return (
-      <>
-        <Box p={2}>
-          <Typography variant="h3" fontWeight={"bold"}>
-            Enter Your New Password
-          </Typography>
-          <Box
-            component="form"
-            onSubmit={(e) => {
-              onSubmit(e, "enterNewPs", enterNewPsForm);
-            }}
-            display="flex"
-            flexDirection={"column"}
-            width="100%"
-            maxWidth={"400px"}
-            pt={3}
-            sx={{
-              "& .MuiTextField-root": { my: 1 },
-            }}>
-            <Password
-              id={"password"}
-              name={"password"}
-              value={enterNewPsForm.password}
-              onChange={(e) => {
-                onUpdateField({ e: e, form: enterNewPsForm, setForm: setEnterNewPsForm });
-              }}
-            />
-            <Password
-              id={"confirmPs"}
-              name={"confirmPs"}
-              value={enterNewPsForm.confirmPs}
-              onChange={(e) => {
-                onUpdateField({ e: e, form: enterNewPsForm, setForm: setEnterNewPsForm });
-              }}
-              props={{ label: "Confirm Password" }}
-            />
-            <Box pt={3}></Box>
-            <Button variant="contained" color="info" type={"Submit"}>
-              Submit
-            </Button>
-          </Box>
-        </Box>
-      </>
-    );
-  }
-
-  function PageContent(page) {
-    return {
-      login: <Login />,
-      register: <Register />,
-      forgetPassword: <ForgetPassword />,
-      enterNewPs: <EnterNewPs />,
-    }[page];
-  }
+  const Reminder = {
+    login: { text: "Don't have an account?", link: "register", buttonText: "Sign Up Now" },
+    register: { text: "Already have an account?", link: "login", buttonText: "Sign In" },
+    forgetPassword: { text: "Don't have an account?", link: "register", buttonText: "Sign Up Now" },
+    enterNewPs: false,
+  };
+  const SubmitButtonText = {
+    login: "Sign In",
+    register: "Sign Up",
+    forgetPassword: "Send Password Reset Link",
+    enterNewPs: "Submit",
+  };
 
   return (
     <Grid
@@ -312,8 +74,169 @@ export default function Account() {
         flexDirection={"column"}
         justifyContent={"center"}
         alignItems={"center"}>
-        {PageContent(page)}
+        {/* Header and description */}
+        <Box p={2}>
+          <Typography variant="h3" fontWeight={"bold"}>
+            {Header[page]}
+          </Typography>
+        </Box>
+        <Typography variant="h5" color="grey">
+          {Description[page][1]}
+        </Typography>
+        <Typography variant="h5" color="grey">
+          {Description[page][2]}
+        </Typography>
+        {/* Input */}
+        <Box
+          component="form"
+          onSubmit={(e) => {
+            onSubmit(e, page, Form[page].form);
+          }}
+          display="flex"
+          flexDirection={"column"}
+          width="100%"
+          maxWidth={"400px"}
+          pt={3}
+          sx={{
+            "& .MuiTextField-root": { my: 1 },
+          }}>
+          {page === "login" ? (
+            <>
+              <Email
+                id={"email"}
+                name={"email"}
+                value={loginForm.email}
+                onChange={(e) => {
+                  onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
+                }}
+                props={{ autoFocus: true }}
+              />
+              <Password
+                id={"password"}
+                name={"password"}
+                value={loginForm.password}
+                onChange={(e) => {
+                  onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
+                }}
+              />
+              <Box
+                width="100%"
+                display="flex"
+                justifyContent={"space-between"}
+                alignItems={"center"}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="rememberMe"
+                      color="info"
+                      checked={loginForm.rememberMe}
+                      onChange={(e) => {
+                        onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
+                      }}
+                    />
+                  }
+                  label="Remember Me"
+                />
+                <Button
+                  variant="text"
+                  onClick={() => {
+                    setPage("forgetPassword");
+                  }}
+                  color="info"
+                  sx={{ "&:hover": { backgroundColor: "#FFFFFF" } }}>
+                  Forget Password
+                </Button>
+              </Box>
+            </>
+          ) : page === "register" ? (
+            <>
+              <Email
+                id={"email"}
+                name={"email"}
+                value={registerForm.email}
+                onChange={(e) => {
+                  onUpdateField({ e: e, form: registerForm, setForm: setRegisterForm });
+                }}
+                props={{ autoFocus: true }}
+              />
+              <Password
+                id={"password"}
+                name={"password"}
+                value={registerForm.password}
+                onChange={(e) => {
+                  onUpdateField({ e: e, form: registerForm, setForm: setRegisterForm });
+                }}
+              />
+              <Password
+                id={"confirmPs"}
+                name={"confirmPs"}
+                value={registerForm.confirmPs}
+                onChange={(e) => {
+                  onUpdateField({ e: e, form: registerForm, setForm: setRegisterForm });
+                }}
+                props={{ label: "Confirm Password" }}
+              />
+              <Box pt={3}></Box>
+            </>
+          ) : page === "forgetPassword" ? (
+            <Email
+              id={"email"}
+              name={"email"}
+              value={forgetPsForm.email}
+              onChange={(e) => {
+                onUpdateField({ e: e, form: forgetPsForm, setForm: setForgetPsForm });
+              }}
+              props={{ autoFocus: true }}
+            />
+          ) : page === "enterNewPs" ? (
+            <>
+              {" "}
+              <Password
+                id={"password"}
+                name={"password"}
+                value={enterNewPsForm.password}
+                onChange={(e) => {
+                  onUpdateField({ e: e, form: enterNewPsForm, setForm: setEnterNewPsForm });
+                }}
+              />
+              <Password
+                id={"confirmPs"}
+                name={"confirmPs"}
+                value={enterNewPsForm.confirmPs}
+                onChange={(e) => {
+                  onUpdateField({ e: e, form: enterNewPsForm, setForm: setEnterNewPsForm });
+                }}
+                props={{ label: "Confirm Password" }}
+              />
+              <Box pt={3}></Box>
+            </>
+          ) : (
+            <></>
+          )}
+
+          <Button variant="contained" color="info" type={"Submit"} fullWidth>
+            {SubmitButtonText[page]}
+          </Button>
+        </Box>
+        {/* Reminder to other page */}
+        <Box pt={3} width="100%" display="flex" justifyContent={"center"} alignItems={"center"}>
+          <Typography>{Reminder[page] ? Reminder[page].text : ""} </Typography>
+          {Reminder[page] ? (
+            <Button
+              variant="text"
+              onClick={() => {
+                setPage(Reminder[page].link);
+              }}
+              color="info"
+              sx={{ "&:hover": { backgroundColor: "#FFFFFF" } }}>
+              {Reminder[page].buttonText}
+            </Button>
+          ) : (
+            <></>
+          )}
+        </Box>
       </Grid>
+      {/* Image */}
       <Grid
         item
         xs={0}

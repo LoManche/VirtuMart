@@ -72,7 +72,7 @@ const Profile = () => {
       mx={3}
       columnSpacing={{ xs: 1, sm: 2, md: 3 }}
       columns={{ xs: 4, sm: 4, md: 8 }}>
-      <Grid item xs={1} sm={1} md={2} borderRight={1} borderColor={"lightgray"}>
+      <Grid minWidth={"160px"} item xs={1} sm={1} md={2} borderRight={1} borderColor={"lightgray"}>
         <List>
           <ListItem disablePadding>
             <ListItemButton
