@@ -11,6 +11,7 @@ export default function Account() {
   const [registerForm, setRegisterForm] = useState({ email: "", password: "", confirmPs: "" });
   const [forgetPsForm, setForgetPsForm] = useState({ email: "" });
   const [enterNewPsForm, setEnterNewPsForm] = useState({ password: "", confirmPs: "" });
+
   const onUpdateField = ({ e, form, setForm }) => {
     const { name, value, type, checked } = e.target;
     const inputValue = type === "checkbox" ? checked : value;

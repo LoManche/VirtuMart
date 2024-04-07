@@ -84,8 +84,8 @@ function WithoutLoginRouter() {
 }
 
 export default function Router() {
-  const isLogin = useAppContext()?.isLogin; //for testing other functions, can set isLogin to true
-  const user = useAppContext()?.user;
+  const isLogin = true; // useAppContext()?.isLogin; //for testing other functions, can set isLogin to true
+  const user = "customer"; // useAppContext()?.user;
 
   if (!isLogin) {
     return <WithoutLoginRouter />;
@@ -93,7 +93,7 @@ export default function Router() {
 
   return (
     <>
-      <Topbar />
+      <Topbar isLogin={true} />
       <Box p={2} pb="62px">
         <Routes>
           {ROUTES.map(({ path, element, level }) =>
