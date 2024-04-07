@@ -107,8 +107,27 @@ LINES TERMINATED BY '\n'
 IGNORE 1 ROWS 
 (category_id,category_name);
 -- Inserting data manually
+-- Sample Customer
 INSERT INTO customers (username, firstName, lastName, phone, city, state, password, email) 
 VALUES ('sampleUser', 'John', 'Doe', '1234567890', 'SampleCity', 'SampleState', 'password123', 'sampleUser@example.com');
+-- Sample Review
 insert into reviews (customer_id, product_id, rating, review) VALUES (1,"B0002DO1RI",5,"Great Stuff!" );
+-- Sample Admin
 INSERT INTO Admin (adminname, password) 
 VALUES ('adminUser', 'password');
+-- Sample shopping Cart
+INSERT INTO shopping_cart (customer_id, product_id, quantity)
+VALUES (1, 'B0002DO1RI', 3);
+INSERT INTO shopping_cart (customer_id, product_id, quantity)
+VALUES (1, 'B00AWB13E4', 4);
+
+-- Insert a sample order into the martorder table
+INSERT INTO martorder (customer_id, subTotal, shippingCost, orderStatus, flat, address, city, country, postalCode, paymentMethod)
+VALUES (1, 100.00, 10.00, 'Ordered', 'Flat 1A', '123 Street', 'Tuen Mun', 'Hong Kong, China', '12345', 'Credit Card');
+
+-- Get the ID of the last inserted order
+SET @last_order_id = LAST_INSERT_ID();
+
+-- Insert a sample product into the martorder_products table
+INSERT INTO martorder_products (order_id, customer_id, product_id, quantity)
+VALUES (@last_order_id, 1, 'B0002DO1RI', 2);
