@@ -24,10 +24,11 @@ app.use(session({
   resave: true,
   rolling: true,
   store : sessionStore,
-  // cookie: {
-  //   secure: true,
-  //   httpOnly: true
-  // }
+  cookie: {
+    maxAge: 15 * 60 * 1000, // 15 minutes in milliseconds
+    // secure: true,
+    httpOnly: true
+  }
 }));
 
 // Middleware to check if the user is authenticated
@@ -97,6 +98,7 @@ app.post('/admin/category/add', queries.addCategory);
 app.put('/admin/category/update', queries.updateCategory);
 app.delete('/admin/category/delete', queries.deleteCategory);
 
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
 });

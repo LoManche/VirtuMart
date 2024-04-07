@@ -74,6 +74,7 @@ export const handleLogout = async (req, res) => {
     }
   });
 }
+
 export const signUp = async (req, res) => {
 
 } 
