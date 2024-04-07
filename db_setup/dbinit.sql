@@ -7,12 +7,12 @@ SET global local_infile = true;
 -- Creating tables
 create table if not exists products (
 	asin varchar(10) NOT NULL,
-	title text,
+	title text NOT NULL,
 	imgURL text,
 	rating float default 0,
-	price float,
+	price float NOT NULL,
 	discount float default 0,
-	category_id int,
+	category_id int NOT NULL,
 	description text,
 	stock int default 0,
 	primary key (asin)

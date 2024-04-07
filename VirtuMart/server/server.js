@@ -7,6 +7,7 @@ import cors from "cors";
 import process from "process";
 
 import * as queries from "./queries.js";
+import { sessionStore } from './db.js';
 
 const PORT = process.env.PORT || 3000;
 const app = express();
@@ -22,14 +23,16 @@ app.use(session({
   saveUninitialized: false,
   resave: true,
   rolling: true,
+  store : sessionStore,
   // cookie: {
   //   secure: true,
   //   httpOnly: true
   // }
 }));
+
 // Middleware to check if the user is authenticated
 function isAdminAuthenticated(req, res, next) {
-  if (req.session.role === "admin" && req.session.admin_id) {
+  if (req.session.role === "admin" && req.session.userid) {
     next();
   } else {
     res.status(401).send("Unauthorized");
@@ -37,7 +40,7 @@ function isAdminAuthenticated(req, res, next) {
 }
 
 function isCustomerAuthenticated(req, res, next) {
-  if (req.session.role === "customer" && req.session.customer_id) {
+  if (req.session.role === "customer" && req.session.userid) {
     next();
   } else {
     res.status(401).send("Unauthorized");
@@ -77,7 +80,6 @@ app.get('/order/:id', queries.getOrderById);
 // Admin related APIs
 app.use('/admin', isAdminAuthenticated);
 
-app.get('/admin/product', queries.getAllProducts);
 app.post('/admin/product/add', queries.addProduct);
 app.put('/admin/product/update', queries.updateProduct);
 app.delete('/admin/product/delete', queries.deleteProduct);

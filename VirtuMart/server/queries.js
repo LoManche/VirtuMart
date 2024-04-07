@@ -3,14 +3,10 @@
 // The following codes are written with the aid of GitHub Copilot
 
 import mysql from "mysql2/promise";
+import MySQLStore from "express-mysql-session";
 
-const pool = mysql.createPool({
-  host     : '127.0.0.2',
-  user     : 'Mart',
-  port     : 3306,
-  password : 'Mart1234',
-  database : 'virtumartdb'
-});
+import { pool } from './db.js';
+
 // One function to handle all the queries
 async function queryHandler(query, params, errorStatusCode, res) {
   let connection
@@ -194,7 +190,11 @@ export const addProduct = async (req, res) => {
   res.status(201).type("text/plain").send('Success');
 }
 export const updateProduct = async (req, res) => {
-  
+  const {asin, title, imgURL, rating, price, discount, category_id, description, stock} = req.body;
+  const query = 'UPDATE products SET title = ?, imgURL = ?, rating = ?, price = ?, discount = ?, category_id = ?, description = ?, stock = ? WHERE asin = ?';
+  const params = [title, imgURL, rating, price, discount, category_id, description, stock, asin];
+  await queryHandler(query, params, 403, res);
+  res.status(200).type("text/plain").send('Success');
 }
 export const deleteProduct = async (req, res) => {
   const asin = req.body.asin;
