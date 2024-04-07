@@ -65,7 +65,7 @@ function AddToCartButton() {
   );
 }
 
-function ProductDetails() {
+export default function ProductDetails() {
   const productData = {
     name: "Product name",
     imageSrc:
@@ -90,5 +90,3 @@ function ProductDetails() {
     </article>
   );
 }
-
-export default ProductDetails;
