@@ -114,27 +114,15 @@ export const searchProducts = async (req, res) => {
   const rows = await queryHandler(query2, [title, category, minPrice, maxPrice, stock], 403, res);
   res.status(200).json(rows);
 }
-
-// TODO: Test addReview
-export const addReview = async (req, res) => {
-  const query = 'INSERT INTO reviews (customer_id, product_id, rating, review) VALUES (?, ?, ?, ?)';
-  const review = req.body.review || '';
-  const params = [req.body.customer_id, req.body.product_id, req.body.rating, review];
-  await queryHandler(query, params, 404, res);
-  res.status(201).type("text/plain").send('Success');
-}
-
+// Cart functions
 export const getCart = async (req, res) => {
-  const query = 'SELECT * FROM shopping_cart WHERE customer_id = ?';
+  const query = 'SELECT product_id, quantity FROM shopping_cart INNER JOIN customers ON shopping_cart.customer_id = customers.customer_id WHERE shopping_cart.customer_id = ?';
   const rows = await queryHandler(query, [req.body.customer_id], 403, res);
   res.status(200).json(rows);
 }
 
 export const addToCart = async (req, res) => {
-  const c_id = req.body.customer_id;
-  const p_id = req.body.product_id;
-  const qty = req.body.quantity;
-  
+  const {c_id, p_id, qty} = req.body;
   const query = 'INSERT INTO shopping_cart (customer_id, product_id, quantity) VALUES (?, ?, ?)';
   await queryHandler(query, [c_id, p_id, qty], 404, res);
   res.status(201).type("text/plain").send('Success');
@@ -143,7 +131,6 @@ export const addToCart = async (req, res) => {
 export const removeFromCart = async (req, res) => {
   const c_id = req.body.customer_id;
   const p_id = req.body.product_id;
-
   const query = 'DELETE FROM shopping_cart WHERE customer_id = ? AND product_id = ?';
   await queryHandler(query, [c_id, p_id], 404, res);
   res.status(200).type("text/plain").send('Success');
@@ -159,8 +146,25 @@ export const updateCart = async (req, res) => {
   res.status(200).type("text/plain").send('Success');
 } 
 
-export const getAllOrder = async (req, res) => {
+// TODO: Test addReview
+export const addReview = async (req, res) => {
+  const query = 'INSERT INTO reviews (customer_id, product_id, rating, review) VALUES (?, ?, ?, ?)';
+  const review = req.body.review || '';
+  const params = [req.body.customer_id, req.body.product_id, req.body.rating, review];
+  await queryHandler(query, params, 404, res);
+  // Update the rating of the product
+  const query2 = 'SELECT AVG(rating) FROM reviews WHERE product_id = ?';
+  const rows = await queryHandler(query2, [req.body.product_id], 404, res);
+  const rating = rows[0]['AVG(rating)'];
+  const query3 = 'UPDATE products SET rating = ? WHERE asin = ?';
+  res.status(201).type("text/plain").send('Success');
+}
 
+export const getAllOrder = async (req, res) => {
+  const {customer_id} = req.body;
+  const query = 'SELECT order_id, subtotal, shippingcost, orderstatus, dateoforder FROM martorder WHERE customer_id = ?';
+  const rows = await queryHandler(query, [customer_id], 404, res);
+  res.status(200).json(rows);
 }
 
 // TODO: remains to join the tables
