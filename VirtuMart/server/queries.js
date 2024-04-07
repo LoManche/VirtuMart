@@ -1,6 +1,7 @@
 // Desc: This file contains all the queries that are used to interact with the database
 //       Each function must release the connection for better performance.
 // The following codes are written with the aid of GitHub Copilot
+
 import mysql from "mysql2/promise";
 
 const pool = mysql.createPool({
@@ -95,7 +96,7 @@ export const getProductById = async (req, res) => {
   res.status(200).json({product, reviews});
 }
 
-// TODO: Test this function
+// TODO: Test searchProducts
 export const searchProducts = async (req, res) => {
   const title = req.body.title || '%';
   let category = req.body.category || '%';
@@ -112,7 +113,7 @@ export const searchProducts = async (req, res) => {
   res.status(200).json(rows);
 }
 
-// TODO: Test this function
+// TODO: Test addReview
 export const addReview = async (req, res) => {
   const query = 'INSERT INTO reviews (customer_id, product_id, rating, review) VALUES (?, ?, ?, ?)';
   const review = req.body.review || '';
@@ -184,6 +185,7 @@ export const placeOrder = async (req, res) => {
 
 
 // Admin functions
+// TODO: Test all the admin functions
 export const addProduct = async (req, res) => {
   const {asin, title, imgURL, rating, price, discount, category_id, description, stock} = req.body;
   const query = 'INSERT INTO products (asin, title, imgURL, rating, price, discount, category_id, description, stock) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
@@ -230,6 +232,8 @@ export const addCategory = async (req, res) => {
   const c_id = req.body.category_id;
   const category = req.body.category_name;
   const query = 'INSERT INTO categories (category_name) VALUES (?)';
+  await queryHandler(query, [category], 403, res);
+  res.status(201).type("text/plain").send('Success');
 }
 export const updateCategory = async (req, res) => {
 }
@@ -239,10 +243,3 @@ export const deleteCategory = async (req, res) => {
   await queryHandler(query, [c_id], 403, res);
   res.status(200).type("text/plain").send('Success');
 }
-
-
-// async function dummyQ(){
-//   const [rows, fields] = await connection.query('SELECT * FROM products limit 5');
-//   console.log(rows)
-// }
-// dummyQ();
