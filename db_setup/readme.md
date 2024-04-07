@@ -5,13 +5,14 @@
 3. All other setting just set as default is fine.
 4. Open up CMD or PowerShell or any shell
 5. Enter: mysql --local-infile=1 -u root -p
-  5.1 If it returns unexpected identifier, it is because mysql is not in system PATHs, see here for more:
+
+5.1 If it returns unexpected identifier, it is because mysql is not in system PATHs, see here for more:
      https://www.basedash.com/blog/adding-mysql-to-path-in-windows
-6. Type your password
-7. Replace the path in dbinit.sql to your path in the load data section
+7. Type your password
+8. Replace the path in dbinit.sql to your path in the load data section
 ![image](https://github.com/LoManche/VirtuMart/assets/124430801/bc02b2ea-19d3-4ae7-9e01-410ba0f3cdc1)
 
-8. Enter: source YOURPATH\3100Project\db_setup\dbinit.sql
+9. Enter: source YOURPATH\3100Project\db_setup\dbinit.sql
 
 It should be working now!
 
