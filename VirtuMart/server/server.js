@@ -25,7 +25,7 @@ app.use(session({
   rolling: true,
   store : sessionStore,
   cookie: {
-    maxAge: 15 * 60 * 1000, // 15 minutes in milliseconds
+    maxAge: 15 * 60 * 1000, // 15 minutes inactivation 
     // secure: true,
     httpOnly: true
   }
@@ -66,15 +66,17 @@ app.post('/signup/otp', queries.signUpOTP);
 app.get('/product', queries.getAllProducts);
 app.get('/product/:id', queries.getProductById);
 app.post('/search', queries.searchProducts);
-// Review related APIs
-app.put('/review/add', isCustomerAuthenticated, queries.addReview);
-
 
 // Shopping cart related APIs
 app.get('/cart', queries.getCart);
 app.post('/cart/add', queries.addToCart);
 app.delete('/cart/remove', queries.removeFromCart);
 app.post('/cart/update', queries.updateCart);
+
+// Review related APIs
+app.put('/review/add', isCustomerAuthenticated, queries.addReview);
+
+
 
 // Order related APIs
 app.post('/placeorder', queries.placeOrder);
