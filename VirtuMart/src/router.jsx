@@ -4,7 +4,7 @@ import Topbar from "./components/topbar";
 import Profile from "./pages/profile";
 import Product from "./pages/product";
 import Account from "./pages/account";
-import Admin from "./pages/admin";
+import Admin from "./pages/admin/admin";
 import ShoppingCart from "./pages/shoppingCart";
 import Order from "./pages/order";
 import { Box } from "@mui/material";

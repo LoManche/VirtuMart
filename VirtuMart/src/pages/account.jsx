@@ -39,6 +39,7 @@ export default function Account() {
     forgetPassword: "Forget Password",
     enterNewPs: "Enter Your New Password",
   };
+
   const Description = {
     login: { 1: "Welcome back~", 2: "Please enter your account details" },
     register: { 1: "Let's create your account and", 2: "Shop like a pro and save money" },
@@ -52,6 +53,7 @@ export default function Account() {
     forgetPassword: { text: "Don't have an account?", link: "register", buttonText: "Sign Up Now" },
     enterNewPs: false,
   };
+
   const SubmitButtonText = {
     login: "Sign In",
     register: "Sign Up",
@@ -86,6 +88,7 @@ export default function Account() {
         <Typography variant="h5" color="grey">
           {Description[page][2]}
         </Typography>
+
         {/* Input */}
         <Box
           component="form"
@@ -218,6 +221,7 @@ export default function Account() {
             {SubmitButtonText[page]}
           </Button>
         </Box>
+
         {/* Reminder to other page */}
         <Box pt={3} width="100%" display="flex" justifyContent={"center"} alignItems={"center"}>
           <Typography>{Reminder[page] ? Reminder[page].text : ""} </Typography>
@@ -236,6 +240,7 @@ export default function Account() {
           )}
         </Box>
       </Grid>
+
       {/* Image */}
       <Grid
         item
