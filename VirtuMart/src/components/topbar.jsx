@@ -16,7 +16,7 @@ import { Badge, Button, InputAdornment, TextField } from "@mui/material";
 import { useNavigate } from "react-router";
 import virtumartLogo from "../assets/VirtuMartLogo.png";
 
-export default function Topbar() {
+export default function Topbar({ type }) {
   const navigate = useNavigate();
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -65,61 +65,79 @@ export default function Topbar() {
     </Menu>
   );
 
-  return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" elevation={0}>
-        <Toolbar>
-          <ICONBUTTON icon={<MenuIcon />} />
-          <Button
-            onClick={() => navigate("/")}
-            variant="text"
-            color="inherit"
-            sx={{ minWidth: "182px", "&:hover": { backgroundColor: "#FFFFFF" } }}>
-            <img src={virtumartLogo} height={"50px"} width={"100%"} />
-          </Button>
-          <Box sx={{ display: "flex", justifyContent: "end", flexGrow: 1 }}>
-            <Box width="100%" maxWidth={"600px"} minWidth={"130px"}>
-              <TextField
-                label={"Search"}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <SearchIcon />
-                    </InputAdornment>
-                  ),
-                }}
-                fullWidth
-                position="relative"
-                size="small"></TextField>
+  if (type === "account") {
+    return (
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static" elevation={0}>
+          <Toolbar>
+            <Button
+              onClick={() => navigate("/")}
+              variant="text"
+              color="inherit"
+              sx={{ minWidth: "182px", "&:hover": { backgroundColor: "#FFFFFF" } }}>
+              <img src={virtumartLogo} height={"50px"} width={"100%"} />
+            </Button>
+          </Toolbar>
+        </AppBar>
+      </Box>
+    );
+  } else {
+    return (
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static" elevation={0}>
+          <Toolbar>
+            <ICONBUTTON icon={<MenuIcon />} />
+            <Button
+              onClick={() => navigate("/")}
+              variant="text"
+              color="inherit"
+              sx={{ minWidth: "182px", "&:hover": { backgroundColor: "#FFFFFF" } }}>
+              <img src={virtumartLogo} height={"50px"} width={"100%"} />
+            </Button>
+            <Box sx={{ display: "flex", justifyContent: "end", flexGrow: 1 }}>
+              <Box width="100%" maxWidth={"600px"} minWidth={"130px"}>
+                <TextField
+                  label={"Search"}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <SearchIcon />
+                      </InputAdornment>
+                    ),
+                  }}
+                  fullWidth
+                  position="relative"
+                  size="small"></TextField>
+              </Box>
             </Box>
-          </Box>
-          <Box sx={{ display: { xs: "none", sm: "flex", md: "flex" } }}>
-            <IconButton size="large" color="inherit" onClick={() => {}}>
-              {badgeContent === 0 ? (
-                <NotificationsIcon />
-              ) : (
-                <Badge badgeContent={badgeContent} color="error">
+            <Box sx={{ display: { xs: "none", sm: "flex", md: "flex" } }}>
+              <IconButton size="large" color="inherit" onClick={() => {}}>
+                {badgeContent === 0 ? (
                   <NotificationsIcon />
-                </Badge>
-              )}
-            </IconButton>
-            <ICONBUTTON icon={<ShoppingCartIcon />} navigateTo={"/shoppingCart"} />
-            <ICONBUTTON icon={<AccountCircle />} navigateTo={"/account"} />
-          </Box>
-          <Box sx={{ display: { xs: "flex", sm: "none", md: "none" } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit">
-              <MoreIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
-      {renderMobileMenu}
-    </Box>
-  );
+                ) : (
+                  <Badge badgeContent={badgeContent} color="error">
+                    <NotificationsIcon />
+                  </Badge>
+                )}
+              </IconButton>
+              <ICONBUTTON icon={<ShoppingCartIcon />} navigateTo={"/shoppingCart"} />
+              <ICONBUTTON icon={<AccountCircle />} navigateTo={"/account"} />
+            </Box>
+            <Box sx={{ display: { xs: "flex", sm: "none", md: "none" } }}>
+              <IconButton
+                size="large"
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={handleMobileMenuOpen}
+                color="inherit">
+                <MoreIcon />
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </AppBar>
+        {renderMobileMenu}
+      </Box>
+    );
+  }
 }

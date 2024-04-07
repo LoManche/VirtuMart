@@ -19,13 +19,13 @@ export default function ProductCard({
       onclick={() => {
         navigate(`/product/${productId}`);
       }}>
-      <img src={imageUrl} style={{ borderRadius: 3 }} />
+      <img src={imageUrl} style={{ borderRadius: 10 }} />
       <Typography sx={{ fontWeight: "bold" }}>{productName}</Typography>
       <Typography color={"grey"}>{description}</Typography>
       <Box display={"flex"} alignItems={"center"}>
         {originalPrice ? (
           <>
-            <Typography color={type === "productOnSale" ? "orange" : "black"}>{price}</Typography>{" "}
+            <Typography color={type === "productOnSale" ? "orange" : "black"}>{price}</Typography>
             <Box width={10} />
             <Typography sx={{ textDecoration: "line-through" }}>{originalPrice}</Typography>
           </>
