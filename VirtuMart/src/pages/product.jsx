@@ -100,6 +100,87 @@ function Review() {
   );
 }
 
+function Avatar({ src, alt }) {
+  return (
+    <img
+      loading="lazy"
+      src={src}
+      alt={alt}
+      className="shrink-0 aspect-square w-[70px]"
+      style={{ maxHeight: "60px" }}
+    />
+  );
+}
+
+function UserIcon({ name, reviewDate }) {
+  return (
+    <div className="flex flex-col grow shrink-0 px-5 mt-2.5 basis-0 w-fit">
+      <div className="flex gap-5 text-2xl">
+        <div className="grow my-auto">{name}</div>
+        <img
+          loading="lazy"
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/2d4f202be17199b06718a9abed5cfe11b0709fa2cf3ed64b1609df3e38af69e7?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
+          alt=""
+          className="w-56 aspect-[6.67] fill-zinc-300"
+          style={{ maxHeight: "20px" }}
+        />
+      </div>
+      <div className="mt-5 text-lg">{reviewDate}</div>
+    </div>
+  );
+}
+
+function CommentInfo({ avatar, name, reviewDate, reviewText }) {
+  return (
+    <article className="flex flex-col text-black">
+      <header
+        className="flex gap-5 items-start self-start leading-[150%] max-md:flex-wrap"
+        style={{ display: "flex" }}>
+        <Avatar src={avatar} alt={`${name}'s avatar`} />
+        <UserIcon name={name} reviewDate={reviewDate} />
+      </header>
+      <p className="mt-6 w-full text-2xl leading-9 max-md:max-w-full">{reviewText}</p>
+    </article>
+  );
+}
+
+function Comments() {
+  const reviews = [
+    {
+      id: 1,
+      avatar:
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/6fc6a0e455ce7e42e40157a69ccda3ee0b5a7106b18f3c409410d2ef5a389eb1?apiKey=64e0584885e94e77ae2d2a5ac36293f7&",
+      name: "User name",
+      reviewDate: "Reviewed on 28th March, 2024",
+      reviewText:
+        "Some comments about how good or bad the product is!!!! Some comments about how good or bad the product is!!!!Some comments about how good or bad the product is!!!!Some comments about how good or bad the product is!!!!Some comments about how good or bad the product is!!!!Some comments about how good or bad the product is!!!!Some comments about how good or bad the product is!!!!",
+    },
+    {
+      id: 2,
+      avatar:
+        "https://cdn.builder.io/api/v1/image/assets/TEMP/6fc6a0e455ce7e42e40157a69ccda3ee0b5a7106b18f3c409410d2ef5a389eb1?apiKey=64e0584885e94e77ae2d2a5ac36293f7&",
+      name: "Another User",
+      reviewDate: "Reviewed on 29th March, 2024",
+      reviewText:
+        "Different comments about the product. Different comments about the product. Different comments about the product. Different comments about the product.",
+    },
+  ];
+
+  return (
+    <section>
+      {reviews.map((review) => (
+        <CommentInfo
+          key={review.id}
+          avatar={review.avatar}
+          name={review.name}
+          reviewDate={review.reviewDate}
+          reviewText={review.reviewText}
+        />
+      ))}
+    </section>
+  );
+}
+
 export default function Product() {
   const thumbnails = [
     {
@@ -214,10 +295,10 @@ export default function Product() {
   return (
     <div>
       <div style={{ display: "flex" }}>
-        <div style={{ margin: "50px", width: "500px" }}>
+        <div style={{ margin: "0 70px 10px 50px", width: "500px" }}>
           <ProductShow thumbnails={thumbnails}></ProductShow>
         </div>
-        <div style={{ margin: "50px" }}>
+        <div style={{ margin: "0 50px 10px 70px" }}>
           <ProductDetails></ProductDetails>
         </div>
       </div>
@@ -239,6 +320,9 @@ export default function Product() {
         <div style={{ margin: "50px" }}>
           <Review></Review>
         </div>
+      </div>
+      <div style={{ margin: "50px" }}>
+        <Comments></Comments>
       </div>
     </div>
   );
