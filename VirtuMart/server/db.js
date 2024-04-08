@@ -2,6 +2,7 @@
 import mysql from "mysql2/promise";
 import session from 'express-session';
 import MySQLStoreModule from "express-mysql-session";
+import nodemailer from "nodemailer";
 
 const MySQLStore = MySQLStoreModule(session);
 
@@ -13,7 +14,21 @@ const options = {
   database : 'virtumartdb'
 }
 
+const transporter = nodemailer.createTransport(
+  {
+  service: 'gmail',
+  auth: {
+    user: 'virtumartsignup@gmail.com',
+    pass: 'hvpc dutf sgpc hlrn'
+  }
+  },
+  {
+    from: 'virtumartsignup@gmail.com',
+  }
+);
+
+const rootURL = "http://localhost:3000";
 const pool = mysql.createPool(options);
 const sessionStore = new MySQLStore({}, pool);
 
-export { pool, sessionStore };
+export { pool, sessionStore, transporter, rootURL};
