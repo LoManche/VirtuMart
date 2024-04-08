@@ -50,17 +50,14 @@ function isCustomerAuthenticated(req, res, next) {
 // Serve the app in dist(created by npm run build)
 app.use(express.static('dist'));
 
-app.get('/dummy', isCustomerAuthenticated, (req, res) => {
-  if (req.session) {
-    res.send(req.session);
-  }
-})
-
 // Login related APIs
 app.post('/login', queries.handleLogin);
 app.post('/logout', queries.handleLogout);
 app.post('/signup', queries.signUp);
 app.post('/signup/otp', queries.signUpOTP);
+app.post('/signup/setup', queries.signUpSetup);
+app.post('/forgotpassword', queries.forgotPassword);
+app.post('/resetpassword', queries.resetPassword);
 
 // Product related APIs
 app.get('/product', queries.getAllProducts);
