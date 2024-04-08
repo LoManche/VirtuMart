@@ -22,7 +22,7 @@ export function getAlertMessage(status, message) {
 export default function handleError(err, setAlertState = () => {}, verbose = true) {
   if (verbose) console.error(err);
   if (err instanceof ServerError) {
-    if ([403].includes(err.code)) {
+    if ([401, 403, 404].includes(err.code)) {
       setAlertState(getAlertMessage(false, err.message));
       return;
     }

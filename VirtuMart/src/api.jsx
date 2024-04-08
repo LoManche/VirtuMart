@@ -1,8 +1,8 @@
 import axios from "axios";
-
 axios.defaults.method = "POST";
 axios.defaults.baseURL = "http://localhost:3000";
-
+axios.defaults.headers.common["Content-Type"] = "application/json";
+axios.defaults.withCredentials = true;
 export class ServerError extends Error {
   constructor(status, code, message) {
     super(
@@ -19,7 +19,7 @@ export class ServerError extends Error {
  */
 const handleServerResponse = (res) => {
   if (res.status !== 200) {
-    throw new ServerError(res.data.status, res.data.code, res.data.message);
+    throw new ServerError(res.status, res.code, res.message);
   }
   return res.data;
 };
@@ -51,6 +51,12 @@ const Api = {
   },
   allProduct: async function () {
     return handleServerResponse(await axios.get("/product"));
+  },
+  allUser: async function () {
+    return handleServerResponse(await axios.get("/admin/customer"));
+  },
+  allCategory: async function () {
+    return handleServerResponse(await axios.get("/admin/category"));
   },
 };
 

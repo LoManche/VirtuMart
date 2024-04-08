@@ -9,6 +9,7 @@ import ShoppingCart from "./pages/shoppingCart";
 import Order from "./pages/order";
 import { Box } from "@mui/material";
 import Footer from "./components/footer";
+import { useAppContext } from "./contexts/appContext";
 // import { useAppContext } from "./contexts/appContext";
 
 export const roles = {
@@ -84,16 +85,17 @@ function WithoutLoginRouter() {
 }
 
 export default function Router() {
-  const isLogin = true; // useAppContext()?.isLogin; //for testing other functions, can set isLogin to true
-  const user = { role: "admin" }; // useAppContext()?.user;
-
+  const isLogin = useAppContext()?.isLogin; //for testing other functions, can set isLogin to true
+  //const user = { userId: localStorage.getItem("userId"), role: localStorage.getItem("role") }; //{ role: "admin" }; // useAppContext()?.user;
+  const user = useAppContext()?.user;
+  console.log(user);
   if (!isLogin) {
     return <WithoutLoginRouter />;
   }
 
   return (
     <>
-      <Topbar isLogin={true} role />
+      <Topbar />
       <Box p={2} pb="62px">
         <Routes>
           {ROUTES.map(({ path, element, level }) =>

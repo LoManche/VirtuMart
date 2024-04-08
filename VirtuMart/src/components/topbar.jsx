@@ -1,32 +1,68 @@
 /* eslint-disable react/prop-types */
 import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import MenuItem from "@mui/material/MenuItem";
-import Menu from "@mui/material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { Badge, Button, InputAdornment, TextField } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
+
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  MenuItem,
+  Menu,
+  Badge,
+  Button,
+  InputAdornment,
+  TextField,
+  ListItemIcon,
+} from "@mui/material";
 import { useNavigate } from "react-router";
 import virtumartLogo from "../assets/VirtuMartLogo.png";
+import Api from "../api";
+import { useAppContext } from "../contexts/appContext";
 
-export default function Topbar({ type, isLogin }) {
+export default function Topbar({ type }) {
   const navigate = useNavigate();
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const badgeContent = 0;
+  const { isLogin, setIsLogin, user, setUser } = useAppContext();
+  const role = user?.role;
+
+  const logout = async () => {
+    const res = await Api.logout();
+    console.log(res);
+    setIsLogin(false);
+    setUser(undefined);
+    localStorage.removeItem("isLogin");
+    localStorage.removeItem("user");
+
+    handleCloseUserMenu();
+    handleMobileMenuClose();
+    navigate("/");
+  };
+
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
 
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
+  };
+
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
   };
 
   function ICONBUTTON({ icon, props, navigateTo }) {
@@ -52,16 +88,55 @@ export default function Topbar({ type, isLogin }) {
         horizontal: "right",
       }}
       open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}>
-      <MenuItem onClick={() => navigate("/shoppingCart")}>
-        <ICONBUTTON icon={<ShoppingCartIcon />} navigateTo={"/shoppingCart"} />
+      onClose={handleMobileMenuClose}
+      sx={{
+        display: { xs: "block", md: "none" },
+      }}>
+      <MenuItem
+        onClick={() => {
+          handleMobileMenuClose();
+          navigate("/shoppingCart");
+        }}>
+        <ListItemIcon>
+          <ShoppingCartIcon />
+        </ListItemIcon>
         <p>Shopping Cart</p>
       </MenuItem>
 
-      <MenuItem onClick={() => navigate(isLogin ? "/profile" : "/account")}>
-        <ICONBUTTON icon={<AccountCircle />} navigateTo={isLogin ? "/profile" : "/account"} />
-        <p>Account</p>
+      {role === "admin" ? (
+        <MenuItem
+          onClick={() => {
+            handleMobileMenuClose();
+            navigate("/admin");
+          }}>
+          <ListItemIcon>
+            <ManageAccountsIcon />
+          </ListItemIcon>
+          <p>Management</p>
+        </MenuItem>
+      ) : (
+        <></>
+      )}
+      <MenuItem
+        onClick={() => {
+          handleMobileMenuClose();
+          navigate(isLogin ? "/profile" : "/account");
+        }}>
+        <ListItemIcon>
+          <AccountCircle />
+        </ListItemIcon>
+        <p>{isLogin ? "Profile" : "Sign In / Sign Up"}</p>
       </MenuItem>
+      {isLogin ? (
+        <MenuItem onClick={logout}>
+          <ListItemIcon>
+            <LogoutIcon />
+          </ListItemIcon>
+          <p>Sign Out</p>
+        </MenuItem>
+      ) : (
+        <></>
+      )}
     </Menu>
   );
 
@@ -130,7 +205,62 @@ export default function Topbar({ type, isLogin }) {
                 )}
               </IconButton>
               <ICONBUTTON icon={<ShoppingCartIcon />} navigateTo={"/shoppingCart"} />
-              <ICONBUTTON icon={<AccountCircle />} navigateTo={isLogin ? "/profile" : "/account"} />
+              <IconButton size="large" color="inherit" onClick={handleOpenUserMenu}>
+                <AccountCircle />
+              </IconButton>
+              <Menu
+                sx={{ mt: "45px" }}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+                }}
+                open={Boolean(anchorElUser)}
+                onClose={handleCloseUserMenu}>
+                {role === "admin" ? (
+                  <MenuItem
+                    onClick={() => {
+                      handleCloseUserMenu();
+                      navigate("/admin");
+                    }}>
+                    <ListItemIcon>
+                      <ManageAccountsIcon />
+                    </ListItemIcon>
+                    <p>Management</p>
+                  </MenuItem>
+                ) : (
+                  <></>
+                )}
+                <MenuItem
+                  onClick={() => {
+                    handleCloseUserMenu();
+                    navigate(isLogin ? "/profile" : "/account");
+                  }}>
+                  <ListItemIcon>
+                    <AccountCircle />
+                  </ListItemIcon>
+                  <p>{isLogin ? "Profile" : "Sign In / Sign Up"}</p>
+                </MenuItem>
+                {isLogin ? (
+                  <MenuItem onClick={logout}>
+                    <ListItemIcon>
+                      <LogoutIcon />
+                    </ListItemIcon>
+                    <p>Sign Out</p>
+                  </MenuItem>
+                ) : (
+                  <></>
+                )}
+              </Menu>
+              {/*               
+              
+              <ICONBUTTON icon={<AccountCircle />} navigateTo={isLogin ? "/profile" : "/account"} /> */}
             </Box>
             <Box sx={{ display: { xs: "flex", sm: "none", md: "none" } }}>
               <IconButton

@@ -16,6 +16,26 @@ import Api from "../../api";
 import handleError from "../../components/handleError";
 import Table from "../../components/table";
 
+const categoryColumns = [
+  { field: "category_id", headerName: "Category ID" },
+  {
+    field: "category_name",
+    headerName: "Category Name",
+  },
+  {
+    field: "sold",
+    headerName: "No Of Products Sold",
+  },
+  {
+    field: "stock",
+    headerName: "Stock",
+  },
+  {
+    field: "action",
+    headerName: "Action",
+  },
+];
+
 const productColumns = [
   { field: "asin", headerName: "Product ID" },
   {
@@ -25,7 +45,6 @@ const productColumns = [
   {
     field: "price",
     headerName: "Price",
-
     valueGetter: (value, row) => `${row.price ? "$ " : ""} ${row.price || ""}`,
   },
   {
@@ -44,7 +63,7 @@ const productColumns = [
 ];
 
 const userColumns = [
-  { field: "id", headerName: "User ID" },
+  { field: "customer_id", headerName: "Customer ID" },
   {
     field: "firstName",
     headerName: "First name",
@@ -58,26 +77,38 @@ const userColumns = [
     headerName: "Email",
   },
   {
+    field: "phone",
+    headerName: "Phone",
+  },
+  {
     field: "createAt",
     headerName: "Create At",
   },
   {
-    field: "role",
-    headerName: "Role",
-  },
-  {
     field: "action",
     headerName: "Action",
-    valueGetter: (value, row) => `${row.firstName || ""} ${row.lastName || ""}`,
   },
 ];
 
 const Admin = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [categories, setCategories] = useState(undefined);
   const [products, setProducts] = useState(undefined);
+  const [users, setUsers] = useState(undefined);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
+  };
+
+  const onLoadCategories = async () => {
+    try {
+      const categories = await Api.allCategory();
+      setCategories(categories);
+      console.log("categories", categories);
+    } catch (err) {
+      handleError(err, () => {}, true);
+      throw err;
+    }
   };
 
   const onLoadProducts = async () => {
@@ -90,7 +121,19 @@ const Admin = () => {
     }
   };
 
+  const onLoadUsers = async () => {
+    try {
+      const users = await Api.allUser();
+      setUsers(users);
+    } catch (err) {
+      handleError(err, () => {}, true);
+      throw err;
+    }
+  };
+
   useEffect(() => {
+    onLoadUsers();
+    onLoadCategories();
     onLoadProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -152,6 +195,7 @@ const Admin = () => {
               <Typography variant="h4" align="left" mb={2}>
                 All Category
               </Typography>
+              {/* <Table columns={categoryColumns} rows={categories} idField={"category_id"} /> */}
             </>
           ) : selectedIndex === 1 ? (
             <>
@@ -165,6 +209,7 @@ const Admin = () => {
               <Typography variant="h4" align="left" mb={2}>
                 All User
               </Typography>
+              {/* <Table columns={userColumns} rows={users} idField={"customer_id"} /> */}
             </>
           )}
         </Box>

@@ -12,7 +12,7 @@ import { sessionStore } from "./db.js";
 const PORT = 3000;
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173", methods: ["GET", "POST"], credentials: true }));
 app.use(express.json());
 app.use(
   express.urlencoded({

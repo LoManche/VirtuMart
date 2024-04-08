@@ -1,11 +1,14 @@
 import { Box, Button, Grid, Typography, Checkbox, FormControlLabel } from "@mui/material";
-// import { useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import authImage from "../assets/auth.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Email, Password } from "../components/textfields";
+import Api from "../api";
+import handleError from "../components/handleError";
+import { useAppContext } from "../contexts/appContext";
 
 export default function Account() {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [page, setPage] = useState("login");
   const [loginForm, setLoginForm] = useState({ email: "", password: "", rememberMe: false });
   const [registerForm, setRegisterForm] = useState({ email: "", password: "", confirmPs: "" });
@@ -20,10 +23,38 @@ export default function Account() {
       [name]: inputValue,
     });
   };
+  const { isLogin, setIsLogin, user, setUser } = useAppContext();
+
+  async function handleLoginSubmit({ input }) {
+    try {
+      const res = await Api.login({
+        email: input.email,
+        password: input.password,
+        rememberMe: input.rememberMe,
+      });
+      document.cookie = "userId=" + res.userid;
+      document.cookie = "role=" + res.role;
+      console.log("res", res);
+
+      localStorage.setItem("isLogin", true);
+      localStorage.setItem("userid", res.userid);
+      localStorage.setItem("role", res.role);
+      setIsLogin(true);
+      setUser({ userId: res.userid, role: res.role });
+
+      navigate("/");
+    } catch (err) {
+      handleError(err, "");
+    }
+  }
+  useEffect(() => {
+    console.log(document.cookie);
+  }, [isLogin, user]);
 
   const onSubmit = (e, type, form) => {
     e.preventDefault();
     console.log(type, form);
+    handleLoginSubmit({ input: form });
   };
 
   const Form = {
@@ -112,7 +143,7 @@ export default function Account() {
                 onChange={(e) => {
                   onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
                 }}
-                props={{ autoFocus: true }}
+                props={{ type: "text", autoFocus: true }}
               />
               <Password
                 id={"password"}

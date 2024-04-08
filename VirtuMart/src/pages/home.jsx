@@ -1,9 +1,12 @@
 import { Box, Grid, Typography } from "@mui/material";
 import ProductCard from "../components/productCard";
 import photo from "../assets/homePage.png";
-import Carousel from "react-material-ui-carousel";
 import pear from "../assets/pear.png";
-function Banner(props) {
+
+import { Carousel } from "react-responsive-carousel";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+
+function Banner() {
   var items = [
     {
       name: "VirtuMart",
@@ -22,36 +25,38 @@ function Banner(props) {
   ];
 
   return (
-    <Carousel sx={{ height: "100%", position: "relative" }}>
-      {items.map((item, i) => (
-        <Item key={i} item={item} />
-      ))}
-    </Carousel>
-  );
-}
-
-function Item(props) {
-  return (
-    <Box
-      height="400px"
-      borderRadius={3}
-      display="flex"
-      flexDirection={"column"}
-      alignItems={"center"}
-      justifyContent={"center"}>
-      <Typography variant="h1" sx={{ zIndex: 100 }}>
-        {props.item.name}
-      </Typography>
-      <Typography sx={{ zIndex: 2 }}>{props.item.description}</Typography>
-      <img
-        height="100%"
-        src={props.item.src}
-        style={{
-          objectFit: "contain",
-          position: "absolute",
-          opacity: 0.4,
-          zIndex: 1,
-        }}></img>
+    <Box display="flex" width="100%">
+      <Carousel
+        showArrows={true}
+        autoplay={true}
+        infiniteLoop={true}
+        transitionTime={1}
+        showThumbs={false}>
+        {items.map((item, key) => (
+          <Box
+            key={key}
+            height="400px"
+            flexDirection={"column"}
+            display="flex"
+            alignItems={"center"}
+            justifyContent={"center"}>
+            <Typography variant="h1" sx={{ zIndex: 100 }}>
+              {item.name}
+            </Typography>
+            <Typography sx={{ zIndex: 2 }}>{item.description}</Typography>
+            <img
+              alt={item.description}
+              height="100%"
+              src={item.src}
+              style={{
+                objectFit: "contain",
+                position: "absolute",
+                opacity: 0.4,
+                zIndex: 1,
+              }}></img>
+          </Box>
+        ))}
+      </Carousel>
     </Box>
   );
 }
