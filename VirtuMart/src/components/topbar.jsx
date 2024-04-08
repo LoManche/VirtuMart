@@ -16,7 +16,7 @@ import { Badge, Button, InputAdornment, TextField } from "@mui/material";
 import { useNavigate } from "react-router";
 import virtumartLogo from "../assets/VirtuMartLogo.png";
 
-export default function Topbar({ type }) {
+export default function Topbar({ type, isLogin }) {
   const navigate = useNavigate();
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -53,13 +53,13 @@ export default function Topbar({ type }) {
       }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}>
-      <MenuItem>
+      <MenuItem onClick={() => navigate("/shoppingCart")}>
         <ICONBUTTON icon={<ShoppingCartIcon />} navigateTo={"/shoppingCart"} />
         <p>Shopping Cart</p>
       </MenuItem>
 
-      <MenuItem>
-        <ICONBUTTON icon={<AccountCircle />} navigateTo={"/account"} />
+      <MenuItem onClick={() => navigate(isLogin ? "/profile" : "/account")}>
+        <ICONBUTTON icon={<AccountCircle />} navigateTo={isLogin ? "/profile" : "/account"} />
         <p>Account</p>
       </MenuItem>
     </Menu>
@@ -68,7 +68,7 @@ export default function Topbar({ type }) {
   if (type === "account") {
     return (
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static" elevation={0}>
+        <AppBar position="static" elevation={0} sx={{ bgcolor: "#FFFFFF" }}>
           <Toolbar>
             <Button
               onClick={() => navigate("/")}
@@ -84,7 +84,7 @@ export default function Topbar({ type }) {
   } else {
     return (
       <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static" elevation={0}>
+        <AppBar position="static" elevation={0} sx={{ bgcolor: "#FFFFFF" }}>
           <Toolbar>
             <ICONBUTTON icon={<MenuIcon />} />
             <Button
@@ -95,9 +95,17 @@ export default function Topbar({ type }) {
               <img src={virtumartLogo} height={"50px"} width={"100%"} />
             </Button>
             <Box sx={{ display: "flex", justifyContent: "end", flexGrow: 1 }}>
-              <Box width="100%" maxWidth={"600px"} minWidth={"130px"}>
+              <Box
+                component="form"
+                display="flex"
+                alignItems={"center"}
+                width="100%"
+                maxWidth={"600px"}
+                minWidth={"130px"}
+                height={"100px"}>
                 <TextField
                   label={"Search"}
+                  variant="outlined"
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
@@ -107,7 +115,8 @@ export default function Topbar({ type }) {
                   }}
                   fullWidth
                   position="relative"
-                  size="small"></TextField>
+                  size="small"
+                  sx={{ zIndex: 1 }}></TextField>
               </Box>
             </Box>
             <Box sx={{ display: { xs: "none", sm: "flex", md: "flex" } }}>
@@ -121,7 +130,7 @@ export default function Topbar({ type }) {
                 )}
               </IconButton>
               <ICONBUTTON icon={<ShoppingCartIcon />} navigateTo={"/shoppingCart"} />
-              <ICONBUTTON icon={<AccountCircle />} navigateTo={"/account"} />
+              <ICONBUTTON icon={<AccountCircle />} navigateTo={isLogin ? "/profile" : "/account"} />
             </Box>
             <Box sx={{ display: { xs: "flex", sm: "none", md: "none" } }}>
               <IconButton

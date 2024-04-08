@@ -4,12 +4,12 @@ import Topbar from "./components/topbar";
 import Profile from "./pages/profile";
 import Product from "./pages/product";
 import Account from "./pages/account";
-import Admin from "./pages/admin";
+import Admin from "./pages/admin/admin";
 import ShoppingCart from "./pages/shoppingCart";
 import Order from "./pages/order";
 import { Box } from "@mui/material";
 import Footer from "./components/footer";
-import { useAppContext } from "./contexts/appContext";
+// import { useAppContext } from "./contexts/appContext";
 
 export const roles = {
   admin: "admin",
@@ -55,7 +55,7 @@ const ROUTES = [
 
   /* Admin pages */
   {
-    level: [roles.admin, roles.projectAdmin],
+    level: "admin",
     path: "/admin",
     element: <Admin />,
   },
@@ -84,8 +84,8 @@ function WithoutLoginRouter() {
 }
 
 export default function Router() {
-  const isLogin = useAppContext()?.isLogin; //for testing other functions, can set isLogin to true
-  const user = useAppContext()?.user;
+  const isLogin = true; // useAppContext()?.isLogin; //for testing other functions, can set isLogin to true
+  const user = { role: "admin" }; // useAppContext()?.user;
 
   if (!isLogin) {
     return <WithoutLoginRouter />;
@@ -93,11 +93,11 @@ export default function Router() {
 
   return (
     <>
-      <Topbar />
+      <Topbar isLogin={true} role />
       <Box p={2} pb="62px">
         <Routes>
           {ROUTES.map(({ path, element, level }) =>
-            level === undefined || level?.includes(user.role) ? (
+            level === undefined || level === user.role ? (
               <Route key={path} path={path} element={element} />
             ) : (
               <></>

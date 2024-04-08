@@ -136,7 +136,7 @@ export const themeSettings = (mode) => {
       ...{
         // palette values for light mode
         primary: {
-          main: colors.greyscale[600],
+          main: colors.greyscale[300],
         },
         secondary: {
           main: colors.green[400],

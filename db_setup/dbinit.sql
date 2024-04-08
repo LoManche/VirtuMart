@@ -7,12 +7,12 @@ SET global local_infile = true;
 -- Creating tables
 create table if not exists products (
 	asin varchar(10) NOT NULL,
-	title text,
+	title text NOT NULL,
 	imgURL text,
 	rating float default 0,
-	price float,
+	price float NOT NULL,
 	discount float default 0,
-	category_id int,
+	category_id int NOT NULL,
 	description text,
 	stock int default 0,
 	primary key (asin)
@@ -90,6 +90,12 @@ create table if not exists martorder_products (
     foreign key (customer_id) references customers(customer_id),
     foreign key (product_id) references products(asin)
 );
+
+create table if not exists otp (
+    email varchar(255) not null,
+    otp varchar(6) not null,
+    primary key (email)
+);
 -- Inserting data from csv files
 LOAD DATA LOCAL INFILE 'G:/Codes/3100Project/db_setup/amazon_products_sample_utf8.csv' 
 INTO TABLE products 
@@ -107,8 +113,27 @@ LINES TERMINATED BY '\n'
 IGNORE 1 ROWS 
 (category_id,category_name);
 -- Inserting data manually
+-- Sample Customer
 INSERT INTO customers (username, firstName, lastName, phone, city, state, password, email) 
 VALUES ('sampleUser', 'John', 'Doe', '1234567890', 'SampleCity', 'SampleState', 'password123', 'sampleUser@example.com');
+-- Sample Review
 insert into reviews (customer_id, product_id, rating, review) VALUES (1,"B0002DO1RI",5,"Great Stuff!" );
+-- Sample Admin
 INSERT INTO Admin (adminname, password) 
 VALUES ('adminUser', 'password');
+-- Sample shopping Cart
+INSERT INTO shopping_cart (customer_id, product_id, quantity)
+VALUES (1, 'B0002DO1RI', 3);
+INSERT INTO shopping_cart (customer_id, product_id, quantity)
+VALUES (1, 'B00AWB13E4', 4);
+
+-- Insert a sample order into the martorder table
+INSERT INTO martorder (customer_id, subTotal, shippingCost, orderStatus, flat, address, city, country, postalCode, paymentMethod)
+VALUES (1, 100.00, 10.00, 'Ordered', 'Flat 1A', '123 Street', 'Tuen Mun', 'Hong Kong, China', '12345', 'Credit Card');
+
+-- Get the ID of the last inserted order
+SET @last_order_id = LAST_INSERT_ID();
+
+-- Insert a sample product into the martorder_products table
+INSERT INTO martorder_products (order_id, customer_id, product_id, quantity)
+VALUES (@last_order_id, 1, 'B0002DO1RI', 2);

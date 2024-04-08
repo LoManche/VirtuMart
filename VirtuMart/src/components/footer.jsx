@@ -5,7 +5,14 @@ import { useNavigate } from "react-router";
 export default function Footer() {
   const navigate = useNavigate();
   return (
-    <div style={{ position: "fixed", width: "100%", bottom: 0, backgroundColor: "#FFFFFF" }}>
+    <div
+      style={{
+        zIndex: 1000,
+        position: "fixed",
+        width: "100%",
+        bottom: 0,
+        backgroundColor: "#FFFFFF",
+      }}>
       <Box display="flex" flexDirection="column" width="100%" height="100%">
         <Divider variant="middle" />
         <Box display="flex" justifyContent={"center"}>
@@ -18,7 +25,7 @@ export default function Footer() {
               src={virtumartLogo}
               height={"50px"}
               width={"100%"}
-              style={{ position: "static", zIndex: 3 }}
+              style={{ position: "static", zIndex: 1000 }}
             />
           </Button>
         </Box>
