@@ -46,20 +46,34 @@ export const handleLogin = async (req, res) => {
     }
     if (admin.length !== 0) {
       if (admin[0].password === passwordFetch) {
-        req.session.userid = admin[0].admin_id;
-        req.session.role = 'admin';
-        res.status(200).json({ 'role': 'admin', 'userid': admin[0].admin_id});
+        req.session.regenerate(err => {
+          if (err) {
+            console.error(err);
+            res.status(500).type("text/plain").send("Server Error");
+            return;
+          }
+          req.session.userid = admin[0].admin_id;
+          req.session.role = 'admin';
+          res.status(200).json({ 'role': 'admin', 'userid': admin[0].admin_id});
+        });
       } else {
         res.status(401).type("text/plain").send("Wrong Password");
       }
     } else if (customer.length !== 0) {
       if (customer[0].password === passwordFetch) {
-        req.session.userid = customer[0].customer_id;
-        req.session.role = 'customer';
-        if (rememberMe) {
-          req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 7;
-        }
-        res.status(200).json({ 'role': 'customer', 'userid': customer[0].customer_id});
+        req.session.regenerate(err => {
+          if (err) {
+            console.error(err);
+            res.status(500).type("text/plain").send("Server Error");
+            return;
+          }
+          req.session.userid = customer[0].customer_id;
+          req.session.role = 'customer';
+          if (rememberMe) {
+            req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 7;
+          }
+          res.status(200).json({ 'role': 'customer', 'userid': customer[0].customer_id});
+        });
       } else {
         res.status(401).type("text/plain").send("Wrong Password");
       }
