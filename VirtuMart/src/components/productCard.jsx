@@ -16,7 +16,7 @@ export default function ProductCard({
     <Box
       display="flex"
       flexDirection={"column"}
-      onclick={() => {
+      onClick={() => {
         navigate(`/product/${productId}`);
       }}>
       <img src={imageUrl} style={{ borderRadius: 10 }} />
