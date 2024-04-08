@@ -27,11 +27,15 @@ async function queryHandler(query, params, errorStatusCode, res) {
     if (connection) connection.release();
   }
 }
+
+//-----------------------------------------------------------------------------------------------
 // Login related functions
+// TODO: fix the session reminents problem
 export const handleLogin = async (req, res) => {
   const {email: emailFetch, password: passwordFetch, rememberMe} = req.body;
   try {
     // Check if the user has logged in or not
+ 
     if (req.session.role && req.session.userid) {
       res.status(200).json({ 'role': req.session.role, 'userid': req.session.userid});
       return;
@@ -189,7 +193,7 @@ export const resetPassword = async (req, res) => {
 
 export const signUpSetup = async (req, res) => {
 }
-
+//-----------------------------------------------------------------------------------------------
 // Customer functions
 export const getAllProducts = async (req, res) => {
   const query = 'SELECT * FROM products';
@@ -229,9 +233,9 @@ export const getCart = async (req, res) => {
 }
 
 export const addToCart = async (req, res) => {
-  const {c_id, p_id, qty} = req.body;
+  const {customer_id, product_id, quantity} = req.body;
   const query = 'INSERT INTO shopping_cart (customer_id, product_id, quantity) VALUES (?, ?, ?)';
-  await queryHandler(query, [c_id, p_id, qty], 404, res);
+  await queryHandler(query, [customer_id, product_id, quantity], 404, res);
   res.status(201).type("text/plain").send('Success');
 }
 
@@ -276,19 +280,12 @@ export const getAllOrder = async (req, res) => {
 
 // TODO: remains to join the tables
 export const getOrderById = async (req, res) => {
-  
-  let connection
-  try {
-    connection = await pool.getConnection();
-    const o_id = req.params.id;
-    const c_id = req.session.customer_id;
-    const [rows, fields] = await connection.query('SELECT * FROM orders WHERE order_id = ?', [o_id]);
-    res.status(200).json(rows);
-  } catch (error) {
-    res.status(404).type("text/plain").send(error); 
-  } finally {
-    if (connection) connection.release();
-  }
+  const {customer_id, order_id} = req.body;
+  const orderquery = 'SELECT * FROM martorder WHERE customer_id = ? AND order_id = ?';
+  const orderrows = await queryHandler(orderquery, [customer_id, order_id], 404, res);
+  const productquery = 'SELECT * FROM martorder_products WHERE order_id = ?';
+  const productrows = await queryHandler(productquery, [order_id], 404, res);
+  res.status(200).json({orderrows, productrows});
 }
 
 // TODO: Implementation of this function
@@ -296,7 +293,7 @@ export const placeOrder = async (req, res) => {
 
 }
 
-
+//-----------------------------------------------------------------------------------------------
 // Admin functions
 // TODO: Test all the admin functions
 export const addProduct = async (req, res) => {

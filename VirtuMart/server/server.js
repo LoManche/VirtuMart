@@ -78,7 +78,7 @@ app.put('/review/add', isCustomerAuthenticated, queries.addReview);
 // Order related APIs
 app.post('/placeorder', queries.placeOrder);
 app.get('/order', queries.getAllOrder);
-app.get('/order/:id', queries.getOrderById);
+app.get('/orderById', queries.getOrderById);
 
 // Admin related APIs
 app.use('/admin', isAdminAuthenticated);
