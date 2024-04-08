@@ -9,7 +9,7 @@ import process from "process";
 import * as queries from "./queries.js";
 import { sessionStore } from "./db.js";
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 const app = express();
 
 app.use(cors());
@@ -54,17 +54,15 @@ function isCustomerAuthenticated(req, res, next) {
 // Serve the app in dist(created by npm run build)
 app.use(express.static("dist"));
 
-app.get("/dummy", isCustomerAuthenticated, (req, res) => {
-  if (req.session) {
-    res.send(req.session);
-  }
-});
-
 // Login related APIs
 app.post("/login", queries.handleLogin);
 app.post("/logout", queries.handleLogout);
 app.post("/signup", queries.signUp);
 app.post("/signup/otp", queries.signUpOTP);
+app.post("/signup/setup", queries.signUpSetup);
+app.post("/forgotpassword", queries.forgotPassword);
+app.post("/resetpassword", queries.resetPassword);
+app.put("/profile", isCustomerAuthenticated, queries.updateCustomer);
 
 // Product related APIs
 app.get("/product", queries.getAllProducts);
@@ -81,9 +79,9 @@ app.post("/cart/update", queries.updateCart);
 app.put("/review/add", isCustomerAuthenticated, queries.addReview);
 
 // Order related APIs
-app.post("/placeorder", queries.placeOrder);
-app.get("/order", queries.getAllOrder);
-app.get("/order/:id", queries.getOrderById);
+app.post("/placeorder", isCustomerAuthenticated, queries.placeOrder);
+app.get("/order", isCustomerAuthenticated, queries.getAllOrder);
+app.get("/orderById", isCustomerAuthenticated, queries.getOrderById);
 
 // Admin related APIs
 app.use("/admin", isAdminAuthenticated);

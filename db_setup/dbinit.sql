@@ -1,9 +1,11 @@
 -- setting up SQL(not finished)
 create database if not exists virtumartdb;
 create user if not exists 'Mart'@'localhost' identified by 'Mart1234';
+SET GLOBAL event_scheduler = ON;
+SET GLOBAL local_infile = true;
+
 use virtumartdb;
 grant all privileges on virtumartdb.* to 'Mart'@'localhost';
-SET global local_infile = true;
 -- Creating tables
 create table if not exists products (
 	asin varchar(10) NOT NULL,
@@ -94,8 +96,25 @@ create table if not exists martorder_products (
 create table if not exists otp (
     email varchar(255) not null,
     otp varchar(6) not null,
+    created_at timestamp default current_timestamp not null,
     primary key (email)
 );
+CREATE EVENT IF NOT EXISTS cleanup_otp
+ON SCHEDULE EVERY 1 HOUR
+DO
+    DELETE FROM otp WHERE created_at < NOW() - INTERVAL 1 HOUR;
+    
+create table if not exists forgetpw (
+    email varchar(255) not null,
+    hashed varchar(64) not null,
+    created_at timestamp default current_timestamp not null,
+    primary key (email)
+);
+CREATE EVENT IF NOT EXISTS cleanup_forgetpw
+ON SCHEDULE EVERY 1 HOUR
+DO
+    DELETE FROM forgetpw WHERE created_at < NOW() - INTERVAL 1 HOUR;
+
 -- Inserting data from csv files
 LOAD DATA LOCAL INFILE 'G:/Codes/3100Project/db_setup/amazon_products_sample_utf8.csv' 
 INTO TABLE products 

@@ -27,8 +27,8 @@ const transporter = nodemailer.createTransport(
   }
 );
 
-
+const rootURL = "http://localhost:3000";
 const pool = mysql.createPool(options);
 const sessionStore = new MySQLStore({}, pool);
 
-export { pool, sessionStore, transporter};
+export { pool, sessionStore, transporter, rootURL};
