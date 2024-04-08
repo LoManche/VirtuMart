@@ -278,7 +278,6 @@ export const getAllOrder = async (req, res) => {
   res.status(200).json(rows);
 }
 
-// TODO: remains to join the tables
 export const getOrderById = async (req, res) => {
   const {customer_id, order_id} = req.body;
   const orderquery = 'SELECT * FROM martorder WHERE customer_id = ? AND order_id = ?';
@@ -288,9 +287,32 @@ export const getOrderById = async (req, res) => {
   res.status(200).json({orderrows, productrows});
 }
 
-// TODO: Implementation of this function
+// TODO: Testing this function
 export const placeOrder = async (req, res) => {
-
+  const {customer_id, subtotal, shippingcost, flat, address, city, country, postalCode, paymentMethod, products} = req.body;
+  const orderstatus = 'Ordered';
+  let connection
+  try {
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    const orderquery = 'INSERT INTO martorder (customer_id, subtotal, shippingcost, flat, address, city, country, postalCode, paymentMethod) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+    const orderparams = [customer_id, subtotal, shippingcost, flat, address, city, country, postalCode, paymentMethod];
+    await connection.execute(orderquery, orderparams);
+    const orderid = await connection.query('SELECT LAST_INSERT_ID()');
+    const order_id = orderid[0]['LAST_INSERT_ID()'];
+    for (let product of products) {
+      let productquery = 'INSERT INTO martorder_products (order_id, product_id, quantity) VALUES (?, ?, ?)';
+      let productparams = [order_id, product.product_id, product.quantity];
+      await connection.execute(productquery, productparams);
+    }
+    await connection.commit();
+  } 
+  catch (error) {
+    await connection.rollback();
+    res.status(500).type("text/plain").send(error);
+  } finally {
+    if (connection) connection.release();
+  }
 }
 
 //-----------------------------------------------------------------------------------------------
