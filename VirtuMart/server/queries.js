@@ -192,6 +192,11 @@ export const resetPassword = async (req, res) => {
 }
 
 export const signUpSetup = async (req, res) => {
+  const {customer_id, username, firstName, lastName, phone, city, state, password, email} = req.body;
+  const query = 'INSERT INTO customers (username, firstName, lastName, phone, city, state, password, email, customer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const params = [username, firstName, lastName, phone, city, state, password, email, customer_id];
+  await queryHandler(query, params, 403, res);
+  res.status(200).type("text/plain").send('Success');
 }
 //-----------------------------------------------------------------------------------------------
 // Customer functions
