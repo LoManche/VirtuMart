@@ -2,6 +2,7 @@ import ProductDetails from "../components/productInfo";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import ProductCarousel from "../components/productCarousel";
+import { TextField } from "@mui/material";
 
 function ProductShow({ thumbnails }) {
   return (
@@ -18,6 +19,13 @@ function ProductShow({ thumbnails }) {
       <div>
         <img src={thumbnails[3].src} alt={thumbnails[3].alt} />
       </div>
+      {/*
+      {thumbnails.map((item, index) => (
+        <div>
+          <img src={item[index].src} alt={item[index].alt} />
+        </div>
+      ))}
+    */}
     </Carousel>
   );
 }
@@ -44,7 +52,7 @@ function Ratings() {
 
   return (
     <section className="flex flex-col max-w-[561px]">
-      <h2 className="w-full text-2xl leading-9 text-black max-md:max-w-full">Reviews</h2>
+      <h2 className="w-full text-2xl leading-9 text-black max-md:max-w-full">Ratings</h2>
       {ratings.map((item) => (
         <StarRating key={item.rating} rating={item.rating} label={item.label} />
       ))}
@@ -54,8 +62,11 @@ function Ratings() {
 
 function SubmitButton() {
   return (
-    <div className="flex gap-0 justify-center mt-2 text-black whitespace-nowrap">
+    <div
+      style={{ display: "flex" }}
+      className="flex gap-0 justify-center mt-2 text-black whitespace-nowrap">
       <img
+        style={{ maxWidth: "30px", marginRight: "10px" }}
         loading="lazy"
         src="https://cdn.builder.io/api/v1/image/assets/TEMP/ceb61dcb7806c77ba41c36a7a4b20a5e1adf8a3d8aab7530f5d8fb110b3a1223?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
         alt="Submit icon"
@@ -75,8 +86,14 @@ function Review() {
         alt="Product image"
         className="w-56 max-w-full aspect-[6.67] fill-zinc-300"
       />
-      <div className="justify-center self-stretch px-4 pt-3 pb-20 mt-2 bg-white rounded-lg border border-solid shadow-sm border-neutral-200 text-zinc-500 max-md:pb-10 max-md:max-w-full">
-        How did you like the product?
+      <div style={{ width: "500px", marginBottom: "10px" }}>
+        <TextField
+          id="outlined-basic"
+          label="How did you like the product?"
+          multiline
+          minRows={5}
+          fullWidth
+        />
       </div>
       <SubmitButton />
     </div>

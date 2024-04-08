@@ -1,4 +1,4 @@
-import * as React from "react";
+import { TextField } from "@mui/material";
 
 function ProductImage({ src, alt }) {
   return (
@@ -33,28 +33,30 @@ function ProductDescription({ children }) {
 
 function ProductQuantity() {
   return (
-    <div className="self-start px-4 pt-3 pb-1 mt-6 text-base whitespace-nowrap bg-white rounded-lg border border-solid shadow-sm border-neutral-200">
-      1
+    <div>
+      <TextField style={{ width: "40px", margin: "5px" }} defaultValue="1" size="small" />
     </div>
   );
 }
 
 function ProductOptions() {
   return (
-    <div className="flex gap-4 self-start px-4 py-2 mt-6 text-base whitespace-nowrap bg-white rounded-lg border border-solid border-neutral-200">
-      <div className="flex-1 text-ellipsis">Options</div>
-      <img
-        loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/85e18d04d9f46d6370657b346cee40949684ff12a82653f121db3f4367db9e5a?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
-        alt=""
-        className="shrink-0 w-6 aspect-square"
-      />
+    <div>
+      <TextField
+        style={{ width: "200px", margin: "5px" }}
+        select
+        label="Options"
+        defaultValue="Options"></TextField>
     </div>
   );
 }
 
 function ProductStock() {
-  return <div className="mt-6 w-full text-green-600 max-md:max-w-full">In Stock</div>;
+  return (
+    <div>
+      <p style={{ color: "#06B122" }}>In Stock</p>
+    </div>
+  );
 }
 
 function AddToCartButton() {
