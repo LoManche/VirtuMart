@@ -90,6 +90,12 @@ create table if not exists martorder_products (
     foreign key (customer_id) references customers(customer_id),
     foreign key (product_id) references products(asin)
 );
+
+create table if not exists otp (
+    email varchar(255) not null,
+    otp varchar(6) not null,
+    primary key (email)
+);
 -- Inserting data from csv files
 LOAD DATA LOCAL INFILE 'G:/Codes/3100Project/db_setup/amazon_products_sample_utf8.csv' 
 INTO TABLE products 

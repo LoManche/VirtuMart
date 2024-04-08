@@ -5,7 +5,7 @@
 import mysql from "mysql2/promise";
 import MySQLStore from "express-mysql-session";
 
-import { pool } from './db.js';
+import { pool, transporter } from './db.js';
 
 // One function to handle all the queries
 async function queryHandler(query, params, errorStatusCode, res) {
@@ -76,11 +76,47 @@ export const handleLogout = async (req, res) => {
 }
 
 export const signUp = async (req, res) => {
+  const email = req.body.email;
+  const OTP = Math.floor(100000 + Math.random() * 900000);
+  const query = 'INSERT INTO otp (email, otp) VALUES (?, ?)';
+  await queryHandler(query, [email, OTP], 403, res);
+  
+  const mailOptions = {
+    to: email,
+    text: 'Your OTP for VirtuMart Signup is: ' + OTP,
+    subject: 'VirtuMart Signup OTP',
+  }
 
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      res.status(500).type("text/plain").send(error);
+    } else {
+      res.status(200).type("text/plain").send("OTP sent to your email");
+    }
+  });
 } 
 
 export const signUpOTP = async (req, res) => {
-  
+  const otp = req.body.otp;
+  const email = req.body.email;
+  const query = 'SELECT * FROM otp WHERE email = ?';
+  const rows = await queryHandler(query, [email], 403, res);
+  if (rows.length === 0) {
+    res.status(404).type("text/plain").send("No OTP found for this email");
+    return
+  }
+  if (rows[0].otp !== otp) {
+    const deleteotp = 'DELETE FROM otp WHERE email = ?';
+    await queryHandler(deleteotp, [email], 403, res);
+    res.status(401).type("text/plain").send("Wrong OTP");
+    return;
+  }
+  else {
+    const deleteotp = 'DELETE FROM otp WHERE email = ?';
+    await queryHandler(deleteotp, [email], 403, res);
+    res.status(200).type("text/plain").send("OTP Matched");
+  }
+
 }
 
 // Customer functions
