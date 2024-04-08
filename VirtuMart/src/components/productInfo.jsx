@@ -7,6 +7,7 @@ function ProductImage({ src, alt }) {
       src={src}
       alt={alt}
       className="mt-6 w-56 max-w-full aspect-[6.67] fill-zinc-300"
+      style={{ maxHeight: "25px" }}
     />
   );
 }
@@ -20,7 +21,11 @@ function ProductName({ children }) {
 }
 
 function ProductRating({ rating }) {
-  return <div className="mt-6 w-full max-md:max-w-full">{rating} ratings</div>;
+  return (
+    <div className="mt-6 w-full max-md:max-w-full" style={{ color: "#828282" }}>
+      {rating} ratings
+    </div>
+  );
 }
 
 function ProductPrice({ price }) {
@@ -28,7 +33,11 @@ function ProductPrice({ price }) {
 }
 
 function ProductDescription({ children }) {
-  return <p className="mt-6 w-full leading-8 max-md:max-w-full">{children}</p>;
+  return (
+    <p className="mt-6 w-full leading-8 max-md:max-w-full" style={{ color: "#828282" }}>
+      {children}
+    </p>
+  );
 }
 
 function ProductQuantity() {
@@ -60,11 +69,7 @@ function ProductStock() {
 }
 
 function AddToCartButton() {
-  return (
-    <button className="justify-center items-center px-6 py-3.5 mt-6 w-full text-base text-white bg-black rounded-lg shadow-sm max-md:px-5 max-md:max-w-full">
-      Add to cart
-    </button>
-  );
+  return <button style={{ color: "black", width: "100%", height: "50px" }}>Add to cart</button>;
 }
 
 export default function ProductDetails() {
