@@ -1,6 +1,6 @@
 import axios from "axios";
 axios.defaults.method = "POST";
-axios.defaults.baseURL = "http://localhost:3000";
+axios.defaults.baseURL = "http://localhost:3000/api";
 axios.defaults.headers.common["Content-Type"] = "application/json";
 axios.defaults.withCredentials = true;
 export class ServerError extends Error {
