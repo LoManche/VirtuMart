@@ -393,3 +393,22 @@ export const deleteCategory = async (req, res) => {
   await queryHandler(query, [c_id], 403, res);
   res.status(200).type("text/plain").send('Success');
 }
+export const getAllAdmin = async (req, res) => {
+  const query = 'SELECT * FROM admin';
+  const rows = await queryHandler(query, [], 404, res);
+  res.status(200).json(rows);
+}
+export const updateAdmin = async (req, res) => {
+  const adminname = req.body.adminname;
+  const password = req.body.password;
+  const admin_id = req.body.admin_id;
+  const query = 'UPDATE admin SET adminname = ?, password = ? WHERE admin_id = ?';
+  await queryHandler(query, [adminname, password, admin_id], 404, res);
+  res.status(200).type("text/plain").send('Success');
+}
+export const deleteAdmin = async (req, res) => {
+  const admin_id = req.body.admin_id;
+  const query = 'DELETE FROM admin WHERE admin_id = ?';
+  await queryHandler(query, [admin_id], 404, res);
+  res.status(200).type("text/plain").send('Success');
+}

@@ -97,6 +97,10 @@ app.post('/admin/category/add', queries.addCategory);
 app.put('/admin/category/update', queries.updateCategory);
 app.delete('/admin/category/delete', queries.deleteCategory);
 
+app.get('/admin/admin', queries.getAllAdmin);
+app.put('/admin/admin/update', queries.updateAdmin);
+app.delete('/admin/admin/delete', queries.deleteAdmin);
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is listening on port ${PORT}`);
