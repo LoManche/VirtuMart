@@ -25,6 +25,7 @@ create table if not exists customers (
 	firstName varchar(20) not null,
 	lastName varchar(20) not null,
 	phone varchar(20) not null,
+	address text not null,
 	city varchar(20) not null,
 	state varchar(20) not null,
 	password varchar(20) not null,
