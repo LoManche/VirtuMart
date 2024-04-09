@@ -70,7 +70,7 @@ app.post("/signup/setup", queries.signUpSetup);
 app.post("/forgotpassword", queries.forgotPassword);
 app.post("/resetpassword", queries.resetPassword);
 app.put("/profile", isCustomerAuthenticated, queries.updateCustomer);
-app.get("/getprofile", isCustomerAuthenticated, queries.getCustomerProfile);
+app.post("/getprofile", isCustomerAuthenticated, queries.getCustomerProfile);
 
 // Product related APIs
 app.get("/product", queries.getAllProducts);

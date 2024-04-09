@@ -61,8 +61,38 @@ const Api = {
 
   //customer
   getProfile: async function ({ customer_id }) {
-    return handleServerResponse(await axios.get("/getProfile", { customer_id }));
+    return handleServerResponse(await axios.post("/getprofile", { customer_id }));
   },
+  updateProfile: async function ({
+    customer_id,
+    username,
+    firstName,
+    lastName,
+    phone,
+    city,
+    state,
+    password,
+    email,
+    address,
+  }) {
+    return handleServerResponse(
+      await axios.put("/profile", {
+        customer_id,
+        username,
+        firstName,
+        lastName,
+        phone,
+        city,
+        state,
+        password,
+        email,
+        address,
+      }),
+    );
+  },
+  // updatePassword: async function ({ oldPs, newPs }) {
+  //   return handleServerResponse(await axios.post("/updatePs", { oldPs, newPs }));
+  // },
 };
 
 export default Api;

@@ -88,7 +88,7 @@ export default function Router() {
   const isLogin = useAppContext()?.isLogin; //for testing other functions, can set isLogin to true
   //const user = { userId: localStorage.getItem("userId"), role: localStorage.getItem("role") }; //{ role: "admin" }; // useAppContext()?.user;
   const user = useAppContext()?.user;
-  console.log(user);
+
   if (!isLogin) {
     return <WithoutLoginRouter />;
   }

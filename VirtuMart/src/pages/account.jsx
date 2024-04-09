@@ -34,7 +34,7 @@ export default function Account() {
       });
       document.cookie = "userId=" + res.userid;
       document.cookie = "role=" + res.role;
-      console.log("res", res);
+      console.log("login", res);
 
       localStorage.setItem("isLogin", true);
       localStorage.setItem("userid", res.userid);
@@ -47,13 +47,10 @@ export default function Account() {
       handleError(err, "");
     }
   }
-  useEffect(() => {
-    console.log(document.cookie);
-  }, [isLogin, user]);
+  useEffect(() => {}, [isLogin, user]);
 
   const onSubmit = (e, type, form) => {
     e.preventDefault();
-    console.log(type, form);
     handleLoginSubmit({ input: form });
   };
 

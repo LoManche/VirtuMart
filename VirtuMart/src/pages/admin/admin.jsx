@@ -207,6 +207,8 @@ const Admin = () => {
     setSelectedIndex(index);
   };
 
+  // sampleUser@example.com
+  // password123
   useEffect(() => {
     const loadData = async () => {
       try {

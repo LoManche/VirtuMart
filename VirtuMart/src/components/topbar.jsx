@@ -38,7 +38,6 @@ export default function Topbar({ type }) {
 
   const logout = async () => {
     const res = await Api.logout();
-    console.log(res);
     setIsLogin(false);
     setUser(undefined);
     localStorage.removeItem("isLogin");
