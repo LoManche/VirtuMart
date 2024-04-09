@@ -134,8 +134,8 @@ IGNORE 1 ROWS
 (category_id,category_name);
 -- Inserting data manually
 -- Sample Customer
-INSERT INTO customers (username, firstName, lastName, phone, city, state, password, email) 
-VALUES ('sampleUser', 'John', 'Doe', '1234567890', 'SampleCity', 'SampleState', 'password123', 'sampleUser@example.com');
+INSERT INTO customers (username, firstName, lastName, phone, address, city, state, password, email) 
+VALUES ('sampleUser', 'John', 'Doe', '1234567890', 'Sample Address', 'SampleCity', 'SampleState', 'password123', 'sampleUser@example.com');
 -- Sample Review
 insert into reviews (customer_id, product_id, rating, review) VALUES (1,"B0002DO1RI",5,"Great Stuff!" );
 -- Sample Admin
