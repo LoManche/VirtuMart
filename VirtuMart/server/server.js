@@ -68,6 +68,7 @@ app.post("/signup/otp", queries.signUpOTP);
 app.post("/signup/setup", queries.signUpSetup);
 app.post("/forgotpassword", queries.forgotPassword);
 app.post("/resetpassword", queries.resetPassword);
+app.post("/changepassword", queries.changePassword);
 app.put("/profile", isCustomerAuthenticated, queries.updateCustomer);
 app.post("/getprofile", isCustomerAuthenticated, queries.getCustomerProfile);
 
@@ -84,6 +85,10 @@ app.post("/cart/update", queries.updateCart);
 
 // Review related APIs
 app.put("/review/add", isCustomerAuthenticated, queries.addReview);
+// Recommendation
+app.post("/recommendation", queries.getRecommendation);
+//Notification
+app.post("/notification", isCustomerAuthenticated, queries.getNotification);
 
 // Order related APIs
 app.post("/placeorder", isCustomerAuthenticated, queries.placeOrder);
