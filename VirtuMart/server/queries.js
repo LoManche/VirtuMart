@@ -198,6 +198,12 @@ export const signUpSetup = async (req, res) => {
   await queryHandler(query, params, 403, res);
   res.status(200).type("text/plain").send('Success');
 }
+export const getCustomerProfile = async (req, res) => {
+  const query = 'SELECT * FROM customers WHERE customer_id = ?';
+  const rows = await queryHandler(query, [req.body.customer_id], 403, res);
+  res.status(200).json(rows);
+}
+
 //-----------------------------------------------------------------------------------------------
 // Customer functions
 export const getAllProducts = async (req, res) => {
@@ -393,6 +399,7 @@ export const deleteCategory = async (req, res) => {
   await queryHandler(query, [c_id], 403, res);
   res.status(200).type("text/plain").send('Success');
 }
+
 export const getAllAdmin = async (req, res) => {
   const query = 'SELECT * FROM admin';
   const rows = await queryHandler(query, [], 404, res);
