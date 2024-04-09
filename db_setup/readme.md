@@ -23,3 +23,13 @@ You can also use MySQL Workbench for that, just:
 1. Edit the connection, on the Connection tab, go to the 'Advanced' sub-tab, and in the 'Others:' box add the line 'OPT_LOCAL_INFILE=1'.
 2. Open the dbinit.sql and run it!
 3. If you got any problem, wtsapp ask ask me/or Google it yourself.
+
+
+## Default Users and Entry added to the database
+# User 1
+user1@example.com, password123
+# User 2 
+user2@example.com, password456
+# Admin
+adminUser, password
+
