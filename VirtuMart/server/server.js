@@ -70,6 +70,7 @@ app.post("/signup/setup", queries.signUpSetup);
 app.post("/forgotpassword", queries.forgotPassword);
 app.post("/resetpassword", queries.resetPassword);
 app.put("/profile", isCustomerAuthenticated, queries.updateCustomer);
+app.get("/getprofile", isCustomerAuthenticated, queries.getCustomerProfile);
 
 // Product related APIs
 app.get("/product", queries.getAllProducts);
@@ -106,6 +107,11 @@ app.get("/admin/category", queries.getAllCategories);
 app.post("/admin/category/add", queries.addCategory);
 app.put("/admin/category/update", queries.updateCategory);
 app.delete("/admin/category/delete", queries.deleteCategory);
+
+app.get("/admin/admin", queries.getAllAdmin);
+app.post("/admin/admin/add", queries.addAdmin);
+app.put("/admin/admin/update", queries.updateAdmin);
+app.delete("/admin/admin/delete", queries.deleteAdmin);
 
 // Start the server
 app.listen(PORT, () => {
