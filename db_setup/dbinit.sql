@@ -116,6 +116,15 @@ ON SCHEDULE EVERY 1 HOUR
 DO
     DELETE FROM forgetpw WHERE created_at < NOW() - INTERVAL 1 HOUR;
 
+create table if not exists notifications (
+	notification_id int not null auto_increment,
+	customer_id int not null,
+	message text not null,
+	dateOfNotification timestamp default current_timestamp not null,
+	primary key (notification_id),
+	foreign key (customer_id) references customers(customer_id)
+);
+
 -- Inserting data from csv files
 LOAD DATA LOCAL INFILE 'G:/Codes/3100Project/db_setup/amazon_products_sample_utf8.csv' 
 INTO TABLE products 

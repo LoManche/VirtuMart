@@ -315,7 +315,7 @@ export const getRecommendation = async (req, res) => {
 }
 export const getNotification = async (req, res) => {
   const customer_id = req.body.customer_id;
-  const query = 'SELECT * FROM notification WHERE customer_id = ?';
+  const query = 'SELECT * FROM notifications WHERE customer_id = ?';
   const rows = await queryHandler(query, [customer_id], 404, res);
   res.status(200).json(rows);
 }
