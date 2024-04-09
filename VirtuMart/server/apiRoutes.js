@@ -58,7 +58,7 @@ router.put("/admin/product/update", queries.updateProduct);
 router.delete("/admin/product/delete", queries.deleteProduct);
 
 router.get("/admin/customer", queries.getAllCustomers);
-router.get("/admin/customerById", queries.getCustomerById);
+router.post("/admin/customerById", queries.getCustomerById);
 router.put("/admin/customer/update", queries.updateCustomer);
 router.delete("/admin/customer/delete", queries.deleteCustomer);
 
