@@ -43,15 +43,57 @@ const handleServerResponse = (res) => {
 */
 
 const Api = {
+  //authentication
   login: async function ({ email, password, rememberMe }) {
     return handleServerResponse(await axios.post("/login", { email, password, rememberMe }));
   },
   logout: async function () {
     return handleServerResponse(await axios.post("/logout"));
   },
+  signUp: async function ({ email }) {
+    return handleServerResponse(await axios.post("/signup", { email }));
+  },
+  signUpOTP: async function ({ email, otp }) {
+    return handleServerResponse(await axios.post("/signup/otp", { email, otp }));
+  },
+  signUpSetup: async function ({
+    username,
+    firstName,
+    lastName,
+    address,
+    phone,
+    city,
+    state,
+    password,
+    email,
+  }) {
+    return handleServerResponse(
+      await axios.post("/signup/setup", {
+        username,
+        firstName,
+        lastName,
+        address,
+        phone,
+        city,
+        state,
+        password,
+        email,
+      }),
+    );
+  },
+  forgotPassword: async function ({ email }) {
+    return handleServerResponse(await axios.post("/forgotpassword", { email }));
+  },
+  resetPassword: async function ({ hash, newpassword }) {
+    return handleServerResponse(await axios.post(`/resetpassword?hashed=${hash}`, { newpassword }));
+  },
+
+  //visitor
   allProduct: async function () {
     return handleServerResponse(await axios.get("/product"));
   },
+
+  //admin
   allUser: async function () {
     return handleServerResponse(await axios.get("/admin/customer"));
   },

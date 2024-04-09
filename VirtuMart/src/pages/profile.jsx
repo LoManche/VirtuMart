@@ -19,9 +19,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import Api from "../api";
 import { useAppContext } from "../contexts/appContext";
 import handleError from "../components/handleError";
+import ProfileSetup from "../components/profileSetup";
 
 const Profile = () => {
   const [profileData, setProfileData] = useState({
+    username: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -214,104 +216,7 @@ const Profile = () => {
                   onSubmit={(e) => {
                     onSubmit(e, "profile");
                   }}>
-                  <Grid
-                    container
-                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                    columns={{ xs: 4, sm: 4, md: 8 }}>
-                    <Grid item xs={4} sm={4} md={4}>
-                      <TextField
-                        id="firstName"
-                        name="firstName"
-                        label="First Name"
-                        value={profileData.firstName}
-                        onChange={onUpdateField}
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                      />
-                    </Grid>
-                    <Grid item xs={4} sm={4} md={4}>
-                      <TextField
-                        id="lastName"
-                        name="lastName"
-                        label="Last Name"
-                        value={profileData.lastName}
-                        onChange={onUpdateField}
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        required
-                      />
-                    </Grid>
-                  </Grid>
-
-                  <TextField
-                    id="email"
-                    name="email"
-                    label="Email"
-                    value={profileData.email}
-                    onChange={onUpdateField}
-                    variant="outlined"
-                    fullWidth
-                    type="email"
-                    margin="normal"
-                    required
-                  />
-                  <TextField
-                    id="phone"
-                    name="phone"
-                    label="Phone Number"
-                    value={profileData.phone}
-                    onChange={onUpdateField}
-                    variant="outlined"
-                    fullWidth
-                    type="text"
-                    margin="normal"
-                    required
-                  />
-                  <TextField
-                    id="address"
-                    name="address"
-                    label="Address"
-                    value={profileData.address}
-                    onChange={onUpdateField}
-                    variant="outlined"
-                    fullWidth
-                    margin="normal"
-                    required
-                  />
-                  <Grid
-                    container
-                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                    columns={{ xs: 4, sm: 4, md: 8 }}
-                    pb={3}>
-                    <Grid item xs={4} sm={4} md={4}>
-                      <TextField
-                        id="city"
-                        name="city"
-                        label="City"
-                        value={profileData.city}
-                        onChange={onUpdateField}
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        required
-                      />
-                    </Grid>
-                    <Grid item xs={4} sm={4} md={4}>
-                      <TextField
-                        id="state"
-                        name="state"
-                        label="State"
-                        value={profileData.state}
-                        onChange={onUpdateField}
-                        variant="outlined"
-                        fullWidth
-                        margin="normal"
-                        required
-                      />
-                    </Grid>
-                  </Grid>
+                  <ProfileSetup profileData={profileData} onUpdateField={onUpdateField} />
                   <Button type="submit" variant="contained" color="info" size="large">
                     Save
                   </Button>
@@ -386,48 +291,3 @@ const Profile = () => {
 };
 
 export default Profile;
-
-// const [userFormData, setUserFormData] = useState({
-//   id: "",
-//   name: "",
-//   lastname: "",
-//   email: "",
-//   phone: "",
-//   address: "",
-//   password: "",
-// });
-// //   const navigate = useNavigate();
-
-// const getUserData = async () => {
-//   //try {
-//   const response = {
-//     name: "userName",
-//     lastname: "user",
-//     email: "email",
-//     phone: "12345678",
-//     address: "address",
-//     password: "password",
-//   }; //await axios(`http://localhost:8080/user/${id}`);
-//   const data = response.data;
-//   setUserFormData({
-//     name: data.name,
-//     lastname: data.lastname,
-//     email: data.email,
-//     phone: data.phone,
-//     address: data.address,
-//     password: data.password,
-//   });
-//   // } catch (error) {
-//   //   toast.error("Error: ", error.response);
-//   // }
-// };
-
-// useEffect(() => {
-//   getUserData();
-//   // if (loginState) {
-//   //   getUserData();
-//   // } else {
-//   //   toast.error("You must be logged in to access this page");
-//   //   navigate("/");
-//   // }
-// }, []);
