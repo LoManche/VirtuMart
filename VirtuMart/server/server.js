@@ -6,11 +6,12 @@ import session from "express-session";
 import cors from "cors";
 import process from "process";
 
-import * as queries from "./queries.js";
 import { sessionStore } from "./db.js";
+import router from "./apiRoutes.js";
 
 const PORT = 3000;
 const app = express();
+const __dirname = process.cwd();
 
 app.use(
   cors({
@@ -42,76 +43,16 @@ app.use(
   }),
 );
 
-// Middleware to check if the user is authenticated
-function isAdminAuthenticated(req, res, next) {
-  if (req.session.role === "admin" && req.session.userid) {
-    next();
-  } else {
-    res.status(401).send("Unauthorized");
-  }
-}
 
-function isCustomerAuthenticated(req, res, next) {
-  if (req.session.role === "customer" && req.session.userid) {
-    next();
-  } else {
-    res.status(401).send("Unauthorized");
-  }
-}
 // Serve the app in dist(created by npm run build)
 app.use(express.static("dist"));
 
 // Login related APIs
-app.post("/login", queries.handleLogin);
-app.post("/logout", queries.handleLogout);
-app.post("/signup", queries.signUp);
-app.post("/signup/otp", queries.signUpOTP);
-app.post("/signup/setup", queries.signUpSetup);
-app.post("/forgotpassword", queries.forgotPassword);
-app.post("/resetpassword", queries.resetPassword);
-app.put("/profile", isCustomerAuthenticated, queries.updateCustomer);
-app.post("/getprofile", isCustomerAuthenticated, queries.getCustomerProfile);
+app.use("/api", router);
 
-// Product related APIs
-app.get("/product", queries.getAllProducts);
-app.get("/product/:id", queries.getProductById);
-app.post("/search", queries.searchProducts);
-
-// Shopping cart related APIs
-app.get("/cart", queries.getCart);
-app.post("/cart/add", queries.addToCart);
-app.delete("/cart/remove", queries.removeFromCart);
-app.post("/cart/update", queries.updateCart);
-
-// Review related APIs
-app.put("/review/add", isCustomerAuthenticated, queries.addReview);
-
-// Order related APIs
-app.post("/placeorder", isCustomerAuthenticated, queries.placeOrder);
-app.get("/order", isCustomerAuthenticated, queries.getAllOrder);
-app.get("/orderById", isCustomerAuthenticated, queries.getOrderById);
-
-// Admin related APIs
-app.use("/admin", isAdminAuthenticated);
-
-app.post("/admin/product/add", queries.addProduct);
-app.put("/admin/product/update", queries.updateProduct);
-app.delete("/admin/product/delete", queries.deleteProduct);
-
-app.get("/admin/customer", queries.getAllCustomers);
-app.get("/admin/customerById", queries.getCustomerById);
-app.put("/admin/customer/update", queries.updateCustomer);
-app.delete("/admin/customer/delete", queries.deleteCustomer);
-
-app.get("/admin/category", queries.getAllCategories);
-app.post("/admin/category/add", queries.addCategory);
-app.put("/admin/category/update", queries.updateCategory);
-app.delete("/admin/category/delete", queries.deleteCategory);
-
-app.get("/admin/admin", queries.getAllAdmin);
-app.post("/admin/admin/add", queries.addAdmin);
-app.put("/admin/admin/update", queries.updateAdmin);
-app.delete("/admin/admin/delete", queries.deleteAdmin);
+// app.get('*', (req, res) => {
+//   res.sendFile(__dirname + '/index.html');
+// });
 
 // Start the server
 app.listen(PORT, () => {

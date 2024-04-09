@@ -23,6 +23,7 @@ async function queryHandler(query, params, errorStatusCode, res) {
     return rows;
   } catch (error) {
     res.status(errorStatusCode).type("text/plain").send(error);
+    return
   } finally {
     if (connection) connection.release();
   }
@@ -192,9 +193,9 @@ export const resetPassword = async (req, res) => {
 }
 
 export const signUpSetup = async (req, res) => {
-  const {customer_id, username, firstName, lastName, phone, city, state, password, email} = req.body;
-  const query = 'INSERT INTO customers (username, firstName, lastName, phone, city, state, password, email, customer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-  const params = [username, firstName, lastName, phone, city, state, password, email, customer_id];
+  const {username, firstName, lastName, phone, address, city, state, password, email} = req.body;
+  const query = 'INSERT INTO customers (username, firstName, lastName, phone, address, city, state, password, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const params = [username, firstName, lastName, phone, address, city, state, password, email];
   await queryHandler(query, params, 403, res);
   res.status(200).type("text/plain").send('Success');
 }

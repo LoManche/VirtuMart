@@ -21,10 +21,11 @@ create table if not exists products (
 );
 create table if not exists customers (
 	customer_id int not null auto_increment,
-  username varchar(20) not null,
+	username varchar(20) not null,
 	firstName varchar(20) not null,
 	lastName varchar(20) not null,
 	phone varchar(20) not null,
+    address text not null,
 	city varchar(20) not null,
 	state varchar(20) not null,
 	password varchar(20) not null,
@@ -133,8 +134,8 @@ IGNORE 1 ROWS
 (category_id,category_name);
 -- Inserting data manually
 -- Sample Customer
-INSERT INTO customers (username, firstName, lastName, phone, city, state, password, email) 
-VALUES ('sampleUser', 'John', 'Doe', '1234567890', 'SampleCity', 'SampleState', 'password123', 'sampleUser@example.com');
+INSERT INTO customers (username, firstName, lastName, phone, address, city, state, password, email) 
+VALUES ('sampleUser', 'John', 'Doe', '1234567890', "sample address", 'SampleCity', 'SampleState', 'password123', 'sampleUser@example.com');
 -- Sample Review
 insert into reviews (customer_id, product_id, rating, review) VALUES (1,"B0002DO1RI",5,"Great Stuff!" );
 -- Sample Admin
@@ -150,9 +151,8 @@ VALUES (1, 'B00AWB13E4', 4);
 INSERT INTO martorder (customer_id, subTotal, shippingCost, orderStatus, flat, address, city, country, postalCode, paymentMethod)
 VALUES (1, 100.00, 10.00, 'Ordered', 'Flat 1A', '123 Street', 'Tuen Mun', 'Hong Kong, China', '12345', 'Credit Card');
 
--- Get the ID of the last inserted order
-SET @last_order_id = LAST_INSERT_ID();
-
 -- Insert a sample product into the martorder_products table
 INSERT INTO martorder_products (order_id, customer_id, product_id, quantity)
-VALUES (@last_order_id, 1, 'B0002DO1RI', 2);
+VALUES (1, 1, 'B0002DO1RI', 2);
+INSERT INTO martorder_products (order_id, customer_id, product_id, quantity)
+VALUES (1, 1, 'B00AWB13E4', 3);
