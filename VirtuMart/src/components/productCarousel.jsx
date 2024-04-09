@@ -57,9 +57,8 @@ export default function ProductCarousel({ Products }) {
       slidesToSlide={3}
       swipeable>
       {Products.map((item, index) => (
-        <div style={{ padding: "3px" }}>
+        <div key={index} style={{ padding: "3px" }}>
           <ProductCard
-            key={index}
             type={"Product"}
             imageUrl={item.img}
             price={item.price}

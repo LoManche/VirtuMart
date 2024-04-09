@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 
 function ProductImage({ src, alt }) {
   return (
@@ -79,7 +79,7 @@ function ProductStock() {
 
 function AddToCartButton() {
   return (
-    <button
+    <Button
       style={{
         backgroundColor: "black",
         color: "white",
@@ -88,7 +88,7 @@ function AddToCartButton() {
         height: "50px",
       }}>
       Add to cart
-    </button>
+    </Button>
   );
 }
 
@@ -111,7 +111,6 @@ export default function ProductDetails() {
       <ProductPrice price={productData.price} />
       <ProductDescription>{productData.description}</ProductDescription>
       <ProductQuantity />
-      {/*<ProductOptions options={options}/>*/}
       <ProductStock />
       <AddToCartButton />
     </article>

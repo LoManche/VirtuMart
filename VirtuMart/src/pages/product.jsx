@@ -2,7 +2,7 @@ import ProductDetails from "../components/productInfo";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import ProductCarousel from "../components/productCarousel";
-import { TextField } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
 
 function ProductShow({ thumbnails }) {
@@ -66,17 +66,21 @@ function Ratings() {
 
 function SubmitButton() {
   return (
-    <div
-      style={{ display: "flex" }}
-      className="flex gap-0 justify-center mt-2 text-black whitespace-nowrap">
-      <img
-        style={{ maxWidth: "40px", marginRight: "10px" }}
-        loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/ceb61dcb7806c77ba41c36a7a4b20a5e1adf8a3d8aab7530f5d8fb110b3a1223?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
-        alt="Submit icon"
-        className="shrink-0 aspect-[1.41] w-[42px]"
-      />
-      <button
+    <div style={{ display: "flex" }}>
+      {/*<Button
+        style={{
+          backgroundColor: "white",
+          width: "50px",
+          height: "30px",
+        }}>
+        <img
+          style={{ maxWidth: "40px" }}
+          loading="lazy"
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/ceb61dcb7806c77ba41c36a7a4b20a5e1adf8a3d8aab7530f5d8fb110b3a1223?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
+        />
+      </Button>
+      */}
+      <Button
         style={{
           backgroundColor: "black",
           color: "white",
@@ -85,7 +89,7 @@ function SubmitButton() {
           height: "30px",
         }}>
         Submit
-      </button>
+      </Button>
     </div>
   );
 }
