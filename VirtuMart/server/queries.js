@@ -190,14 +190,32 @@ export const resetPassword = async (req, res) => {
   await queryHandler(deleteQuery, [hashed], 403, res);  
   res.status(200).type("text/plain").send("Password Reset Successful");
 }
+export const changepassword = async (req, res) => {
+  const {oldpassword, newpassword, customer_id} = req.body;
+  const query = 'SELECT * FROM customers WHERE customer_id = ? and password = ?';
+  const rows = await queryHandler(query, [customer_id, oldpassword], 403, res);
+  if (rows.length === 0) {
+    res.status(401).type("text/plain").send("Wrong Old password");
+    return;
+  }
+  const updateQuery = 'UPDATE customers SET password = ? WHERE customer_id = ?';
+  await queryHandler(updateQuery, [newpassword, customer_id], 403, res);
+  res.status(200).type("text/plain").send("Password Changed");
+}
 
 export const signUpSetup = async (req, res) => {
-  const {customer_id, username, firstName, lastName, phone, city, state, password, email} = req.body;
-  const query = 'INSERT INTO customers (username, firstName, lastName, phone, city, state, password, email, customer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-  const params = [username, firstName, lastName, phone, city, state, password, email, customer_id];
+  const {customer_id, username, firstName, lastName, phone, address, city, state, password, email} = req.body;
+  const query = 'INSERT INTO customers (username, firstName, lastName, phone, address, city, state, password, email, customer_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+  const params = [username, firstName, lastName, phone, address, city, state, password, email, customer_id];
   await queryHandler(query, params, 403, res);
   res.status(200).type("text/plain").send('Success');
 }
+export const getCustomerProfile = async (req, res) => {
+  const query = 'SELECT * FROM customers WHERE customer_id = ?';
+  const rows = await queryHandler(query, [req.body.customer_id], 403, res);
+  res.status(200).json(rows);
+}
+
 //-----------------------------------------------------------------------------------------------
 // Customer functions
 export const getAllProducts = async (req, res) => {
@@ -275,7 +293,32 @@ export const addReview = async (req, res) => {
   const query3 = 'UPDATE products SET rating = ? WHERE asin = ?';
   res.status(201).type("text/plain").send('Success');
 }
-
+export const getRecommendation = async (req, res) => {
+  const customer_id = req.body.customer_id;
+  let connection
+  try {
+    connection = await pool.getConnection();
+    await connection.beginTransaction();
+    const query = `SELECT * FROM products WHERE category_id IN 
+    (SELECT p.category_id FROM martorder_products mp 
+    INNER JOIN martorder mo ON mp.order_id = mo.order_id 
+    INNER JOIN products p ON mp.product_id = p.asin WHERE mo.customer_id = ?)`; 
+    const rows = await connection.query(query, [customer_id]);
+    await connection.commit();
+    res.status(200).json(rows);
+  } catch (error) {
+    connection.rollback();
+    res.status(500).type("text/plain").send(error);
+  } finally {
+    if (connection) connection.release();
+  }
+}
+export const getNotification = async (req, res) => {
+  const customer_id = req.body.customer_id;
+  const query = 'SELECT * FROM notifications WHERE customer_id = ?';
+  const rows = await queryHandler(query, [customer_id], 404, res);
+  res.status(200).json(rows);
+}
 export const getAllOrder = async (req, res) => {
   const {customer_id} = req.body;
   const query = 'SELECT order_id, subtotal, shippingcost, orderstatus, dateoforder FROM martorder WHERE customer_id = ?';
@@ -309,6 +352,10 @@ export const placeOrder = async (req, res) => {
       let productquery = 'INSERT INTO martorder_products (order_id, product_id, quantity) VALUES (?, ?, ?)';
       let productparams = [order_id, product.product_id, product.quantity];
       await connection.execute(productquery, productparams);
+      let stockquery = 'UPDATE products SET stock = stock - ? WHERE asin = ?';
+      let stockparams = [product.quantity, product.product_id];
+      await connection.execute(stockquery, stockparams);
+      
     }
     await connection.commit();
   } 
@@ -355,9 +402,9 @@ export const getCustomerById = async (req, res) => {
   res.status(200).json(rows);
 }
 export const updateCustomer = async (req, res) => {
-  const {customer_id, username, firstName, lastName, phone, city, state, password, email} = req.body;
-  const query = 'UPDATE customers SET username = ?, firstName = ?, lastName = ?, phone = ?, city = ?, state = ?, password = ?, email = ? WHERE customer_id = ?';
-  const params = [username, firstName, lastName, phone, city, state, password, email, customer_id];
+  const {customer_id, username, firstName, lastName, phone, address, city, state, password, email} = req.body;
+  const query = 'UPDATE customers SET username = ?, firstName = ?, lastName = ?, phone = ?, address = ?, city = ?, state = ?, password = ?, email = ? WHERE customer_id = ?';
+  const params = [username, firstName, lastName, phone, address, city, state, password, email, customer_id];
   await queryHandler(query, params, 403, res);
   res.status(200).type("text/plain").send('Success');
 }
@@ -391,5 +438,32 @@ export const deleteCategory = async (req, res) => {
   const c_id = req.body.category_id;
   const query = 'DELETE FROM categories WHERE category_id = ?';
   await queryHandler(query, [c_id], 403, res);
+  res.status(200).type("text/plain").send('Success');
+}
+
+export const getAllAdmin = async (req, res) => {
+  const query = 'SELECT * FROM admin';
+  const rows = await queryHandler(query, [], 404, res);
+  res.status(200).json(rows);
+}
+export const addAdmin = async (req, res) => {
+  const adminname = req.body.adminname;
+  const password = req.body.password;
+  const query = 'INSERT INTO admin (adminname, password) VALUES (?, ?)';
+  await queryHandler(query, [adminname, password], 404, res);
+  res.status(201).type("text/plain").send('Success');
+}
+export const updateAdmin = async (req, res) => {
+  const adminname = req.body.adminname;
+  const password = req.body.password;
+  const admin_id = req.body.admin_id;
+  const query = 'UPDATE admin SET adminname = ?, password = ? WHERE admin_id = ?';
+  await queryHandler(query, [adminname, password, admin_id], 404, res);
+  res.status(200).type("text/plain").send('Success');
+}
+export const deleteAdmin = async (req, res) => {
+  const admin_id = req.body.admin_id;
+  const query = 'DELETE FROM admin WHERE admin_id = ?';
+  await queryHandler(query, [admin_id], 404, res);
   res.status(200).type("text/plain").send('Success');
 }

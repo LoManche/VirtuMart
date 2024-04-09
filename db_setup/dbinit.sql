@@ -25,6 +25,7 @@ create table if not exists customers (
 	firstName varchar(20) not null,
 	lastName varchar(20) not null,
 	phone varchar(20) not null,
+	address text not null,
 	city varchar(20) not null,
 	state varchar(20) not null,
 	password varchar(20) not null,
@@ -115,6 +116,15 @@ ON SCHEDULE EVERY 1 HOUR
 DO
     DELETE FROM forgetpw WHERE created_at < NOW() - INTERVAL 1 HOUR;
 
+create table if not exists notifications (
+	notification_id int not null auto_increment,
+	customer_id int not null,
+	message text not null,
+	dateOfNotification timestamp default current_timestamp not null,
+	primary key (notification_id),
+	foreign key (customer_id) references customers(customer_id)
+);
+
 -- Inserting data from csv files
 LOAD DATA LOCAL INFILE 'G:/Codes/3100Project/db_setup/amazon_products_sample_utf8.csv' 
 INTO TABLE products 
@@ -133,8 +143,8 @@ IGNORE 1 ROWS
 (category_id,category_name);
 -- Inserting data manually
 -- Sample Customer
-INSERT INTO customers (username, firstName, lastName, phone, city, state, password, email) 
-VALUES ('sampleUser', 'John', 'Doe', '1234567890', 'SampleCity', 'SampleState', 'password123', 'sampleUser@example.com');
+INSERT INTO customers (username, firstName, lastName, phone, address, city, state, password, email) 
+VALUES ('sampleUser', 'John', 'Doe', '1234567890', 'Sample Address', 'SampleCity', 'SampleState', 'password123', 'sampleUser@example.com');
 -- Sample Review
 insert into reviews (customer_id, product_id, rating, review) VALUES (1,"B0002DO1RI",5,"Great Stuff!" );
 -- Sample Admin
