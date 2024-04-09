@@ -315,6 +315,10 @@ export const placeOrder = async (req, res) => {
       let productquery = 'INSERT INTO martorder_products (order_id, product_id, quantity) VALUES (?, ?, ?)';
       let productparams = [order_id, product.product_id, product.quantity];
       await connection.execute(productquery, productparams);
+      let stockquery = 'UPDATE products SET stock = stock - ? WHERE asin = ?';
+      let stockparams = [product.quantity, product.product_id];
+      await connection.execute(stockquery, stockparams);
+      
     }
     await connection.commit();
   } 
