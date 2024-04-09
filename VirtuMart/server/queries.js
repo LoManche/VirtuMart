@@ -398,6 +398,13 @@ export const getAllAdmin = async (req, res) => {
   const rows = await queryHandler(query, [], 404, res);
   res.status(200).json(rows);
 }
+export const addAdmin = async (req, res) => {
+  const adminname = req.body.adminname;
+  const password = req.body.password;
+  const query = 'INSERT INTO admin (adminname, password) VALUES (?, ?)';
+  await queryHandler(query, [adminname, password], 404, res);
+  res.status(201).type("text/plain").send('Success');
+}
 export const updateAdmin = async (req, res) => {
   const adminname = req.body.adminname;
   const password = req.body.password;
