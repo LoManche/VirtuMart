@@ -10,26 +10,6 @@ import Order from "./pages/order";
 import { Box } from "@mui/material";
 import Footer from "./components/footer";
 import { useAppContext } from "./contexts/appContext";
-// import { useAppContext } from "./contexts/appContext";
-
-export const roles = {
-  admin: "admin",
-  customer: "customer",
-};
-
-export const displayRoles = {
-  admin: "Admin",
-  customer: "Customer",
-};
-
-export const authorize = {
-  admin: (role) => {
-    return role === roles.admin;
-  },
-  customer: () => {
-    return true;
-  },
-};
 
 const NoNeedLoginROUTES = [
   // /* No need login */
@@ -41,6 +21,11 @@ const NoNeedLoginROUTES = [
   { path: "/order", element: <Navigate to="/account" />, type: "account" },
   /* Indirect pages */
   { path: "/product/:productId", element: <Product /> },
+  {
+    path: "/resetpassword/hashed/:hashed",
+    element: <Account presetPage={"resetPs"} />,
+    type: "account",
+  },
 ];
 
 const ROUTES = [

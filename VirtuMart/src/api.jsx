@@ -14,11 +14,9 @@ export class ServerError extends Error {
     this.message = message;
   }
 }
-/**
- * @param {import("axios").AxiosResponse} res
- */
+
 const handleServerResponse = (res) => {
-  if (res.status !== 200) {
+  if (![200, 201].includes(res.status)) {
     throw new ServerError(res.status, res.code, res.message);
   }
   return res.data;
@@ -84,8 +82,8 @@ const Api = {
   forgotPassword: async function ({ email }) {
     return handleServerResponse(await axios.post("/forgotpassword", { email }));
   },
-  resetPassword: async function ({ hash, newpassword }) {
-    return handleServerResponse(await axios.post(`/resetpassword?hashed=${hash}`, { newpassword }));
+  resetPassword: async function ({ hashed, newpassword }) {
+    return handleServerResponse(await axios.post(`/resetpassword`, { hashed, newpassword }));
   },
 
   //visitor

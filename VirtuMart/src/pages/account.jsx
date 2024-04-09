@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import {
   Box,
   Button,
@@ -6,24 +7,44 @@ import {
   Checkbox,
   FormControlLabel,
   TextField,
+  Snackbar,
+  IconButton,
 } from "@mui/material";
-import { useNavigate } from "react-router";
+import CloseIcon from "@mui/icons-material/Close";
+import { useNavigate, useParams } from "react-router-dom";
 import authImage from "../assets/auth.png";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Email, Password } from "../components/textfields";
 import Api from "../api";
 import handleError from "../components/handleError";
 import { useAppContext } from "../contexts/appContext";
 import ProfileSetup from "../components/profileSetup";
 
-export default function Account() {
+export default function Account({ presetPage }) {
   const navigate = useNavigate();
-  const [page, setPage] = useState("login");
+  const [page, setPage] = useState(presetPage ? presetPage : "login");
   const [loginForm, setLoginForm] = useState({ email: "", password: "", rememberMe: false });
   const [registerForm, setRegisterForm] = useState({ email: "", password: "", confirmPs: "" });
   const [forgetPsForm, setForgetPsForm] = useState({ email: "" });
   const [resetPsForm, setResetPsForm] = useState({ password: "", confirmPs: "" });
   const [otpForm, setOtpForm] = useState({ email: "", otp: "" });
+  const { hashed } = useParams();
+  const [open, setOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
+  const action = (
+    <Fragment>
+      <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </Fragment>
+  );
   const [setupForm, setSetupForm] = useState({
     username: "",
     firstName: "",
@@ -65,16 +86,16 @@ export default function Account() {
       });
       document.cookie = "userId=" + res.userid;
       document.cookie = "role=" + res.role;
-      console.log("login", res);
 
+      localStorage.removeItem("tempEmail");
       localStorage.setItem("isLogin", true);
       localStorage.setItem("userid", res.userid);
       localStorage.setItem("role", res.role);
       setIsLogin(true);
       setUser({ userId: res.userid, role: res.role });
-
       navigate("/");
     } catch (err) {
+      setOpen(true);
       handleError(err, "");
     }
   }
@@ -94,12 +115,10 @@ export default function Account() {
 
   async function handleOTPSubmit({ input }) {
     try {
-      console.log(input);
       const res = await Api.signUpOTP({
         email: input.email,
         otp: input.otp,
       });
-      console.log("otp res", res);
       setSetupForm({ ...setupForm, email: input.email });
       setPage("setup");
     } catch (err) {
@@ -133,12 +152,32 @@ export default function Account() {
         email: input.email,
         address: input.address,
       });
-
-      console.log("setup res", res);
       localStorage.removeItem("tempEmail");
       setPage("login");
     } catch (err) {
       console.log(err);
+      handleError(err, "");
+    }
+  }
+
+  async function handleForgetPasswordSubmit({ input }) {
+    try {
+      const res = await Api.forgotPassword({
+        email: input.email,
+      });
+    } catch (err) {
+      handleError(err, "");
+    }
+  }
+
+  async function HandleResetPasswordSubmit({ input }) {
+    try {
+      const res = await Api.resetPassword({
+        hashed: hashed,
+        newpassword: input.password,
+      });
+      setPage("login");
+    } catch (err) {
       handleError(err, "");
     }
   }
@@ -156,9 +195,9 @@ export default function Account() {
     } else if (type === "setup") {
       handleSetupSubmit({ input: form });
     } else if (type === "forgetPassword") {
-      //
+      handleForgetPasswordSubmit({ input: form });
     } else if (type === "resetPs") {
-      //
+      HandleResetPasswordSubmit({ input: form });
     }
   };
 
@@ -211,225 +250,244 @@ export default function Account() {
   };
 
   return (
-    <Grid
-      container
-      mx={3}
-      columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-      columns={{ xs: 4, sm: 4, md: 8 }}>
+    <>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message={alertMessage}
+        action={action}
+      />
       <Grid
-        item
-        xs={4}
-        sm={4}
-        md={4}
-        display="flex"
-        flexDirection={"column"}
-        justifyContent={"center"}
-        alignItems={"center"}>
-        {/* Header and description */}
-        <Box p={2}>
-          <Typography variant="h3" fontWeight={"bold"}>
-            {Header[page]}
-          </Typography>
-        </Box>
-        <Typography variant="h5" color="grey">
-          {Description[page][1]}
-        </Typography>
-        <Typography variant="h5" color="grey">
-          {Description[page][2]}
-        </Typography>
-
-        {/* Input */}
-        <Box
-          component="form"
-          onSubmit={(e) => {
-            onSubmit(e, page, Form[page].form);
-          }}
+        container
+        mx={3}
+        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+        columns={{ xs: 4, sm: 4, md: 8 }}>
+        <Grid
+          item
+          xs={4}
+          sm={4}
+          md={4}
           display="flex"
           flexDirection={"column"}
-          width="100%"
-          maxWidth={"400px"}
-          pt={3}
-          sx={{
-            "& .MuiTextField-root": { my: 1 },
-          }}>
-          {page === "login" ? (
-            <>
-              <Email
-                id={"email"}
-                name={"email"}
-                value={loginForm.email}
-                onChange={(e) => {
-                  onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
-                }}
-                props={{ type: "text", autoFocus: true, required: true }}
-              />
-              <Password
-                id={"password"}
-                name={"password"}
-                value={loginForm.password}
-                onChange={(e) => {
-                  onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
-                }}
-                props={{ required: true }}
-              />
-              <Box
-                width="100%"
-                display="flex"
-                justifyContent={"space-between"}
-                alignItems={"center"}>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="rememberMe"
-                      color="info"
-                      checked={loginForm.rememberMe}
-                      onChange={(e) => {
-                        onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
-                      }}
-                    />
-                  }
-                  label="Remember Me"
-                />
-                <Button
-                  variant="text"
-                  onClick={() => {
-                    setPage("forgetPassword");
+          justifyContent={"center"}
+          alignItems={"center"}>
+          {/* Header and description */}
+          <Box p={2}>
+            <Typography variant="h3" fontWeight={"bold"}>
+              {Header[page]}
+            </Typography>
+          </Box>
+          <Typography variant="h5" color="grey">
+            {Description[page][1]}
+          </Typography>
+          <Typography variant="h5" color="grey">
+            {Description[page][2]}
+          </Typography>
+
+          {/* Input */}
+          <Box
+            component="form"
+            onSubmit={(e) => {
+              onSubmit(e, page, Form[page].form);
+            }}
+            display="flex"
+            flexDirection={"column"}
+            width="100%"
+            maxWidth={"400px"}
+            pt={3}
+            sx={{
+              "& .MuiTextField-root": { my: 1 },
+            }}>
+            {page === "login" ? (
+              <>
+                <Email
+                  id={"email"}
+                  name={"email"}
+                  value={loginForm.email}
+                  onChange={(e) => {
+                    onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
                   }}
-                  color="info"
-                  sx={{ "&:hover": { backgroundColor: "#FFFFFF" } }}>
-                  Forget Password
-                </Button>
-              </Box>
-            </>
-          ) : page === "register" ? (
-            <>
+                  props={{ type: "text", autoFocus: true, required: true }}
+                />
+                <Password
+                  id={"password"}
+                  name={"password"}
+                  value={loginForm.password}
+                  onChange={(e) => {
+                    onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
+                  }}
+                  props={{ required: true }}
+                />
+                <Box
+                  width="100%"
+                  display="flex"
+                  justifyContent={"space-between"}
+                  alignItems={"center"}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="rememberMe"
+                        color="info"
+                        checked={loginForm.rememberMe}
+                        onChange={(e) => {
+                          onUpdateField({ e: e, form: loginForm, setForm: setLoginForm });
+                        }}
+                      />
+                    }
+                    label="Remember Me"
+                  />
+                  <Button
+                    variant="text"
+                    onClick={() => {
+                      setPage("forgetPassword");
+                    }}
+                    color="info"
+                    sx={{ "&:hover": { backgroundColor: "#FFFFFF" } }}>
+                    Forget Password
+                  </Button>
+                </Box>
+              </>
+            ) : page === "register" ? (
+              <>
+                <Email
+                  id={"email"}
+                  name={"email"}
+                  value={registerForm.email}
+                  onChange={(e) => {
+                    onUpdateField({ e: e, form: registerForm, setForm: setRegisterForm });
+                  }}
+                  props={{ autoFocus: true, required: true }}
+                />
+
+                <Box pt={3}></Box>
+              </>
+            ) : page === "forgetPassword" ? (
               <Email
                 id={"email"}
                 name={"email"}
-                value={registerForm.email}
+                value={forgetPsForm.email}
                 onChange={(e) => {
-                  onUpdateField({ e: e, form: registerForm, setForm: setRegisterForm });
+                  onUpdateField({ e: e, form: forgetPsForm, setForm: setForgetPsForm });
                 }}
-                props={{ autoFocus: true, required: true }}
+                props={{ autoFocus: true }}
               />
-
-              <Box pt={3}></Box>
-            </>
-          ) : page === "forgetPassword" ? (
-            <Email
-              id={"email"}
-              name={"email"}
-              value={forgetPsForm.email}
-              onChange={(e) => {
-                onUpdateField({ e: e, form: forgetPsForm, setForm: setForgetPsForm });
-              }}
-              props={{ autoFocus: true }}
-            />
-          ) : page === "resetPs" ? (
-            <>
-              <Password
-                id={"password"}
-                name={"password"}
-                value={resetPsForm.password}
-                onChange={(e) => {
-                  onUpdateField({ e: e, form: resetPsForm, setForm: setResetPsForm });
-                }}
-              />
-              <Password
-                id={"confirmPs"}
-                name={"confirmPs"}
-                value={resetPsForm.confirmPs}
-                onChange={(e) => {
-                  onUpdateField({ e: e, form: resetPsForm, setForm: setResetPsForm });
-                }}
-                props={{ label: "Confirm Password" }}
-              />
-              <Box pt={3}></Box>
-            </>
-          ) : page === "otp" ? (
-            <>
-              <TextField
-                id={"otp"}
-                name={"otp"}
-                value={otpForm.otp}
-                onChange={(e) => {
-                  onUpdateField({ e: e, form: otpForm, setForm: setOtpForm });
-                }}
-                label={"OTP"}
-                autoFocus
-                required
-              />
-              <Box pt={3}></Box>
-            </>
-          ) : page === "setup" ? (
-            <>
-              <ProfileSetup
-                profileData={setupForm}
-                onUpdateField={(e) => {
-                  onUpdateField({ e: e, form: setupForm, setForm: setSetupForm });
-                }}
-                additionalFields={[
-                  { name: "password", label: "Password", props: { type: "password" } },
-                  {
-                    name: "confirmPs",
+            ) : page === "resetPs" ? (
+              <>
+                <Password
+                  id={"password"}
+                  name={"password"}
+                  value={resetPsForm.password}
+                  onChange={(e) => {
+                    onUpdateField({ e: e, form: resetPsForm, setForm: setResetPsForm });
+                  }}
+                  props={{ required: true }}
+                />
+                <Password
+                  id={"confirmPs"}
+                  name={"confirmPs"}
+                  value={resetPsForm.confirmPs}
+                  onChange={(e) => {
+                    onUpdateField({ e: e, form: resetPsForm, setForm: setResetPsForm });
+                  }}
+                  props={{
+                    required: true,
                     label: "Confirm Password",
-                    props: {
-                      type: "password",
-                      helperText:
-                        setupForm["confirmPs"] !== "" && disableButton
-                          ? "Password didn't match"
-                          : "",
-                      error: setupForm["confirmPs"] !== "" && disableButton,
+                    helperText:
+                      resetPsForm["confirmPs"] !== "" && disableButton
+                        ? "Password didn't match"
+                        : "",
+                    error: resetPsForm["confirmPs"] !== "" && disableButton,
+                  }}
+                />
+                <Box pt={3}></Box>
+              </>
+            ) : page === "otp" ? (
+              <>
+                <TextField
+                  id={"otp"}
+                  name={"otp"}
+                  value={otpForm.otp}
+                  onChange={(e) => {
+                    onUpdateField({ e: e, form: otpForm, setForm: setOtpForm });
+                  }}
+                  label={"OTP"}
+                  autoFocus
+                  required
+                />
+                <Box pt={3}></Box>
+              </>
+            ) : page === "setup" ? (
+              <>
+                <ProfileSetup
+                  profileData={setupForm}
+                  onUpdateField={(e) => {
+                    onUpdateField({ e: e, form: setupForm, setForm: setSetupForm });
+                  }}
+                  additionalFields={[
+                    { name: "password", label: "Password", props: { type: "password" } },
+                    {
+                      name: "confirmPs",
+                      label: "Confirm Password",
+                      props: {
+                        type: "password",
+                        helperText:
+                          setupForm["confirmPs"] !== "" && disableButton
+                            ? "Password didn't match"
+                            : "",
+                        error: setupForm["confirmPs"] !== "" && disableButton,
+                      },
                     },
-                  },
-                ]}
-              />
-            </>
-          ) : (
-            <></>
-          )}
+                  ]}
+                />
+              </>
+            ) : (
+              <></>
+            )}
 
-          <Button
-            variant="contained"
-            color="info"
-            type={"Submit"}
-            fullWidth
-            disabled={disableButton}>
-            {SubmitButtonText[page]}
-          </Button>
-        </Box>
-
-        {/* Reminder to other page */}
-        <Box pt={3} width="100%" display="flex" justifyContent={"center"} alignItems={"center"}>
-          <Typography>{Reminder[page] ? Reminder[page].text : ""} </Typography>
-          {Reminder[page] ? (
             <Button
-              variant="text"
-              onClick={() => {
-                setPage(Reminder[page].link);
-              }}
+              variant="contained"
               color="info"
-              sx={{ "&:hover": { backgroundColor: "#FFFFFF" } }}>
-              {Reminder[page].buttonText}
+              type={"Submit"}
+              fullWidth
+              disabled={disableButton}>
+              {SubmitButtonText[page]}
             </Button>
-          ) : (
-            <></>
-          )}
-        </Box>
-      </Grid>
+          </Box>
 
-      {/* Image */}
-      <Grid
-        item
-        xs={0}
-        sm={4}
-        md={4}
-        display="flex"
-        flexDirection={"column"}
-        justifyContent={"center"}
-        alignItems={"center"}>
-        <img src={authImage} style={{ width: "100%", height: "80%", objectFit: "contain" }} />
+          {/* Reminder to other page */}
+          <Box pt={3} width="100%" display="flex" justifyContent={"center"} alignItems={"center"}>
+            <Typography>{Reminder[page] ? Reminder[page].text : ""} </Typography>
+            {Reminder[page] ? (
+              <Button
+                variant="text"
+                onClick={() => {
+                  setPage(Reminder[page].link);
+                }}
+                color="info"
+                sx={{ "&:hover": { backgroundColor: "#FFFFFF" } }}>
+                {Reminder[page].buttonText}
+              </Button>
+            ) : (
+              <></>
+            )}
+          </Box>
+        </Grid>
+
+        {/* Image */}
+        <Grid
+          item
+          xs={0}
+          sm={4}
+          md={4}
+          display="flex"
+          flexDirection={"column"}
+          justifyContent={"center"}
+          alignItems={"center"}>
+          <img src={authImage} style={{ width: "100%", height: "80%", objectFit: "contain" }} />
+        </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 }

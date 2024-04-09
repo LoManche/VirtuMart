@@ -41,7 +41,8 @@ export default function Topbar({ type }) {
     setIsLogin(false);
     setUser(undefined);
     localStorage.removeItem("isLogin");
-    localStorage.removeItem("user");
+    localStorage.removeItem("userid");
+    localStorage.removeItem("role");
 
     handleCloseUserMenu();
     handleMobileMenuClose();
