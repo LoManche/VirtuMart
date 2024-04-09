@@ -58,6 +58,11 @@ const Api = {
   allCategory: async function () {
     return handleServerResponse(await axios.get("/admin/category"));
   },
+
+  //customer
+  getProfile: async function ({ customer_id }) {
+    return handleServerResponse(await axios.get("/getProfile", { customer_id }));
+  },
 };
 
 export default Api;

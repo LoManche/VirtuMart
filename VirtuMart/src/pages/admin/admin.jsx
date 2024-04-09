@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import {
   Box,
   Grid,
+  Tooltip,
+  Avatar,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -9,6 +12,8 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import ClearIcon from "@mui/icons-material/Clear";
 import PersonIcon from "@mui/icons-material/Person";
 import CategoryIcon from "@mui/icons-material/Category";
 import LocalMallIcon from "@mui/icons-material/LocalMall";
@@ -16,125 +21,211 @@ import Api from "../../api";
 import handleError from "../../components/handleError";
 import Table from "../../components/table";
 
+import { green, blue, red, orange } from "@mui/material/colors";
 const categoryColumns = [
-  { field: "category_id", headerName: "Category ID" },
+  { field: "category_id", headerName: "Category ID", width: 100 },
   {
     field: "category_name",
     headerName: "Category Name",
+    flex: 1.5,
+    minWidth: 250,
   },
   {
     field: "sold",
     headerName: "No Of Products Sold",
+    flex: 1,
+    minWidth: 150,
   },
   {
     field: "stock",
     headerName: "Stock",
+    flex: 1,
   },
   {
     field: "action",
     headerName: "Action",
+    disableColumnMenu: true,
+    sortable: false,
+    width: 100,
+    align: "center",
+    renderCell: (params) => (
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Tooltip title="Edit User Information" placement="top">
+          <Avatar sx={{ bgcolor: green[300], width: 30, height: 30 }}>
+            <IconButton sx={{ color: green[50] }} onClick={(e) => {}}>
+              <EditIcon />
+            </IconButton>
+          </Avatar>
+        </Tooltip>
+
+        <Box width="10px" />
+        <Tooltip title="Delete User" placement="top">
+          <Avatar sx={{ bgcolor: red[300], width: 30, height: 30 }}>
+            <IconButton sx={{ color: green[50] }} onClick={(e) => {}}>
+              <ClearIcon />
+            </IconButton>
+          </Avatar>
+        </Tooltip>
+      </Box>
+    ),
   },
 ];
 
 const productColumns = [
-  { field: "asin", headerName: "Product ID" },
+  { field: "asin", headerName: "Product ID", width: 130 },
   {
     field: "title",
     headerName: "Product Name",
+    minWidth: 250,
+    flex: 4,
   },
   {
     field: "price",
     headerName: "Price",
     valueGetter: (value, row) => `${row.price ? "$ " : ""} ${row.price || ""}`,
+    minWidth: 100,
+    flex: 1,
   },
   {
     field: "discount",
     headerName: "Discount",
     valueGetter: (value, row) => `${row.discount ? "$ " : ""} ${row.discount || ""}`,
+    minWidth: 100,
+    flex: 1,
   },
   {
     field: "stock",
     headerName: "Stock",
+    minWidth: 100,
+    flex: 1,
   },
   {
     field: "action",
     headerName: "Action",
+    disableColumnMenu: true,
+    sortable: false,
+    width: 100,
+    headerAlign: "center",
+    align: "center",
+    renderCell: (params) => (
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box width="10px" />
+        <Tooltip title="Edit User Information" placement="top">
+          <Avatar sx={{ bgcolor: green[300], width: 30, height: 30 }}>
+            <IconButton sx={{ color: green[50] }} onClick={(e) => {}}>
+              <EditIcon />
+            </IconButton>
+          </Avatar>
+        </Tooltip>
+
+        <Box width="10px" />
+        <Tooltip title="Delete User" placement="top">
+          <Avatar sx={{ bgcolor: red[300], width: 30, height: 30 }}>
+            <IconButton sx={{ color: green[50] }} onClick={(e) => {}}>
+              <ClearIcon />
+            </IconButton>
+          </Avatar>
+        </Tooltip>
+      </Box>
+    ),
   },
 ];
 
-const userColumns = [
-  { field: "customer_id", headerName: "Customer ID" },
+const customerColumns = [
+  { field: "customer_id", headerName: "Customer ID", flex: 1, minWidth: 100 },
   {
     field: "firstName",
     headerName: "First name",
+    flex: 1,
+    minWidth: 100,
   },
   {
     field: "lastName",
     headerName: "Last name",
+    flex: 1,
+    minWidth: 100,
   },
   {
     field: "email",
     headerName: "Email",
+    flex: 2,
+    minWidth: 200,
   },
   {
     field: "phone",
     headerName: "Phone",
+    flex: 1,
+    minWidth: 100,
   },
   {
-    field: "createAt",
+    field: "created_at",
     headerName: "Create At",
+    flex: 1,
+    minWidth: 160,
+    valueGetter: (value, row) =>
+      `${row.created_at ? new Date(row.created_at).toLocaleString() : ""}`,
   },
   {
     field: "action",
     headerName: "Action",
+    disableColumnMenu: true,
+    sortable: false,
+    width: 100,
+    headerAlign: "center",
+    align: "center",
+    renderCell: (params) => (
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Box width="10px" />
+        <Tooltip title="Edit User Information" placement="top">
+          <Avatar sx={{ bgcolor: green[300], width: 30, height: 30 }}>
+            <IconButton sx={{ color: green[50] }} onClick={(e) => {}}>
+              <EditIcon />
+            </IconButton>
+          </Avatar>
+        </Tooltip>
+
+        <Box width="10px" />
+        <Tooltip title="Delete User" placement="top">
+          <Avatar sx={{ bgcolor: red[300], width: 30, height: 30 }}>
+            <IconButton sx={{ color: green[50] }} onClick={(e) => {}}>
+              <ClearIcon />
+            </IconButton>
+          </Avatar>
+        </Tooltip>
+      </Box>
+    ),
   },
 ];
 
 const Admin = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [categories, setCategories] = useState(undefined);
-  const [products, setProducts] = useState(undefined);
-  const [users, setUsers] = useState(undefined);
+  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
   };
 
-  const onLoadCategories = async () => {
-    try {
-      const categories = await Api.allCategory();
-      setCategories(categories);
-      console.log("categories", categories);
-    } catch (err) {
-      handleError(err, () => {}, true);
-      throw err;
-    }
-  };
-
-  const onLoadProducts = async () => {
-    try {
-      const products = await Api.allProduct();
-      setProducts(products);
-    } catch (err) {
-      handleError(err, () => {}, true);
-      throw err;
-    }
-  };
-
-  const onLoadUsers = async () => {
-    try {
-      const users = await Api.allUser();
-      setUsers(users);
-    } catch (err) {
-      handleError(err, () => {}, true);
-      throw err;
-    }
-  };
-
   useEffect(() => {
-    onLoadUsers();
-    onLoadCategories();
-    onLoadProducts();
+    const loadData = async () => {
+      try {
+        const [categories, products, users] = await Promise.all([
+          Api.allCategory(),
+          Api.allProduct(),
+          Api.allUser(),
+        ]);
+
+        setCategories(categories);
+        setProducts(products);
+        setUsers(users);
+      } catch (err) {
+        handleError(err, () => {}, true);
+        throw err;
+      }
+    };
+
+    loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -146,7 +237,15 @@ const Admin = () => {
       columnSpacing={{ xs: 1, sm: 2, md: 3 }}
       columns={{ xs: 4, sm: 4, md: 8 }}>
       {/* List */}
-      <Grid minWidth={"160px"} item xs={1} sm={1} md={2} borderRight={1} borderColor={"lightgray"}>
+      <Grid
+        minWidth={"160px"}
+        maxWidth={"200px"}
+        item
+        xs={1}
+        sm={1}
+        md={2}
+        borderRight={1}
+        borderColor={"lightgray"}>
         <List>
           <ListItem disablePadding>
             <ListItemButton
@@ -181,7 +280,7 @@ const Admin = () => {
               <ListItemIcon>
                 <PersonIcon />
               </ListItemIcon>
-              <ListItemText primary="User List" />
+              <ListItemText primary="Customer List" />
             </ListItemButton>
           </ListItem>
         </List>
@@ -189,13 +288,13 @@ const Admin = () => {
 
       {/* Table */}
       <Grid item xs={3} sm={3} md={6}>
-        <Box p={4}>
+        <Box px={3}>
           {selectedIndex === 0 ? (
             <>
               <Typography variant="h4" align="left" mb={2}>
                 All Category
               </Typography>
-              {/* <Table columns={categoryColumns} rows={categories} idField={"category_id"} /> */}
+              <Table columns={categoryColumns} rows={categories} idField={"category_id"} />
             </>
           ) : selectedIndex === 1 ? (
             <>
@@ -207,9 +306,9 @@ const Admin = () => {
           ) : (
             <>
               <Typography variant="h4" align="left" mb={2}>
-                All User
+                All Customser
               </Typography>
-              {/* <Table columns={userColumns} rows={users} idField={"customer_id"} /> */}
+              <Table columns={customerColumns} rows={users} idField={"customer_id"} />
             </>
           )}
         </Box>

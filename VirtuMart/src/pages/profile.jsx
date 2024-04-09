@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import LockIcon from "@mui/icons-material/Lock";
+import Api from "../api";
 
 const Profile = () => {
   const [profileData, setProfileData] = useState({
@@ -49,10 +50,12 @@ const Profile = () => {
         }));
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = (e, type) => {
     e.preventDefault();
+
     console.log("Profile data:", profileData);
     console.log("password data", passwordData);
+
     setProfileData({
       firstName: "",
       lastName: "",
@@ -107,7 +110,10 @@ const Profile = () => {
               <Typography variant="h4" align="left" mb={2}>
                 Edit Profile
               </Typography>
-              <form onSubmit={onSubmit}>
+              <form
+                onSubmit={(e) => {
+                  onSubmit(e, "profile");
+                }}>
                 <Grid
                   container
                   columnSpacing={{ xs: 1, sm: 2, md: 3 }}
@@ -159,7 +165,7 @@ const Profile = () => {
                   onChange={onUpdateField}
                   variant="outlined"
                   fullWidth
-                  type="number"
+                  type="text"
                   margin="normal"
                   required
                 />
@@ -216,7 +222,10 @@ const Profile = () => {
               <Typography variant="h4" align="left" mb={2}>
                 Change Password
               </Typography>
-              <form onSubmit={onSubmit}>
+              <form
+                onSubmit={(e) => {
+                  onSubmit(e, "password");
+                }}>
                 <TextField
                   id="originalPs"
                   name="originalPs"

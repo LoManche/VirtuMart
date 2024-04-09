@@ -17,7 +17,8 @@ export default function Table({ columns, rows, idField }) {
           },
         }}
         pageSizeOptions={[10, 20, 30]}
-        disableRowSelectionOnClick
+        disableSelectionOnClick
+        disableColumnSelector
         getRowId={(row) => row[idField]}
         autoHeight
         components={{
@@ -25,7 +26,7 @@ export default function Table({ columns, rows, idField }) {
             return <GridFooter sx={{ minHeight: "40px", height: "40px" }} />;
           },
         }}
-        autosizeOnMount
+        //autosizeOnMount
       />
     </Box>
   );

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import Typography from "@mui/material/Typography";
-import { Box } from "@mui/material";
+import { Box, CardMedia } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 export default function ProductCard({
   type,
@@ -14,12 +14,14 @@ export default function ProductCard({
   const navigate = useNavigate();
   return (
     <Box
+      width={"100%"}
+      height={"100%"}
       display="flex"
       flexDirection={"column"}
       onClick={() => {
         navigate(`/product/${productId}`);
       }}>
-      <img src={imageUrl} style={{ borderRadius: 10 }} />
+      <CardMedia sx={{ height: "400px" }} image={imageUrl} style={{ borderRadius: 10 }} />
       <Typography sx={{ fontWeight: "bold" }}>{productName}</Typography>
       <Typography color={"grey"}>{description}</Typography>
       <Box display={"flex"} alignItems={"center"}>

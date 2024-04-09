@@ -25,7 +25,7 @@ function Banner() {
   ];
 
   return (
-    <Box display="flex" width="100%">
+    <Box display="flex" width="100%" justifyContent="center">
       <Carousel
         showArrows={true}
         autoplay={true}
@@ -164,7 +164,7 @@ export default function Home() {
       <Grid container spacing={1} columns={{ xs: 4, sm: 8, md: 12 }}>
         {recommendedProducts.map((item, key) => {
           return (
-            <Grid item xs={2} sm={4} md={4} key={key}>
+            <Grid item xs={2} sm={4} md={4} key={key} height={"400px"}>
               <ProductCard
                 type={"recommendedProduct"}
                 imageUrl={item.img}
@@ -183,10 +183,10 @@ export default function Home() {
           Products on Sale
         </Typography>
       </Box>
-      <Grid container spacing={1} columns={{ xs: 4, sm: 8, md: 12 }}>
+      <Grid container spacing={2} columns={{ xs: 4, sm: 8, md: 12 }}>
         {productsOnSale.map((item, key) => {
           return (
-            <Grid item xs={2} sm={4} md={4} key={key}>
+            <Grid item xs={2} sm={4} md={4} key={key} height={"400px"}>
               <ProductCard
                 type={"productOnSale"}
                 imageUrl={item.img}
