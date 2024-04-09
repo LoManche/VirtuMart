@@ -7,6 +7,6 @@
 5. Enter: mysql --local-infile=1 -u root -p 
 6. Type your password
 7. Replace the path in dbinit.sql to your path in the load data section
-8. Enter: source YOURPATH\3100Project\db_setup\dbinit.sql
+8. Enter: source YOURPATH\db_setup\dbinit.sql
 
 It should be working now!
