@@ -69,11 +69,11 @@ app.post("/signup/setup", queries.signUpSetup);
 app.post("/forgotpassword", queries.forgotPassword);
 app.post("/resetpassword", queries.resetPassword);
 app.put("/profile", isCustomerAuthenticated, queries.updateCustomer);
-app.get("/getprofile", isCustomerAuthenticated, queries.getCustomerProfile);
+app.post("/getprofile", isCustomerAuthenticated, queries.getCustomerProfile);
 
 // Product related APIs
 app.get("/product", queries.getAllProducts);
-app.get("/product/:id", queries.getProductById);
+app.post("/product/:id", queries.getProductById);
 app.post("/search", queries.searchProducts);
 
 // Shopping cart related APIs
@@ -88,7 +88,7 @@ app.put("/review/add", isCustomerAuthenticated, queries.addReview);
 // Order related APIs
 app.post("/placeorder", isCustomerAuthenticated, queries.placeOrder);
 app.get("/order", isCustomerAuthenticated, queries.getAllOrder);
-app.get("/orderById", isCustomerAuthenticated, queries.getOrderById);
+app.post("/orderById", isCustomerAuthenticated, queries.getOrderById);
 
 // Admin related APIs
 app.use("/admin", isAdminAuthenticated);
@@ -98,7 +98,7 @@ app.put("/admin/product/update", queries.updateProduct);
 app.delete("/admin/product/delete", queries.deleteProduct);
 
 app.get("/admin/customer", queries.getAllCustomers);
-app.get("/admin/customerById", queries.getCustomerById);
+app.post("/admin/customerById", queries.getCustomerById);
 app.put("/admin/customer/update", queries.updateCustomer);
 app.delete("/admin/customer/delete", queries.deleteCustomer);
 
