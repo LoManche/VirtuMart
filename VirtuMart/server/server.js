@@ -5,6 +5,7 @@ import express from "express";
 import session from "express-session";
 import cors from "cors";
 import process from "process";
+import path from "path";
 
 import { sessionStore } from "./db.js";
 import router from "./apiRoutes.js";
@@ -45,14 +46,14 @@ app.use(
 
 
 // Serve the app in dist(created by npm run build)
-app.use(express.static("dist"));
+app.use(express.static(path.join(__dirname,"dist")));
 
 // Login related APIs
 app.use("/api", router);
 
-// app.get('*', (req, res) => {
-//   res.sendFile(__dirname + '/index.html');
-// });
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+});
 
 // Start the server
 app.listen(PORT, () => {

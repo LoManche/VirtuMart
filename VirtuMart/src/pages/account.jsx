@@ -18,7 +18,7 @@ import ProfileSetup from "../components/profileSetup";
 
 export default function Account() {
   const navigate = useNavigate();
-  const [page, setPage] = useState("setup");
+  const [page, setPage] = useState("login");
   const [loginForm, setLoginForm] = useState({ email: "", password: "", rememberMe: false });
   const [registerForm, setRegisterForm] = useState({ email: "", password: "", confirmPs: "" });
   const [forgetPsForm, setForgetPsForm] = useState({ email: "" });
