@@ -123,15 +123,21 @@ const Profile = () => {
   }
 
   async function handlePasswordUpdate({ passwordData }) {
-    try {
-      const res = await Api.updatePassword({
-        oldPs: passwordData.originalPs,
-        newPs: passwordData.newPs,
-      });
-      setOpen(true);
-      setReloadFlag(Math.random());
-    } catch (err) {
-      handleError(err, "");
+    if (user.role === "customer") {
+      try {
+        const res = await Api.updatePassword({
+          oldpassword: passwordData.originalPs,
+          newpassword: passwordData.newPs,
+          customer_id: user.userId,
+        });
+        setAlertMessage("Password Changed Successful");
+        setOpen(true);
+        setReloadFlag(Math.random());
+      } catch (err) {
+        setAlertMessage("Incorrect Original Password");
+        setOpen(true);
+        handleError(err, "");
+      }
     }
   }
 
@@ -141,7 +147,7 @@ const Profile = () => {
       handleProfileUpdate({ profileData: profileData });
     } else {
       // change password api not yet finished
-      // handlePasswordUpdate({ passwordData: passwordData });
+      handlePasswordUpdate({ passwordData: passwordData });
     }
     console.log("Profile data:", profileData);
     console.log("password data", passwordData);

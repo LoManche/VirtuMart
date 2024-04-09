@@ -130,9 +130,11 @@ const Api = {
       }),
     );
   },
-  // updatePassword: async function ({ oldPs, newPs }) {
-  //   return handleServerResponse(await axios.post("/updatePs", { oldPs, newPs }));
-  // },
+  updatePassword: async function ({ oldpassword, newpassword, customer_id }) {
+    return handleServerResponse(
+      await axios.post("/changepassword", { oldpassword, newpassword, customer_id }),
+    );
+  },
 };
 
 export default Api;
