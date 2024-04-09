@@ -3,6 +3,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import ProductCarousel from "../components/productCarousel";
 import { TextField } from "@mui/material";
+import { BarChart } from "@mui/x-charts/BarChart";
 
 function ProductShow({ thumbnails }) {
   return (
@@ -30,33 +31,36 @@ function ProductShow({ thumbnails }) {
   );
 }
 
-function StarRating({ rating, label }) {
+function HorizontalBars(ratings) {
   return (
-    <div className="flex gap-5 px-5 mt-3.5 w-full max-md:flex-wrap max-md:max-w-full">
-      <div className="grow my-auto text-2xl leading-9 text-black">{label}</div>
-      <div className="flex flex-col grow shrink-0 justify-center items-start basis-0 bg-zinc-300 w-fit max-md:max-w-full">
-        <div className={`shrink-0 bg-orange-400 h-[39px] w-[${rating * 20}%]`} />
-      </div>
-    </div>
+    <BarChart
+      yAxis={[
+        {
+          id: "barCategories",
+          data: ["5 star", "4 star", "3 star", "2 star", "1 star"],
+          scaleType: "band",
+        },
+      ]}
+      series={[
+        {
+          data: [80, 20, 10, 5, 1],
+        },
+      ]}
+      width={500}
+      height={300}
+      layout="horizontal"
+    />
   );
 }
 
 function Ratings() {
-  const ratings = [
-    { rating: 5, label: "5 star" },
-    { rating: 4, label: "4 star" },
-    { rating: 3, label: "3 star" },
-    { rating: 2, label: "2 star" },
-    { rating: 1, label: "1 star" },
-  ];
+  const ratings = [80, 20, 10, 5, 1];
 
   return (
-    <section className="flex flex-col max-w-[561px]">
+    <div>
       <h2 className="w-full text-2xl leading-9 text-black max-md:max-w-full">Ratings</h2>
-      {ratings.map((item) => (
-        <StarRating key={item.rating} rating={item.rating} label={item.label} />
-      ))}
-    </section>
+      <HorizontalBars ratings={ratings}></HorizontalBars>
+    </div>
   );
 }
 
@@ -66,25 +70,34 @@ function SubmitButton() {
       style={{ display: "flex" }}
       className="flex gap-0 justify-center mt-2 text-black whitespace-nowrap">
       <img
-        style={{ maxWidth: "30px", marginRight: "10px" }}
+        style={{ maxWidth: "40px", marginRight: "10px" }}
         loading="lazy"
         src="https://cdn.builder.io/api/v1/image/assets/TEMP/ceb61dcb7806c77ba41c36a7a4b20a5e1adf8a3d8aab7530f5d8fb110b3a1223?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
         alt="Submit icon"
         className="shrink-0 aspect-[1.41] w-[42px]"
       />
-      <div className="justify-center px-2.5 py-1 rounded-lg bg-black bg-opacity-10">Submit</div>
+      <button
+        style={{
+          backgroundColor: "black",
+          color: "white",
+          borderRadius: "8px",
+          width: "70px",
+          height: "30px",
+        }}>
+        Submit
+      </button>
     </div>
   );
 }
 
 function Review() {
   return (
-    <div className="flex flex-col items-start text-base font-medium leading-6 max-w-[626px]">
+    <div style={{ marginTop: "30px" }}>
       <img
         loading="lazy"
         src="https://cdn.builder.io/api/v1/image/assets/TEMP/2d4f202be17199b06718a9abed5cfe11b0709fa2cf3ed64b1609df3e38af69e7?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
         alt="Product image"
-        className="w-56 max-w-full aspect-[6.67] fill-zinc-300"
+        style={{ maxHeight: "27px" }}
       />
       <div style={{ width: "500px", marginBottom: "10px" }}>
         <TextField
