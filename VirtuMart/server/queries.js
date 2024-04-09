@@ -187,7 +187,7 @@ export const resetPassword = async (req, res) => {
   await queryHandler(deleteQuery, [hashed], 403, res);
   res.status(200).type("text/plain").send("Password Reset Successful");
 };
-export const changepassword = async (req, res) => {
+export const changePassword = async (req, res) => {
   const { oldpassword, newpassword, customer_id } = req.body;
   const query = "SELECT * FROM customers WHERE customer_id = ? and password = ?";
   const rows = await queryHandler(query, [customer_id, oldpassword], 403, res);

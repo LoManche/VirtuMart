@@ -26,6 +26,8 @@ router.post("/signup/otp", queries.signUpOTP);
 router.post("/signup/setup", queries.signUpSetup);
 router.post("/forgotpassword", queries.forgotPassword);
 router.post("/resetpassword", queries.resetPassword);
+router.post("/changepassword", queries.changePassword);
+
 router.put("/profile", isCustomerAuthenticated, queries.updateCustomer);
 router.post("/getprofile", isCustomerAuthenticated, queries.getCustomerProfile);
 
