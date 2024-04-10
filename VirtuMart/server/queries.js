@@ -295,7 +295,7 @@ export const searchProducts = async (req, res) => {
     }
     const query2 =
       "SELECT * FROM products WHERE title like ? AND category_id = ? AND price >= ? AND price <= ? AND stock >= ?";
-    const rows = await queryHandler(query2, [title, category, minPrice, maxPrice, stock]);
+    const rows = await queryHandler(query2, ['%' + title +'%','%' +category +'%', minPrice, maxPrice, stock]);
     res.status(200).json(rows);
     
   } catch (error) {
