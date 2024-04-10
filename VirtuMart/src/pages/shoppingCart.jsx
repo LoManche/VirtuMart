@@ -3,7 +3,7 @@ import ProductCarousel from "../components/productCarousel";
 import { TextField, Button } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 
-function DefaultAddress() {
+export function DefaultAddress() {
   return (
     <div style={{ display: "flex" }}>
       <Checkbox
@@ -23,7 +23,7 @@ function DefaultAddress() {
   );
 }
 
-function AddressInput() {
+export function AddressInput() {
   return (
     <div style={{ display: "flex" }}>
       <Checkbox
@@ -62,16 +62,6 @@ function AddressInput() {
       </div>
     </div>
   );
-}
-
-function Subtotal(price, subtotal) {
-  // Loop through popularProducts array
-  for (let i = 0; i < 3; i++) {
-    // Access each product and add its price to the total
-    subtotal += price;
-  }
-
-  return subtotal;
 }
 
 export default function ShoppingCart() {

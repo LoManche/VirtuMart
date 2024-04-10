@@ -1,4 +1,5 @@
 import { TextField, Button } from "@mui/material";
+import SnackbarButton from "./snackBar";
 
 function ProductImage({ src, alt }) {
   return (
@@ -48,27 +49,6 @@ function ProductQuantity() {
   );
 }
 
-{
-  /*
-function ProductOptions(options) {
-  return (
-    <div>
-      <TextField
-        style={{ width: "200px", margin: "5px" }}
-        select
-        label="Options"
-        defaultValue="Options">
-        {options.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </TextField>
-    </div>
-  );
-}
-*/
-}
 function ProductStock() {
   return (
     <div>
@@ -79,16 +59,16 @@ function ProductStock() {
 
 function AddToCartButton() {
   return (
-    <Button
-      style={{
+    <SnackbarButton
+      buttonStyle={{
         backgroundColor: "black",
         color: "white",
         borderRadius: "8px",
         width: "100%",
         height: "50px",
-      }}>
-      Add to cart
-    </Button>
+      }}
+      msg={"Add to Cart"}
+      alert={"Successfully Added"}></SnackbarButton>
   );
 }
 

@@ -25,7 +25,7 @@ export default function ProductInstance({ img, title, price }) {
         </div>
         <div style={{ width: "200px" }}>
           <h1 style={{ marginBottom: "1px", width: "200px" }}>{title}</h1>
-          <p style={{ margin: "1px 0px 1px 0px" }}>{price}</p>
+          <p style={{ margin: "1px 0px 1px 0px" }}>${price.toFixed(2)}</p>
           <TextField style={{ width: "40px", margin: "7px" }} defaultValue="1" size="small" />
           <p style={{ color: "#06B122", margin: "1px 0px 1px 0px" }}>In Stock</p>
         </div>
