@@ -487,7 +487,7 @@ export const placeOrder = async (req, res) => {
 // TODO: Test all the admin functions
 export const getAllProductAdmin = async (req, res) => {
   try {
-    const query = `SELECT p.asin,p.title,p.imgURL,p.rating,p.discount, c.category_id, c.category_name, p.description, p.stock, COALESCE(sum(mp.quantity), 0) as sold FROM products p
+    const query = `SELECT p.asin,p.title,p.imgURL,p.rating,p.price,p.discount, c.category_id, c.category_name, p.description, p.stock, COALESCE(sum(mp.quantity), 0) as sold FROM products p
     LEFT JOIN martorder_products mp ON p.asin = mp.product_id
     INNER JOIN categories c ON c.category_id = p.category_id
     GROUP BY p.asin`;
