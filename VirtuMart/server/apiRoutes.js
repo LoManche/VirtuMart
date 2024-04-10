@@ -45,6 +45,9 @@ router.post("/cart/update", queries.updateCart);
 
 // Review related APIs
 router.put("/review/add", isCustomerAuthenticated, queries.addReview);
+// Recommendation and Notification
+router.post("/recommendation", queries.getRecommendation);
+router.post("/notification", queries.getNotification);
 
 // Order related APIs
 router.post("/placeorder", isCustomerAuthenticated, queries.placeOrder);
