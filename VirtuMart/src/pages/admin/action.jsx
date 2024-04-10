@@ -185,10 +185,8 @@ export default function Action({
 
   async function onSubmit(e) {
     e.preventDefault();
-    console.log(form);
     try {
       const res = await apiResponse();
-      console.log(type, actionType);
       setAlertMessage(res);
       setOpen(true);
       setReloadFlag(Math.random());

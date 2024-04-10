@@ -355,7 +355,6 @@ const Admin = () => {
         throw err;
       }
     };
-    console.log(categories, products);
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reloadFlag]);
