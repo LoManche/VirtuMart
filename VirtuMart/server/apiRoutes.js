@@ -53,6 +53,7 @@ router.get("/orderById", isCustomerAuthenticated, queries.getOrderById);
 // Admin related APIs
 router.use("/admin", isAdminAuthenticated);
 
+router.get("/admin/product", queries.getAllProductAdmin);
 router.post("/admin/product/add", queries.addProduct);
 router.put("/admin/product/update", queries.updateProduct);
 router.delete("/admin/product/delete", queries.deleteProduct);

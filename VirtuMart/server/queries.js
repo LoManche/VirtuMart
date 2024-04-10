@@ -23,7 +23,7 @@ async function queryHandler(query, params, errorStatusCode, res) {
     return rows;
   } catch (error) {
     res.status(errorStatusCode).type("text/plain").send(error);
-    return;
+    return "Error";
   } finally {
     if (connection) connection.release();
   }
@@ -393,6 +393,15 @@ export const placeOrder = async (req, res) => {
 //-----------------------------------------------------------------------------------------------
 // Admin functions
 // TODO: Test all the admin functions
+export const getAllProductAdmin = async (req, res) => {
+  const query = `SELECT p.asin,p.title,p.imgURL,p.rating,p.discount, c.category_id, c.category_name, p.description, p.stock, COALESCE(sum(mp.quantity), 0) as sold FROM products p
+  LEFT JOIN martorder_products mp ON p.asin = mp.product_id
+  INNER JOIN categories c ON c.category_id = p.category_id
+  GROUP BY p.asin`;
+  const rows = await queryHandler(query, [], 404, res);
+  res.status(200).json(rows);
+};
+
 export const addProduct = async (req, res) => {
   const { asin, title, imgURL, rating, price, discount, category_id, description, stock } =
     req.body;
