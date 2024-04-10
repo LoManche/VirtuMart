@@ -269,11 +269,11 @@ export const getAllProducts = async (req, res) => {
 
 export const getProductById = async (req, res) => {
   try {
-    const query = "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.category_id WHERE asin = ?";
+    const query1 = "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.category_id WHERE asin = ?";
     const product = await queryHandler(query1, [req.params.id]);
     const query2 =
-      "SELECT rating,review,dateOfReview,username FROM reviews INNER JOIN customers ON customers.customer_id = reviews.customer_id";
-    const reviews = await queryHandler(query2, []);
+      "SELECT rating,review,dateOfReview,username FROM reviews INNER JOIN customers ON customers.customer_id = reviews.customer_id where product_id = ?";
+    const reviews = await queryHandler(query2, [req.params.id]);
     res.status(200).json({ product, reviews });  
   } catch (error) {
     res.status(500).type("text/plain").send(error)
