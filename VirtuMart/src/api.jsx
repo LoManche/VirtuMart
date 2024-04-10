@@ -89,13 +89,27 @@ const Api = {
   allProduct: async function () {
     return handleServerResponse(await axios.get("/product"));
   },
-  getProductById: async function () {
-    return handleServerResponse(await axios.get("/product/:id"));
+  getProductById: async function ({ product_id }) {
+    return handleServerResponse(await axios.get(`/product/${product_id}`));
   },
-  search: async function ({ name, category, minPrice, maxPrice, stock }) {
+  search: async function ({ title, category, minPrice, maxPrice, stock }) {
     return handleServerResponse(
-      await axios.post("/search", { name, category, minPrice, maxPrice, stock }),
+      await axios.post("/search", { title, category, minPrice, maxPrice, stock }),
     );
+  },
+
+  // Recommendation and Notification
+  getRandomProducts: async function () {
+    return handleServerResponse(await axios.get("/randomproduct"));
+  },
+  recommendation: async function ({ customer_id }) {
+    return handleServerResponse(await axios.post("/recommendation", { customer_id }));
+  },
+  notification: async function ({ customer_id }) {
+    return handleServerResponse(await axios.post("/notification", { customer_id }));
+  },
+  discount: async function () {
+    return handleServerResponse(await axios.get("/discount"));
   },
 
   // Admin

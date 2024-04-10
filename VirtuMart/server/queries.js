@@ -120,9 +120,8 @@ export const signUp = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
-  
 };
 
 export const signUpOTP = async (req, res) => {
@@ -130,7 +129,7 @@ export const signUpOTP = async (req, res) => {
     const otp = req.body.otp;
     const email = req.body.email;
     const query = "SELECT * FROM otp WHERE email = ?";
-  
+
     const rows = await queryHandler(query, [email]);
     if (rows.length === 0) {
       res.status(404).type("text/plain").send("No OTP found for this email");
@@ -147,7 +146,7 @@ export const signUpOTP = async (req, res) => {
       res.status(200).type("text/plain").send("OTP Matched");
     }
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -180,11 +179,10 @@ export const forgotPassword = async (req, res) => {
       } else {
         res.status(200).type("text/plain").send("Reset link is sent to your email");
       }
-    })
+    });
   } catch (error) {
-    res.status(404).type("text/plain").send(error)  
+    res.status(404).type("text/plain").send(error);
   }
-  
 };
 export const resetPassword = async (req, res) => {
   try {
@@ -203,7 +201,7 @@ export const resetPassword = async (req, res) => {
     await queryHandler(deleteQuery, [hashed]);
     res.status(200).type("text/plain").send("Password Reset Successful");
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const changePassword = async (req, res) => {
@@ -217,31 +215,33 @@ export const changePassword = async (req, res) => {
     }
     const updateQuery = "UPDATE customers SET password = ? WHERE customer_id = ?";
     await queryHandler(updateQuery, [newpassword, customer_id]);
-    res.status(200).type("text/plain").send("Password Changed");    
+    res.status(200).type("text/plain").send("Password Changed");
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
 export const signUpSetup = async (req, res) => {
   try {
-    const { username, firstName, lastName, phone, address, city, state, password, email } = req.body;
+    const { username, firstName, lastName, phone, address, city, state, password, email } =
+      req.body;
     const query =
       "INSERT INTO customers (username, firstName, lastName, phone, address, city, state, password, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     const params = [username, firstName, lastName, phone, address, city, state, password, email];
     await queryHandler(query, params);
-    res.status(200).type("text/plain").send("Success");    
+    res.status(200).type("text/plain").send("Success");
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const getCustomerProfile = async (req, res) => {
   try {
-    const query = "SELECT customer_id, username, firstName, lastName, phone, address, city, state, email FROM customers WHERE customer_id = ?";
+    const query =
+      "SELECT customer_id, username, firstName, lastName, phone, address, city, state, email FROM customers WHERE customer_id = ?";
     const rows = await queryHandler(query, [req.body.customer_id]);
-    res.status(200).json(rows);    
+    res.status(200).json(rows);
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -251,32 +251,34 @@ export const getRandomProducts = async (req, res) => {
   try {
     const query = "SELECT * FROM products ORDER BY RAND() LIMIT 6";
     const rows = await queryHandler(query, []);
-    res.status(200).json(rows)  
+    res.status(200).json(rows);
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
 export const getAllProducts = async (req, res) => {
   try {
-    const query = "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.category_id";
+    const query =
+      "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.category_id";
     const rows = await queryHandler(query, []);
-    res.status(200).json(rows);  
+    res.status(200).json(rows);
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
 export const getProductById = async (req, res) => {
   try {
-    const query1 = "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.category_id WHERE asin = ?";
+    const query1 =
+      "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.category_id WHERE asin = ?";
     const product = await queryHandler(query1, [req.params.id]);
     const query2 =
       "SELECT rating,review,dateOfReview,username FROM reviews INNER JOIN customers ON customers.customer_id = reviews.customer_id where product_id = ?";
     const reviews = await queryHandler(query2, [req.params.id]);
-    res.status(200).json({ product, reviews });  
+    res.status(200).json({ product, reviews });
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -290,11 +292,16 @@ export const searchProducts = async (req, res) => {
     const stock = req.body.stock || 0;
     const query2 =
       "SELECT * FROM products p INNER JOIN categories c on p.category_id=c.category_id WHERE title like ? AND c.category_name like ? AND price >= ? AND price <= ? AND stock >= ?";
-    const rows = await queryHandler(query2, ['%' + title +'%','%' +category +'%', minPrice, maxPrice, stock]);
+    const rows = await queryHandler(query2, [
+      "%" + title + "%",
+      "%" + category + "%",
+      minPrice,
+      maxPrice,
+      stock,
+    ]);
     res.status(200).json(rows);
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 // Cart functions
@@ -303,9 +310,9 @@ export const getCart = async (req, res) => {
     const query =
       "SELECT product_id, quantity FROM shopping_cart INNER JOIN customers ON shopping_cart.customer_id = customers.customer_id WHERE shopping_cart.customer_id = ?";
     const rows = await queryHandler(query, [req.body.customer_id]);
-    res.status(200).json(rows);  
+    res.status(200).json(rows);
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -315,9 +322,8 @@ export const addToCart = async (req, res) => {
     const query = "INSERT INTO shopping_cart (customer_id, product_id, quantity) VALUES (?, ?, ?)";
     await queryHandler(query, [customer_id, product_id, quantity]);
     res.status(201).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -328,9 +334,8 @@ export const removeFromCart = async (req, res) => {
     const query = "DELETE FROM shopping_cart WHERE customer_id = ? AND product_id = ?";
     await queryHandler(query, [c_id, p_id]);
     res.status(200).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -339,20 +344,20 @@ export const updateCart = async (req, res) => {
     const c_id = req.body.customer_id;
     const p_id = req.body.product_id;
     const qty = req.body.quantity;
-  
+
     const query = "UPDATE shopping_cart SET quantity = ? WHERE customer_id = ? AND product_id = ?";
     await queryHandler(query, [qty, c_id, p_id]);
     res.status(200).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
 // TODO: Test addReview
 export const addReview = async (req, res) => {
   try {
-    const query = "INSERT INTO reviews (customer_id, product_id, rating, review) VALUES (?, ?, ?, ?)";
+    const query =
+      "INSERT INTO reviews (customer_id, product_id, rating, review) VALUES (?, ?, ?, ?)";
     const review = req.body.review || "";
     const params = [req.body.customer_id, req.body.product_id, req.body.rating, review];
     await queryHandler(query, params);
@@ -362,9 +367,8 @@ export const addReview = async (req, res) => {
     const rating = rows[0]["AVG(rating)"];
     const query3 = "UPDATE products SET rating = ? WHERE asin = ?";
     res.status(201).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const getRecommendation = async (req, res) => {
@@ -390,18 +394,18 @@ export const getNotification = async (req, res) => {
     const customer_id = req.body.customer_id;
     const query = "SELECT * FROM notifications WHERE customer_id = ?";
     const rows = await queryHandler(query, [customer_id]);
-    res.status(200).json(rows);  
+    res.status(200).json(rows);
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const getDiscount = async (req, res) => {
   try {
-    const query = "SELECT * FROM products WHERE price > discount LIMIT 6";
+    const query = "SELECT * FROM products WHERE discount > 0 LIMIT 6";
     const rows = await queryHandler(query, []);
     res.status(200).json(rows);
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -412,9 +416,8 @@ export const getAllOrder = async (req, res) => {
       "SELECT order_id, subtotal, shippingcost, orderstatus, dateoforder FROM martorder WHERE customer_id = ?";
     const rows = await queryHandler(query, [customer_id]);
     res.status(200).json(rows);
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -426,9 +429,8 @@ export const getOrderById = async (req, res) => {
     const productquery = "SELECT * FROM martorder_products WHERE order_id = ?";
     const productrows = await queryHandler(productquery, [order_id]);
     res.status(200).json({ orderrows, productrows });
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -496,9 +498,8 @@ export const getAllProductAdmin = async (req, res) => {
     GROUP BY p.asin`;
     const rows = await queryHandler(query, []);
     res.status(200).json(rows);
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -511,9 +512,8 @@ export const addProduct = async (req, res) => {
     const params = [asin, title, imgURL, rating, price, discount, category_id, description, stock];
     await queryHandler(query, params);
     res.status(201).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const updateProduct = async (req, res) => {
@@ -525,9 +525,8 @@ export const updateProduct = async (req, res) => {
     const params = [title, imgURL, rating, price, discount, category_id, description, stock, asin];
     await queryHandler(query, params);
     res.status(200).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const deleteProduct = async (req, res) => {
@@ -536,9 +535,8 @@ export const deleteProduct = async (req, res) => {
     const query = "DELETE FROM products WHERE asin = ?";
     await queryHandler(query, [asin]);
     res.status(200).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -547,9 +545,8 @@ export const getAllCustomers = async (req, res) => {
     const query = "SELECT * FROM customers";
     const rows = await queryHandler(query, []);
     res.status(200).json(rows);
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const getCustomerById = async (req, res) => {
@@ -557,14 +554,12 @@ export const getCustomerById = async (req, res) => {
     const query = "SELECT * FROM customers WHERE customer_id = ?";
     const rows = await queryHandler(query, [req.body.customer_id]);
     res.status(200).json(rows);
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const updateCustomer = async (req, res) => {
   try {
-    
     const {
       customer_id,
       username,
@@ -594,7 +589,7 @@ export const updateCustomer = async (req, res) => {
     await queryHandler(query, params);
     res.status(200).type("text/plain").send("Success");
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const deleteCustomer = async (req, res) => {
@@ -603,9 +598,8 @@ export const deleteCustomer = async (req, res) => {
     const query = "DELETE FROM customers WHERE customer_id = ?";
     await queryHandler(query, [c_id]);
     res.status(200).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -615,12 +609,11 @@ export const getAllCategories = async (req, res) => {
     LEFT JOIN products p ON c.category_id = p.category_id
     LEFT JOIN martorder_products mp ON p.asin = mp.product_id
     GROUP BY c.category_id
-    `
+    `;
     const rows = await queryHandler(query, []);
     res.status(200).json(rows);
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const addCategory = async (req, res) => {
@@ -629,9 +622,8 @@ export const addCategory = async (req, res) => {
     const query = "INSERT INTO categories (category_name) VALUES (?)";
     await queryHandler(query, [category]);
     res.status(201).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const updateCategory = async (req, res) => {
@@ -641,9 +633,8 @@ export const updateCategory = async (req, res) => {
     const query = "UPDATE categories SET category_name = ? WHERE category_id = ?";
     await queryHandler(query, [category, c_id]);
     res.status(200).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const deleteCategory = async (req, res) => {
@@ -652,9 +643,8 @@ export const deleteCategory = async (req, res) => {
     const query = "DELETE FROM categories WHERE category_id = ?";
     await queryHandler(query, [c_id]);
     res.status(200).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 
@@ -663,9 +653,8 @@ export const getAllAdmin = async (req, res) => {
     const query = "SELECT * FROM admin";
     const rows = await queryHandler(query, []);
     res.status(200).json(rows);
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const addAdmin = async (req, res) => {
@@ -675,9 +664,8 @@ export const addAdmin = async (req, res) => {
     const query = "INSERT INTO admin (adminname, password) VALUES (?, ?)";
     await queryHandler(query, [adminname, password]);
     res.status(201).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const updateAdmin = async (req, res) => {
@@ -688,9 +676,8 @@ export const updateAdmin = async (req, res) => {
     const query = "UPDATE admin SET adminname = ?, password = ? WHERE admin_id = ?";
     await queryHandler(query, [adminname, password, admin_id]);
     res.status(200).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
 export const deleteAdmin = async (req, res) => {
@@ -699,8 +686,7 @@ export const deleteAdmin = async (req, res) => {
     const query = "DELETE FROM admin WHERE admin_id = ?";
     await queryHandler(query, [admin_id]);
     res.status(200).type("text/plain").send("Success");
-    
   } catch (error) {
-    res.status(500).type("text/plain").send(error)
+    res.status(500).type("text/plain").send(error);
   }
 };
