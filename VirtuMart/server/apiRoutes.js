@@ -32,6 +32,7 @@ router.put("/profile", isCustomerAuthenticated, queries.updateCustomer);
 router.post("/getprofile", isCustomerAuthenticated, queries.getCustomerProfile);
 
 // Product related APIs
+router.get("/randomproduct", queries.getRandomProducts);
 router.get("/product", queries.getAllProducts);
 router.get("/product/:id", queries.getProductById);
 router.post("/search", queries.searchProducts);
