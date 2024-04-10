@@ -223,7 +223,7 @@ export const getAllProducts = async (req, res) => {
 };
 
 export const getProductById = async (req, res) => {
-  const query1 = "SELECT * FROM products WHERE asin = ?";
+  const query = "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.category_id WHERE asin = ?";
   const product = await queryHandler(query1, [req.params.id], 403, res);
   const query2 =
     "SELECT rating,review,dateOfReview,username FROM reviews INNER JOIN customers ON customers.customer_id = reviews.customer_id";
@@ -466,7 +466,11 @@ export const deleteCustomer = async (req, res) => {
 };
 
 export const getAllCategories = async (req, res) => {
-  const query = "SELECT * FROM categories";
+  const query = `SELECT c.category_id, c.category_name, sum(p.stock) as stock, COALESCE(sum(mp.quantity), 0) as sold FROM categories c
+  INNER JOIN products p ON c.category_id = p.category_id
+  INNER JOIN martorder_products mp ON p.asin = mp.product_id
+  GROUP BY c.category_id
+  `
   const rows = await queryHandler(query, [], 403, res);
   res.status(200).json(rows);
 };
