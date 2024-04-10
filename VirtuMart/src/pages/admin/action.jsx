@@ -65,37 +65,55 @@ export default function Action({ type, actionType, initialData, setPage, setRelo
   };
 
   const apiResponse = () => {
+    //success admin(add,edit,del),category(add,edit,del),customer(edit,del)
     return {
       category: {
-        add: Api.adminAddCategory({ category_name: form.category_name }),
-        edit: Api.adminUpdateCategory({
-          category_id: form.category_id,
-          category_name: form.category_name,
-        }),
-        delete: Api.adminDeleteCategory({ category_id: form.category_id }),
+        add: () => {
+          return Api.adminAddCategory({ category_name: form.category_name });
+        },
+        edit: () => {
+          return Api.adminUpdateCategory({
+            category_id: form.category_id,
+            category_name: form.category_name,
+          });
+        },
+        delete: () => {
+          return Api.adminDeleteCategory({ category_id: form.category_id });
+        },
       },
       admin: {
-        add: Api.adminAddAdmin({ adminname: form.adminname, password: form.password }),
-        edit: Api.adminUpdateAdmin({
-          admin_id: form.admin_id,
-          adminname: form.adminname,
-          password: form.password,
-        }),
-        delete: Api.adminDeleteAdmin({ admin_id: form.admin_id }),
+        add: () => {
+          return Api.adminAddAdmin({ adminname: form.adminname, password: form.password });
+        },
+        edit: () => {
+          return Api.adminUpdateAdmin({
+            admin_id: form.admin_id,
+            adminname: form.adminname,
+            password: form.password,
+          });
+        },
+        delete: () => {
+          return Api.adminDeleteAdmin({ admin_id: form.admin_id });
+        },
       },
       customer: {
-        edit: Api.adminUpdateUser({
-          customer_id: form.customer_id,
-          username: form.username,
-          firstName: form.firstName,
-          lastName: form.lastName,
-          phone: form.phone,
-          city: form.city,
-          state: form.state,
-          password: form.password,
-          email: form.email,
-        }),
-        delete: Api.adminDeleteUser({ customer_id: form.customer_id }),
+        edit: () => {
+          return Api.adminUpdateUser({
+            customer_id: form.customer_id,
+            username: form.username,
+            firstName: form.firstName,
+            lastName: form.lastName,
+            phone: form.phone,
+            city: form.city,
+            state: form.state,
+            password: form.password,
+            email: form.email,
+            address: form.address,
+          });
+        },
+        delete: () => {
+          return Api.adminDeleteUser({ customer_id: form.customer_id });
+        },
       },
     }[type][actionType];
   };
@@ -105,9 +123,11 @@ export default function Action({ type, actionType, initialData, setPage, setRelo
     console.log(form);
     try {
       const res = await apiResponse();
+      console.log(type, actionType);
       setAlertMessage(res);
       setOpen(true);
       setReloadFlag(Math.random());
+      setTimeout(setPage("table"), 1000);
     } catch (err) {
       setAlertMessage("Failed");
       setOpen(true);
@@ -124,6 +144,7 @@ export default function Action({ type, actionType, initialData, setPage, setRelo
         message={alertMessage}
         action={action}
       />
+
       <form
         onSubmit={(e) => {
           onSubmit(e);
@@ -138,7 +159,12 @@ export default function Action({ type, actionType, initialData, setPage, setRelo
           <Box width="80%" pb={2}>
             <Box display="flex" justifyContent={"space-between"}>
               <Typography variant="h3" align="center">
-                {type[0].toUpperCase() + type.slice(1)} Information
+                {actionType[0].toUpperCase() +
+                  actionType.slice(1) +
+                  " " +
+                  type[0].toUpperCase() +
+                  type.slice(1)}{" "}
+                Information
               </Typography>
               <Button
                 onClick={(e) => {
@@ -169,7 +195,7 @@ export default function Action({ type, actionType, initialData, setPage, setRelo
                       fullWidth
                       margin="normal"
                       required
-                      disabled={field.read}
+                      disabled={field.read || actionType === "delete"}
                       {...field.props}
                     />
                   </Grid>
@@ -178,7 +204,7 @@ export default function Action({ type, actionType, initialData, setPage, setRelo
             </Grid>
           </Box>
           <Button type="submit" variant="contained" color="info" size="large">
-            Save
+            Submit
           </Button>
         </Box>
       </form>

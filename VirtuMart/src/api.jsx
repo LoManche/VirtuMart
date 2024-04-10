@@ -149,7 +149,7 @@ const Api = {
     );
   },
   adminDeleteProduct: async function ({ asin }) {
-    return handleServerResponse(await axios.delete("/admin/product/delete", { asin }));
+    return handleServerResponse(await axios.post("/admin/product/delete", { asin }));
   },
   /////////////////////////////
   allUser: async function () {
@@ -164,6 +164,7 @@ const Api = {
     firstName,
     lastName,
     phone,
+    address,
     city,
     state,
     password,
@@ -176,6 +177,7 @@ const Api = {
         firstName,
         lastName,
         phone,
+        address,
         city,
         state,
         password,
@@ -184,7 +186,7 @@ const Api = {
     );
   },
   adminDeleteUser: async function ({ customer_id }) {
-    return handleServerResponse(await axios.delete("/admin/customer/delete", { customer_id }));
+    return handleServerResponse(await axios.post("/admin/customer/delete", { customer_id }));
   },
   ///////////////////////////
   allCategory: async function () {
@@ -199,7 +201,7 @@ const Api = {
     );
   },
   adminDeleteCategory: async function ({ category_id }) {
-    return handleServerResponse(await axios.delete("/admin/category/delete", { category_id }));
+    return handleServerResponse(await axios.post("/admin/category/delete", { category_id }));
   },
   ///////////////////////////
   allAdmin: async function () {
@@ -214,7 +216,7 @@ const Api = {
     );
   },
   adminDeleteAdmin: async function ({ admin_id }) {
-    return handleServerResponse(await axios.delete("/admin/admin/delete", { admin_id }));
+    return handleServerResponse(await axios.post("/admin/admin/delete", { admin_id }));
   },
 
   //customer
