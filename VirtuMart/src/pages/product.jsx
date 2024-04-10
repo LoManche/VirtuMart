@@ -4,6 +4,9 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import ProductCarousel from "../components/productCarousel";
 import { TextField, Button } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
+import { useEffect, useState } from "react";
+import Api from "../api";
+import handleError from "../components/handleError";
 
 function ProductShow({ thumbnails }) {
   return (
@@ -308,7 +311,21 @@ export default function Product() {
       description: "@southside_customs",
     },
   ];
-
+  const [product, setProduct] = useState({});
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const product = await Api.getProductById({ product_id: "B07DD95XF9" });
+        setProduct(product);
+      } catch (err) {
+        handleError(err, () => {}, true);
+        throw err;
+      }
+    };
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  console.log(product);
   return (
     <div>
       <div style={{ display: "flex" }}>
