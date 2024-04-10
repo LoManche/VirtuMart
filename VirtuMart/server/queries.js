@@ -484,7 +484,6 @@ export const getAllCategories = async (req, res) => {
   res.status(200).json(rows);
 };
 export const addCategory = async (req, res) => {
-  const c_id = req.body.category_id;
   const category = req.body.category_name;
   const query = "INSERT INTO categories (category_name) VALUES (?)";
   await queryHandler(query, [category], 403, res);
