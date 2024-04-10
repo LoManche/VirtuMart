@@ -48,6 +48,7 @@ router.put("/review/add", isCustomerAuthenticated, queries.addReview);
 // Recommendation and Notification
 router.post("/recommendation", queries.getRecommendation);
 router.post("/notification", queries.getNotification);
+router.get("/discount", queries.getDiscount)
 
 // Order related APIs
 router.post("/placeorder", isCustomerAuthenticated, queries.placeOrder);

@@ -400,6 +400,16 @@ export const getNotification = async (req, res) => {
     res.status(500).type("text/plain").send(error)
   }
 };
+export const getDiscount = async (req, res) => {
+  try {
+    const query = "SELECT * FROM products WHERE price > discount LIMIT 6";
+    const rows = await queryHandler(query, []);
+    res.status(200).json(rows);
+  } catch (error) {
+    res.status(500).type("text/plain").send(error)
+  }
+};
+
 export const getAllOrder = async (req, res) => {
   try {
     const { customer_id } = req.body;
