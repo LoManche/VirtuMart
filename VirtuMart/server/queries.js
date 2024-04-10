@@ -23,7 +23,7 @@ async function queryHandler(query, params, errorStatusCode, res) {
     return rows;
   } catch (error) {
     res.status(errorStatusCode).type("text/plain").send(error);
-    return;
+    return "Error";
   } finally {
     if (connection) connection.release();
   }
@@ -217,13 +217,13 @@ export const getCustomerProfile = async (req, res) => {
 //-----------------------------------------------------------------------------------------------
 // Customer functions
 export const getAllProducts = async (req, res) => {
-  const query = "SELECT * FROM products";
+  const query = "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.category_id";
   const rows = await queryHandler(query, [], 403, res);
   res.status(200).json(rows);
 };
 
 export const getProductById = async (req, res) => {
-  const query1 = "SELECT * FROM products WHERE asin = ?";
+  const query = "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.category_id WHERE asin = ?";
   const product = await queryHandler(query1, [req.params.id], 403, res);
   const query2 =
     "SELECT rating,review,dateOfReview,username FROM reviews INNER JOIN customers ON customers.customer_id = reviews.customer_id";
@@ -393,6 +393,15 @@ export const placeOrder = async (req, res) => {
 //-----------------------------------------------------------------------------------------------
 // Admin functions
 // TODO: Test all the admin functions
+export const getAllProductAdmin = async (req, res) => {
+  const query = `SELECT p.asin,p.title,p.imgURL,p.rating,p.discount, c.category_id, c.category_name, p.description, p.stock, COALESCE(sum(mp.quantity), 0) as sold FROM products p
+  LEFT JOIN martorder_products mp ON p.asin = mp.product_id
+  INNER JOIN categories c ON c.category_id = p.category_id
+  GROUP BY p.asin`;
+  const rows = await queryHandler(query, [], 404, res);
+  res.status(200).json(rows);
+};
+
 export const addProduct = async (req, res) => {
   const { asin, title, imgURL, rating, price, discount, category_id, description, stock } =
     req.body;
@@ -466,12 +475,15 @@ export const deleteCustomer = async (req, res) => {
 };
 
 export const getAllCategories = async (req, res) => {
-  const query = "SELECT * FROM categories";
+  const query = `SELECT c.category_id, c.category_name, sum(p.stock) as stock, COALESCE(sum(mp.quantity), 0) as sold FROM categories c
+  INNER JOIN products p ON c.category_id = p.category_id
+  LEFT JOIN martorder_products mp ON p.asin = mp.product_id
+  GROUP BY c.category_id
+  `
   const rows = await queryHandler(query, [], 403, res);
   res.status(200).json(rows);
 };
 export const addCategory = async (req, res) => {
-  const c_id = req.body.category_id;
   const category = req.body.category_name;
   const query = "INSERT INTO categories (category_name) VALUES (?)";
   await queryHandler(query, [category], 403, res);
