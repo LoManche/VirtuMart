@@ -17,10 +17,14 @@ const NoNeedLoginROUTES = [
   { path: "/", element: <Home /> },
   { path: "/account", element: <Account />, type: "account" },
   { path: "/profile", element: <Navigate to="/account" />, type: "account" },
-  { path: "/shoppingCart", element: <Navigate to="/account" />, type: "account" },
-  { path: "/order", element: <Navigate to="/account" />, type: "account" },
+  //uncomment these 2 lines
+  //{ path: "/shoppingCart", element: <Navigate to="/account" />, type: "account" },
+  //{ path: "/order", element: <Navigate to="/account" />, type: "account" },
   /* Indirect pages */
   { path: "/product/:productId", element: <Product /> },
+  //delete these 2 lines
+  { path: "/shoppingCart", element: <ShoppingCart /> },
+  { path: "/order", element: <Order /> },
   {
     path: "/resetpassword/hashed/:hashed",
     element: <Account presetPage={"resetPs"} />,

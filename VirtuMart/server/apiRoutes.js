@@ -48,7 +48,7 @@ router.put("/review/add", isCustomerAuthenticated, queries.addReview);
 // Recommendation and Notification
 router.post("/recommendation", queries.getRecommendation);
 router.post("/notification", queries.getNotification);
-router.get("/discount", queries.getDiscount)
+router.get("/discount", queries.getDiscount);
 
 // Order related APIs
 router.post("/placeorder", isCustomerAuthenticated, queries.placeOrder);
@@ -61,21 +61,21 @@ router.get("/orderById", isCustomerAuthenticated, queries.getOrderById);
 router.get("/admin/product", queries.getAllProductAdmin);
 router.post("/admin/product/add", queries.addProduct);
 router.put("/admin/product/update", queries.updateProduct);
-router.delete("/admin/product/delete", queries.deleteProduct);
+router.post("/admin/product/delete", queries.deleteProduct);
 
 router.get("/admin/customer", queries.getAllCustomers);
 router.post("/admin/customerById", queries.getCustomerById);
 router.put("/admin/customer/update", queries.updateCustomer);
-router.delete("/admin/customer/delete", queries.deleteCustomer);
+router.post("/admin/customer/delete", queries.deleteCustomer);
 
 router.get("/admin/category", queries.getAllCategories);
 router.post("/admin/category/add", queries.addCategory);
 router.put("/admin/category/update", queries.updateCategory);
-router.delete("/admin/category/delete", queries.deleteCategory);
+router.post("/admin/category/delete", queries.deleteCategory);
 
 router.get("/admin/admin", queries.getAllAdmin);
 router.post("/admin/admin/add", queries.addAdmin);
 router.put("/admin/admin/update", queries.updateAdmin);
-router.delete("/admin/admin/delete", queries.deleteAdmin);
+router.post("/admin/admin/delete", queries.deleteAdmin);
 
 export default router;

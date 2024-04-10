@@ -6,6 +6,7 @@ import session from "express-session";
 import cors from "cors";
 import process from "process";
 import path from "path";
+import bodyParser from "body-parser";
 
 import { sessionStore } from "./db.js";
 import router from "./apiRoutes.js";
@@ -13,7 +14,8 @@ import router from "./apiRoutes.js";
 const PORT = 3000;
 const app = express();
 const __dirname = process.cwd();
-
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -44,15 +46,14 @@ app.use(
   }),
 );
 
-
 // Serve the app in dist(created by npm run build)
-app.use(express.static(path.join(__dirname,"dist")));
+app.use(express.static(path.join(__dirname, "dist")));
 
 // Login related APIs
 app.use("/api", router);
 
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "dist", "index.html"));
 });
 
 // Start the server
