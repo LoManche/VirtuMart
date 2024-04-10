@@ -217,7 +217,7 @@ export const getCustomerProfile = async (req, res) => {
 //-----------------------------------------------------------------------------------------------
 // Customer functions
 export const getAllProducts = async (req, res) => {
-  const query = "SELECT * FROM products";
+  const query = "SELECT * FROM products INNER JOIN categories ON products.category_id = categories.category_id";
   const rows = await queryHandler(query, [], 403, res);
   res.status(200).json(rows);
 };
