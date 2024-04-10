@@ -60,7 +60,7 @@ create table if not exists reviews (
 	foreign key (customer_id) references customers(customer_id)
 );
 create table if not exists categories (
-    category_id int not null,
+    category_id int not null auto_increment,
     category_name varchar(255) not null,
     primary key (category_id)
 );
