@@ -2,6 +2,7 @@
 import Typography from "@mui/material/Typography";
 import { Box, CardMedia } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
 export default function ProductCard({
   type,
   imageUrl,
@@ -21,18 +22,32 @@ export default function ProductCard({
       onClick={() => {
         navigate(`/product/${productId}`);
       }}>
-      <CardMedia sx={{ height: "400px" }} image={imageUrl} style={{ borderRadius: 10 }} />
+      {/* <CardMedia
+        sx={{ height: "400px" }}
+        image={imageUrl}
+        style={{ height: "400px", borderRadius: 10, objectFit: "contain" }}
+      /> */}
+      <Box display="flex" justifyContent="center" mb={1}>
+        <Box width="300px">
+          <img src={imageUrl} style={{ height: "200px", width: "100%", objectFit: "contain" }} />
+        </Box>
+      </Box>
+
       <Typography sx={{ fontWeight: "bold" }}>{productName}</Typography>
       <Typography color={"grey"}>{description}</Typography>
       <Box display={"flex"} alignItems={"center"}>
         {originalPrice ? (
           <>
-            <Typography color={type === "productOnSale" ? "orange" : "black"}>{price}</Typography>
+            <Typography color={type === "productOnSale" ? "orange" : "black"}>${price}</Typography>
             <Box width={10} />
-            <Typography sx={{ textDecoration: "line-through" }}>{originalPrice}</Typography>
+            {type === "productOnSale" ? (
+              <Typography sx={{ textDecoration: "line-through" }}>${originalPrice}</Typography>
+            ) : (
+              <></>
+            )}
           </>
         ) : (
-          <Typography color={type === "productOnSale" ? "orange" : "black"}>{price}</Typography>
+          <Typography color={type === "productOnSale" ? "orange" : "black"}>${price}</Typography>
         )}
       </Box>
     </Box>

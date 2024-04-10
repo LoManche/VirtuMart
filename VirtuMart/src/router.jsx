@@ -10,13 +10,17 @@ import Order from "./pages/order";
 import { Box } from "@mui/material";
 import Footer from "./components/footer";
 import { useAppContext } from "./contexts/appContext";
+import SearchResult from "./pages/searchResult";
 
 const NoNeedLoginROUTES = [
   // /* No need login */
   { path: "*", element: <Navigate to="/" /> },
   { path: "/", element: <Home /> },
   { path: "/account", element: <Account />, type: "account" },
-  { path: "/profile", element: <Navigate to="/account" />, type: "account" },
+  {
+    path: "/result",
+    element: <SearchResult />,
+  },
   //uncomment these 2 lines
   //{ path: "/shoppingCart", element: <Navigate to="/account" />, type: "account" },
   //{ path: "/order", element: <Navigate to="/account" />, type: "account" },
@@ -39,6 +43,7 @@ const ROUTES = [
   { path: "/profile", element: <Profile /> },
   { path: "/shoppingCart", element: <ShoppingCart /> },
   { path: "/order", element: <Order /> },
+  { path: "/result", element: <SearchResult /> },
 
   /* Indirect pages */
   { path: "/product/:productId", element: <Product /> },

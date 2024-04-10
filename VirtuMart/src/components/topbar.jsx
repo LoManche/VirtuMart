@@ -35,9 +35,17 @@ export default function Topbar({ type }) {
   const badgeContent = 0;
   const { isLogin, setIsLogin, user, setUser } = useAppContext();
   const role = user?.role;
+  const [searchInput, setSearchInput] = React.useState(localStorage.getItem("searchInput"));
+
+  const onSubmit = (e) => {
+    if (e.key === "Enter") {
+      localStorage.setItem("searchInput", searchInput);
+      navigate("/result");
+    }
+  };
 
   const logout = async () => {
-    const res = await Api.logout();
+    await Api.logout();
     setIsLogin(false);
     setUser(undefined);
     localStorage.removeItem("isLogin");
@@ -184,9 +192,22 @@ export default function Topbar({ type }) {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <SearchIcon />
+                        <IconButton
+                          onClick={(e) => {
+                            onSubmit(e);
+                          }}>
+                          <SearchIcon />
+                        </IconButton>
                       </InputAdornment>
                     ),
+                  }}
+                  value={searchInput}
+                  onChange={(e) => {
+                    e.preventDefault();
+                    setSearchInput(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    onSubmit(e);
                   }}
                   fullWidth
                   position="relative"
