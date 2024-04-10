@@ -288,13 +288,8 @@ export const searchProducts = async (req, res) => {
     const minPrice = req.body.minPrice || 0;
     const maxPrice = req.body.maxPrice || 1000000;
     const stock = req.body.stock || 0;
-    if (category !== "%") {
-      const query1 = "SELECT category_id FROM categories WHERE category_name like ?";
-      const rows = await queryHandler(query1, [req.body.category + "%"]);
-      category = rows[0].category_id;
-    }
     const query2 =
-      "SELECT * FROM products WHERE title like ? AND category_id = ? AND price >= ? AND price <= ? AND stock >= ?";
+      "SELECT * FROM products p INNER JOIN categories c on p.category_id=c.category_id WHERE title like ? AND c.category_name like ? AND price >= ? AND price <= ? AND stock >= ?";
     const rows = await queryHandler(query2, ['%' + title +'%','%' +category +'%', minPrice, maxPrice, stock]);
     res.status(200).json(rows);
     
