@@ -132,7 +132,7 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS 
-(asin,title,imgUrl,rating,price,category_id);
+(asin,title,imgUrl,rating,price,category_id,stock);
 
 LOAD DATA LOCAL INFILE 'G:/Codes/3100Project/db_setup/selected_categories.csv' 
 INTO TABLE categories
