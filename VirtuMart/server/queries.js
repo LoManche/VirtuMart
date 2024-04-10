@@ -468,7 +468,7 @@ export const deleteCustomer = async (req, res) => {
 export const getAllCategories = async (req, res) => {
   const query = `SELECT c.category_id, c.category_name, sum(p.stock) as stock, COALESCE(sum(mp.quantity), 0) as sold FROM categories c
   INNER JOIN products p ON c.category_id = p.category_id
-  INNER JOIN martorder_products mp ON p.asin = mp.product_id
+  LEFT JOIN martorder_products mp ON p.asin = mp.product_id
   GROUP BY c.category_id
   `
   const rows = await queryHandler(query, [], 403, res);
