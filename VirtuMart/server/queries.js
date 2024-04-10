@@ -237,7 +237,7 @@ export const signUpSetup = async (req, res) => {
 };
 export const getCustomerProfile = async (req, res) => {
   try {
-    const query = "SELECT * FROM customers WHERE customer_id = ?";
+    const query = "SELECT customer_id, username, firstName, lastName, phone, address, city, state, email FROM customers WHERE customer_id = ?";
     const rows = await queryHandler(query, [req.body.customer_id]);
     res.status(200).json(rows);    
   } catch (error) {
