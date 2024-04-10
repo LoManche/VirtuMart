@@ -308,7 +308,7 @@ const Api = {
 
   addToCart: async function ({ customer_id, product_id, quantity }) {
     return handleServerResponse(
-      await axios.post("/cart", {
+      await axios.post("/cart/add", {
         customer_id,
         product_id,
         quantity,
@@ -317,14 +317,8 @@ const Api = {
   },
 
   //shoppingCart
-  getCartItem: async function ({ customer_id }) {
-    return handleServerResponse(
-      await axios.get("/cart", {
-        cart_id,
-        product_id,
-        quantity,
-      }),
-    );
+  getCart: async function ({ customer_id }) {
+    return handleServerResponse(await axios.get("/cart"));
   },
 
   getDefaultAddress: async function ({ customer_id }) {

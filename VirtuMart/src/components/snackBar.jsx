@@ -3,11 +3,29 @@ import Button from "@mui/material/Button";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 
-export default function SnackbarButton({ buttonStyle, msg, alert }) {
+export default function SnackbarButton({ buttonStyle, msg, alert, quantity }) {
   const [open, setOpen] = React.useState(false);
 
   const handleClick = () => {
     setOpen(true);
+    const [cart, setCart] = useState({});
+    useEffect(() => {
+      const loadData = async () => {
+        try {
+          const product = await Api.addToCart({
+            customer_id: "1",
+            product_id: "B07DD95XF9",
+            quantity: { quantity },
+          });
+          setCart(cart);
+        } catch (err) {
+          handleError(err, () => {}, true);
+          throw err;
+        }
+      };
+      loadData();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
   };
 
   const handleClose = (event, reason) => {

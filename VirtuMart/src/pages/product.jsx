@@ -330,10 +330,14 @@ export default function Product() {
     <div>
       <div style={{ display: "flex" }}>
         <div style={{ margin: "0 70px 10px 50px", width: "500px" }}>
-          <ProductShow thumbnails={thumbnails}></ProductShow>
+          <img src={product.product[0].imgURL} alt={"image"} style={{ height: "500px" }} />
         </div>
         <div style={{ margin: "0 50px 10px 70px" }}>
-          <ProductDetails></ProductDetails>
+          <h1>{product.product[0].title}</h1>
+          <p>Rating: {product.product[0].rating}/5</p>
+          <p>${product.product[0].price}</p>
+          <p>{product.product[0].description}</p>
+          <ProductDetails stock={product.product[0].stock}></ProductDetails>
         </div>
       </div>
 
