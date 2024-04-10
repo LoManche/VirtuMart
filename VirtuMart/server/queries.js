@@ -374,19 +374,19 @@ export const addReview = async (req, res) => {
 };
 export const getRecommendation = async (req, res) => {
   const customer_id = req.body.customer_id;
-  let connection;
+  //let connection;
   try {
-    connection = await pool.getConnection();
-    await connection.beginTransaction();
+    //connection = await pool.getConnection();
+    //await connection.beginTransaction();
     const query = `SELECT * FROM products WHERE category_id IN 
     (SELECT p.category_id FROM martorder_products mp 
     INNER JOIN martorder mo ON mp.order_id = mo.order_id 
     INNER JOIN products p ON mp.product_id = p.asin WHERE mo.customer_id = ?)`;
-    const rows = await connection.query(query, [customer_id]);
-    await connection.commit();
+    const rows = await queryHandler(query, [customer_id]);
+    //await connection.commit();
     res.status(200).json(rows);
   } catch (error) {
-    connection.rollback();
+    //connection.rollback();
     res.status(500).type("text/plain").send(error);
   } finally {
     if (connection) connection.release();
