@@ -255,6 +255,142 @@ const Api = {
       await axios.post("/changepassword", { oldpassword, newpassword, customer_id }),
     );
   },
+
+  //productPage
+  getProduct: async function ({ asin }) {
+    return handleServerResponse(
+      await axios.get("/product/:asin", {
+        title,
+        imgURL,
+        rating,
+        price,
+        discount,
+        category_id,
+        stock,
+      }),
+    );
+  },
+
+  getReviews: async function ({ product_id }) {
+    return handleServerResponse(
+      await axios.get("/product/:asin", {
+        review_id,
+        rating,
+        customer_id,
+        review,
+        dateofReview,
+      }),
+    );
+  },
+
+  addToCart: async function ({ customer_id, product_id, quantity }) {
+    return handleServerResponse(
+      await axios.post("/cart", {
+        customer_id,
+        product_id,
+        quantity,
+      }),
+    );
+  },
+
+  //shoppingCart
+  getCartItem: async function ({ customer_id }) {
+    return handleServerResponse(
+      await axios.get("/cart", {
+        cart_id,
+        product_id,
+        quantity,
+      }),
+    );
+  },
+
+  getDefaultAddress: async function ({ customer_id }) {
+    return handleServerResponse(
+      await axios.get("/cart", {
+        address,
+        city,
+        state,
+      }),
+    );
+  },
+
+  changeQuantity: async function ({ cart_id, customer_id, product_id, quantity }) {
+    return handleServerResponse(
+      await axios.put("/cart", {
+        quantity,
+      }),
+    );
+  },
+
+  removeCartItem: async function ({ customer_id, cart_id }) {
+    return handleServerResponse(
+      await axios.delete("/cart", {
+        customer_id,
+        cart_id,
+      }),
+    );
+  },
+
+  checkOut: async function ({
+    customer_id,
+    subtotal,
+    orderStatus,
+    dateOfOrder,
+    flat,
+    city,
+    country,
+    postalCode,
+  }) {
+    return handleServerResponse(
+      await axios.post("/order/:customer_id", {
+        customer_id,
+        subtotal,
+        orderStatus,
+        dateOfOrder,
+        flat,
+        city,
+        country,
+        postalCode,
+      }),
+    );
+  },
+
+  orderItem: async function ({ order_id, customer_id, product_id, quantity }) {
+    return handleServerResponse(
+      await axios.post("/order/:customer_id", {
+        order_id,
+        customer_id,
+        product_id,
+        quantity,
+      }),
+    );
+  },
+
+  //order
+  getAllOrder: async function ({ customer_id }) {
+    return handleServerResponse(
+      await axios.get("/order", {
+        order_id,
+        subTotal,
+        orderStatus,
+        dateOfOrder,
+        flat,
+        city,
+        country,
+        postalCode,
+      }),
+    );
+  },
+
+  getOrderItems: async function ({ order_id, customer_id }) {
+    return handleServerResponse(
+      await axios.post("/cart", {
+        id,
+        product_id,
+        quantity,
+      }),
+    );
+  },
 };
 
 export default Api;
