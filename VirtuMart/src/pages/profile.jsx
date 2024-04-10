@@ -125,10 +125,25 @@ const Profile = () => {
   async function handlePasswordUpdate({ passwordData }) {
     if (user.role === "customer") {
       try {
-        const res = await Api.updatePassword({
+        await Api.updatePassword({
           oldpassword: passwordData.originalPs,
           newpassword: passwordData.newPs,
           customer_id: user.userId,
+        });
+        setAlertMessage("Password Changed Successful");
+        setOpen(true);
+        setReloadFlag(Math.random());
+      } catch (err) {
+        setAlertMessage("Incorrect Original Password");
+        setOpen(true);
+        handleError(err, "");
+      }
+    } else {
+      try {
+        await Api.adminChangePassword({
+          oldpassword: passwordData.originalPs,
+          newpassword: passwordData.newPs,
+          admin_id: user.userId,
         });
         setAlertMessage("Password Changed Successful");
         setOpen(true);

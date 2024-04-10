@@ -220,7 +220,22 @@ export const changePassword = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
-
+export const changeAdminPassword = async (req, res) => {
+  try {
+    const { oldpassword, newpassword, admin_id } = req.body;
+    const query = "SELECT * FROM admin WHERE admin_id = ? and password = ?";
+    const rows = await queryHandler(query, [admin_id, oldpassword]);
+    if (rows.length === 0) {
+      res.status(401).type("text/plain").send("Wrong Old password");
+      return;
+    }
+    const updateQuery = "UPDATE admin SET password = ? WHERE admin_id = ?";
+    await queryHandler(updateQuery, [newpassword, admin_id]);
+    res.status(200).type("text/plain").send("Password Changed");
+  } catch (error) {
+    res.status(500).type("text/plain").send(error);
+  }
+};
 export const signUpSetup = async (req, res) => {
   try {
     const { username, firstName, lastName, phone, address, city, state, password, email } =

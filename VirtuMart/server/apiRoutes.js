@@ -67,6 +67,7 @@ router.get("/admin/customer", queries.getAllCustomers);
 router.post("/admin/customerById", queries.getCustomerById);
 router.put("/admin/customer/update", queries.updateCustomer);
 router.post("/admin/customer/delete", queries.deleteCustomer);
+router.post("/admin/changePassword", queries.changeAdminPassword);
 
 router.get("/admin/category", queries.getAllCategories);
 router.post("/admin/category/add", queries.addCategory);

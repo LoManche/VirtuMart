@@ -113,6 +113,11 @@ const Api = {
   },
 
   // Admin
+  adminChangePassword: async function ({ oldpassword, newpassword, admin_id }) {
+    return handleServerResponse(
+      await axios.post("/admin/changePassword", { oldpassword, newpassword, admin_id }),
+    );
+  },
   adminAllProduct: async function () {
     return handleServerResponse(await axios.get("/admin/product"));
   },
