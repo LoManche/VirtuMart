@@ -54,15 +54,15 @@ const Admin = () => {
       minWidth: 250,
     },
     {
+      field: "stock",
+      headerName: "Stock",
+      flex: 1,
+    },
+    {
       field: "sold",
       headerName: "No Of Products Sold",
       flex: 1,
       minWidth: 150,
-    },
-    {
-      field: "stock",
-      headerName: "Stock",
-      flex: 1,
     },
     {
       field: "action",
@@ -119,6 +119,12 @@ const Admin = () => {
       flex: 4,
     },
     {
+      field: "category_name",
+      headerName: "Category Name",
+      minWidth: 250,
+      flex: 4,
+    },
+    {
       field: "price",
       headerName: "Price",
       valueGetter: (value, row) => `${row.price ? "$ " : ""} ${row.price || ""}`,
@@ -137,6 +143,12 @@ const Admin = () => {
       headerName: "Stock",
       minWidth: 100,
       flex: 1,
+    },
+    {
+      field: "sold",
+      headerName: "No Of Products Sold",
+      flex: 1,
+      minWidth: 150,
     },
     {
       field: "action",
@@ -310,7 +322,7 @@ const Admin = () => {
                 sx={{ color: green[50] }}
                 onClick={(e) => {
                   setType("admin");
-                  setActionType("edit");
+                  setActionType("delete");
                   setInitialData(params.row);
                   setPage("action");
                   localStorage.setItem("admin", "action");
@@ -329,7 +341,7 @@ const Admin = () => {
       try {
         const [categories, products, users, admins] = await Promise.all([
           Api.allCategory(),
-          Api.allProduct(),
+          Api.adminAllProduct(),
           Api.allUser(),
           Api.allAdmin(),
         ]);
@@ -436,6 +448,7 @@ const Admin = () => {
 
                     <Button
                       onClick={(e) => {
+                        e.preventDefault();
                         setType("category");
                         setActionType("add");
                         setPage("action");

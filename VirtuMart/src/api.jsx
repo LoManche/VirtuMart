@@ -99,6 +99,9 @@ const Api = {
   },
 
   // Admin
+  adminAllProduct: async function () {
+    return handleServerResponse(await axios.get("/admin/product"));
+  },
   adminAddProduct: async function ({
     asin,
     title,

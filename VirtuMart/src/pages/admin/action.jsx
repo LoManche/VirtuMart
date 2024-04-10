@@ -64,57 +64,38 @@ export default function Action({ type, actionType, initialData, setPage, setRelo
     }));
   };
 
-  const apiResponse = (type, actionType) => {
+  const apiResponse = () => {
     return {
       category: {
-        add: () => {
-          return async () => {
-            const { category_name } = form;
-            await Api.adminAddCategory({ category_name });
-          };
-        },
-        edit: () => {
-          return Api.adminUpdateCategory({
-            category_id: form.category_id,
-            category_name: form.category_name,
-          });
-        },
-        delete: () => {
-          return Api.adminDeleteCategory({ category_id: form.category_id });
-        },
+        add: Api.adminAddCategory({ category_name: form.category_name }),
+        edit: Api.adminUpdateCategory({
+          category_id: form.category_id,
+          category_name: form.category_name,
+        }),
+        delete: Api.adminDeleteCategory({ category_id: form.category_id }),
       },
       admin: {
-        add: () => {
-          return Api.adminAddAdmin({ adminname: form.adminname, password: form.password });
-        },
-        edit: () => {
-          return Api.adminUpdateAdmin({
-            admin_id: form.admin_id,
-            adminname: form.adminname,
-            password: form.password,
-          });
-        },
-        delete: () => {
-          return Api.adminDeleteAdmin({ admin_id: form.admin_id });
-        },
+        add: Api.adminAddAdmin({ adminname: form.adminname, password: form.password }),
+        edit: Api.adminUpdateAdmin({
+          admin_id: form.admin_id,
+          adminname: form.adminname,
+          password: form.password,
+        }),
+        delete: Api.adminDeleteAdmin({ admin_id: form.admin_id }),
       },
       customer: {
-        edit: () => {
-          return Api.adminUpdateUser({
-            customer_id: form.customer_id,
-            username: form.username,
-            firstName: form.firstName,
-            lastName: form.lastName,
-            phone: form.phone,
-            city: form.city,
-            state: form.state,
-            password: form.password,
-            email: form.email,
-          });
-        },
-        delete: () => {
-          return Api.adminDeleteUser({ customer_id: form.customer_id });
-        },
+        edit: Api.adminUpdateUser({
+          customer_id: form.customer_id,
+          username: form.username,
+          firstName: form.firstName,
+          lastName: form.lastName,
+          phone: form.phone,
+          city: form.city,
+          state: form.state,
+          password: form.password,
+          email: form.email,
+        }),
+        delete: Api.adminDeleteUser({ customer_id: form.customer_id }),
       },
     }[type][actionType];
   };
@@ -122,17 +103,16 @@ export default function Action({ type, actionType, initialData, setPage, setRelo
   async function onSubmit(e) {
     e.preventDefault();
     console.log(form);
-    // try {
-    //   const res = await apiResponse(type, actionType);
-    //   console.log(form, res);
-    //   setAlertMessage("Successful");
-    //   setOpen(true);
-    //   setReloadFlag(Math.random());
-    // } catch (err) {
-    //   setAlertMessage("Failed");
-    //   setOpen(true);
-    //   handleError(err, "");
-    // }
+    try {
+      const res = await apiResponse();
+      setAlertMessage(res);
+      setOpen(true);
+      setReloadFlag(Math.random());
+    } catch (err) {
+      setAlertMessage("Failed");
+      setOpen(true);
+      handleError(err, "");
+    }
   }
   return (
     <>
