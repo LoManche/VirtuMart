@@ -15,7 +15,7 @@ export default function ProductCarousel({ Products }) {
       draggable={false}
       focusOnSelect={false}
       infinite
-      itemClass=""
+      itemClass="padding: 5px"
       keyBoardControl
       minimumTouchDrag={80}
       pauseOnHover
@@ -57,15 +57,17 @@ export default function ProductCarousel({ Products }) {
       slidesToSlide={3}
       swipeable>
       {Products.map((item, index) => (
-        <ProductCard
-          key={index}
-          type={"Product"}
-          imageUrl={item.img}
-          price={item.price}
-          description={item.description}
-          productName={item.title}
-          productId={item.productID}
-        />
+        <div style={{ padding: "3px" }}>
+          <ProductCard
+            key={index}
+            type={"Product"}
+            imageUrl={item.img}
+            price={item.price}
+            description={item.description}
+            productName={item.title}
+            productId={item.productID}
+          />
+        </div>
       ))}
     </Carousel2>
   );

@@ -48,18 +48,27 @@ function ProductQuantity() {
   );
 }
 
-function ProductOptions() {
+{
+  /*
+function ProductOptions(options) {
   return (
     <div>
       <TextField
         style={{ width: "200px", margin: "5px" }}
         select
         label="Options"
-        defaultValue="Options"></TextField>
+        defaultValue="Options">
+        {options.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
+      </TextField>
     </div>
   );
 }
-
+*/
+}
 function ProductStock() {
   return (
     <div>
@@ -69,7 +78,18 @@ function ProductStock() {
 }
 
 function AddToCartButton() {
-  return <button style={{ color: "black", width: "100%", height: "50px" }}>Add to cart</button>;
+  return (
+    <button
+      style={{
+        backgroundColor: "black",
+        color: "white",
+        borderRadius: "8px",
+        width: "100%",
+        height: "50px",
+      }}>
+      Add to cart
+    </button>
+  );
 }
 
 export default function ProductDetails() {
@@ -91,7 +111,7 @@ export default function ProductDetails() {
       <ProductPrice price={productData.price} />
       <ProductDescription>{productData.description}</ProductDescription>
       <ProductQuantity />
-      <ProductOptions />
+      {/*<ProductOptions options={options}/>*/}
       <ProductStock />
       <AddToCartButton />
     </article>
