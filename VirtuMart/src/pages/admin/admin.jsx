@@ -355,7 +355,7 @@ const Admin = () => {
         throw err;
       }
     };
-
+    console.log(categories, products);
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reloadFlag]);
@@ -528,9 +528,11 @@ const Admin = () => {
       ) : (
         <Action
           type={type}
+          categories={categories}
           actionType={actionType}
           initialData={initialData}
           setPage={setPage}
+          reloadFlag={reloadFlag}
           setReloadFlag={setReloadFlag}
         />
       )}
