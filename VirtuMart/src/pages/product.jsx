@@ -326,42 +326,45 @@ export default function Product() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   console.log(product);
-  return (
-    <div>
-      <div style={{ display: "flex" }}>
-        <div style={{ margin: "0 70px 10px 50px", width: "500px" }}>
-          <img src={product.product[0].imgURL} alt={"image"} style={{ height: "500px" }} />
-        </div>
-        <div style={{ margin: "0 50px 10px 70px" }}>
-          <h1>{product.product[0].title}</h1>
-          <p>Rating: {product.product[0].rating}/5</p>
-          <p>${product.product[0].price}</p>
-          <p>{product.product[0].description}</p>
-          <ProductDetails stock={product.product[0].stock}></ProductDetails>
-        </div>
-      </div>
-
+  if (product.product?.length > 0) {
+    return (
       <div>
-        <h2>Recommended Products</h2>
-        <ProductCarousel Products={recommendedProducts}></ProductCarousel>
-      </div>
+        <div style={{ display: "flex" }}>
+          <div style={{ margin: "0 70px 10px 50px", width: "500px" }}>
+            <img src={product.product[0].imgURL} alt={"image"} style={{ height: "500px" }} />
+          </div>
+          <div style={{ margin: "0 50px 10px 70px" }}>
+            <h1>{product.product[0].title}</h1>
+            <p>Rating: {product.product[0].rating}/5</p>
+            <p>${product.product[0].price}</p>
+            <p>{product.product[0].description}</p>
+            <ProductDetails stock={product.product[0].stock}></ProductDetails>
+          </div>
+        </div>
 
-      <div>
-        <h2>Popular Products</h2>
-        <ProductCarousel Products={popularProducts}></ProductCarousel>
-      </div>
+        <div>
+          <h2>Recommended Products</h2>
+          <ProductCarousel Products={recommendedProducts}></ProductCarousel>
+        </div>
 
-      <div style={{ display: "flex" }}>
-        <div style={{ margin: "50px" }}>
-          <Ratings></Ratings>
+        <div>
+          <h2>Popular Products</h2>
+          <ProductCarousel Products={popularProducts}></ProductCarousel>
+        </div>
+
+        <div style={{ display: "flex" }}>
+          <div style={{ margin: "50px" }}>
+            <Ratings></Ratings>
+          </div>
+          <div style={{ margin: "50px" }}>
+            <Review></Review>
+          </div>
         </div>
         <div style={{ margin: "50px" }}>
-          <Review></Review>
+          <Comments></Comments>
         </div>
       </div>
-      <div style={{ margin: "50px" }}>
-        <Comments></Comments>
-      </div>
-    </div>
-  );
+    );
+  }
+  return;
 }
