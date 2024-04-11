@@ -90,7 +90,7 @@ const Api = {
     return handleServerResponse(await axios.get("/product"));
   },
   getProductById: async function ({ product_id }) {
-    return handleServerResponse(await axios.get(`/product/${product_id}`));
+    return handleServerResponse(await axios.get(`/product/${product_id.productId}`));
   },
   search: async function ({ title, category, minPrice, maxPrice, stock }) {
     return handleServerResponse(
