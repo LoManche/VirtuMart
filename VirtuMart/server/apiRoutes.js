@@ -44,7 +44,7 @@ router.delete("/cart/remove", queries.removeFromCart);
 router.post("/cart/update", queries.updateCart);
 
 // Review related APIs
-router.put("/review/add", isCustomerAuthenticated, queries.addReview);
+router.put("/review/add", queries.addReview);
 // Recommendation and Notification
 router.post("/recommendation", queries.getRecommendation);
 router.post("/notification", queries.getNotification);

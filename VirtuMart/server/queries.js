@@ -383,6 +383,7 @@ export const addReview = async (req, res) => {
     const query3 = "UPDATE products SET rating = ? WHERE asin = ?";
     res.status(201).type("text/plain").send("Success");
   } catch (error) {
+    console.log(error);
     res.status(500).type("text/plain").send(error);
   }
 };
