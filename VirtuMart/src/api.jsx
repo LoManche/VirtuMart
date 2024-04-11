@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getOrderById } from "../server/queries";
 axios.defaults.method = "POST";
 axios.defaults.baseURL = "http://localhost:3000/api";
 axios.defaults.headers.common["Content-Type"] = "application/json";
@@ -278,142 +279,167 @@ const Api = {
       await axios.post("/changepassword", { oldpassword, newpassword, customer_id }),
     );
   },
-
-  //productPage
-  getProduct: async function ({ asin }) {
-    return handleServerResponse(
-      await axios.get("/product/:asin", {
-        title,
-        imgURL,
-        rating,
-        price,
-        discount,
-        category_id,
-        stock,
-      }),
-    );
+  //cart
+  getCart: async function ({ customer_id }) {
+    return handleServerResponse(await axios.post("/cart", { customer_id }));
   },
-
-  getReviews: async function ({ product_id }) {
-    return handleServerResponse(
-      await axios.get("/product/:asin", {
-        review_id,
-        rating,
-        customer_id,
-        review,
-        dateofReview,
-      }),
-    );
-  },
-
   addToCart: async function ({ customer_id, product_id, quantity }) {
     return handleServerResponse(
-      await axios.post("/cart", {
-        customer_id,
-        product_id,
-        quantity,
-      }),
+      await axios.post("/cart/add", { customer_id, product_id, quantity }),
     );
   },
-
-  //shoppingCart
-  getCartItem: async function ({ customer_id }) {
+  removeFromCart: async function ({ c_id, p_id }) {
+    return handleServerResponse(await axios.post("/cart/remove", { c_id, p_id }));
+  },
+  updateCart: async function ({ c_id, p_id, qty }) {
+    return handleServerResponse(await axios.post("/cart/update", { c_id, p_id, qty }));
+  },
+  addReview: async function ({ review, customer_id, product_id, rating }) {
     return handleServerResponse(
-      await axios.get("/cart", {
-        cart_id,
-        product_id,
-        quantity,
-      }),
+      await axios.post("/review/add", { review, customer_id, product_id, rating }),
     );
   },
-
-  getDefaultAddress: async function ({ customer_id }) {
-    return handleServerResponse(
-      await axios.get("/cart", {
-        address,
-        city,
-        state,
-      }),
-    );
-  },
-
-  changeQuantity: async function ({ cart_id, customer_id, product_id, quantity }) {
-    return handleServerResponse(
-      await axios.put("/cart", {
-        quantity,
-      }),
-    );
-  },
-
-  removeCartItem: async function ({ customer_id, cart_id }) {
-    return handleServerResponse(
-      await axios.delete("/cart", {
-        customer_id,
-        cart_id,
-      }),
-    );
-  },
-
-  checkOut: async function ({
+  //order
+  placeOrder: async function ({
     customer_id,
     subtotal,
-    orderStatus,
-    dateOfOrder,
+    shippingcost,
     flat,
+    address,
     city,
     country,
     postalCode,
+    paymentMethod,
+    products,
   }) {
     return handleServerResponse(
-      await axios.post("/order/:customer_id", {
+      await axios.post("/placeorder", {
         customer_id,
         subtotal,
-        orderStatus,
-        dateOfOrder,
+        shippingcost,
         flat,
+        address,
         city,
         country,
         postalCode,
+        paymentMethod,
+        products,
       }),
     );
   },
 
-  orderItem: async function ({ order_id, customer_id, product_id, quantity }) {
-    return handleServerResponse(
-      await axios.post("/order/:customer_id", {
-        order_id,
-        customer_id,
-        product_id,
-        quantity,
-      }),
-    );
-  },
-
-  //order
   getAllOrder: async function ({ customer_id }) {
-    return handleServerResponse(
-      await axios.get("/order", {
-        order_id,
-        subTotal,
-        orderStatus,
-        dateOfOrder,
-        flat,
-        city,
-        country,
-        postalCode,
-      }),
-    );
+    return handleServerResponse(await axios.post("/order", { customer_id }));
   },
+  getOrderById: async function ({ customer_id, order_id }) {
+    return handleServerResponse(await axios.post("/order", { customer_id, order_id }));
+  },
+  // //
+  //   addToCart: async function ({ customer_id, product_id, quantity }) {
+  //     return handleServerResponse(
+  //       await axios.post("/cart", {
+  //         customer_id,
+  //         product_id,
+  //         quantity,
+  //       }),
+  //     );
+  //   },
 
-  getOrderItems: async function ({ order_id, customer_id }) {
-    return handleServerResponse(
-      await axios.post("/cart", {
-        id,
-        product_id,
-        quantity,
-      }),
-    );
-  },
+  //   //shoppingCart
+  //   getCartItem: async function ({ customer_id }) {
+  //     return handleServerResponse(
+  //       await axios.get("/cart", {customer_id
+  //       }),
+  //     );
+  //   },
+
+  //   getDefaultAddress: async function ({ customer_id }) {
+  //     return handleServerResponse(
+  //       await axios.get("/cart", {
+  //         address,
+  //         city,
+  //         state,
+  //       }),
+  //     );
+  //   },
+
+  //   changeQuantity: async function ({ cart_id, customer_id, product_id, quantity }) {
+  //     return handleServerResponse(
+  //       await axios.put("/cart", {
+  //         quantity,
+  //       }),
+  //     );
+  //   },
+
+  //   removeCartItem: async function ({ customer_id, cart_id }) {
+  //     return handleServerResponse(
+  //       await axios.delete("/cart", {
+  //         customer_id,
+  //         cart_id,
+  //       }),
+  //     );
+  //   },
+
+  //   checkOut: async function ({
+  //     customer_id,
+  //     subtotal,
+  //     orderStatus,
+  //     dateOfOrder,
+  //     flat,
+  //     city,
+  //     country,
+  //     postalCode,
+  //   }) {
+  //     return handleServerResponse(
+  //       await axios.post("/order/:customer_id", {
+  //         customer_id,
+  //         subtotal,
+  //         orderStatus,
+  //         dateOfOrder,
+  //         flat,
+  //         city,
+  //         country,
+  //         postalCode,
+  //       }),
+  //     );
+  //   },
+
+  //   orderItem: async function ({ order_id, customer_id, product_id, quantity }) {
+  //     return handleServerResponse(
+  //       await axios.post("/order/:customer_id", {
+  //         order_id,
+  //         customer_id,
+  //         product_id,
+  //         quantity,
+  //       }),
+  //     );
+  //   },
+
+  //   //order
+  //   getAllOrder: async function ({ customer_id }) {
+  //     return handleServerResponse(
+  //       await axios.get("/order", {
+  //         order_id,
+  //         subTotal,
+  //         orderStatus,
+  //         dateOfOrder,
+  //         flat,
+  //         city,
+  //         country,
+  //         postalCode,
+  //       }),
+  //     );
+  //   },
+
+  //   getOrderItems: async function ({ order_id, customer_id }) {
+  //     return handleServerResponse(
+  //       await axios.post("/cart", {
+  //         id,
+  //         product_id,
+  //         quantity,
+  //       }),
+  //     );
+  //   },
 };
 
 export default Api;
