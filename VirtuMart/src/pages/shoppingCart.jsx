@@ -3,7 +3,7 @@ import ProductCarousel from "../components/productCarousel";
 import { TextField, Button } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 
-export function DefaultAddress() {
+function DefaultAddress() {
   return (
     <div style={{ display: "flex" }}>
       <Checkbox
@@ -23,7 +23,7 @@ export function DefaultAddress() {
   );
 }
 
-export function AddressInput() {
+function AddressInput() {
   return (
     <div style={{ display: "flex" }}>
       <Checkbox
@@ -67,6 +67,16 @@ export function AddressInput() {
 export default function ShoppingCart() {
   const productID = "1";
   let subtotal = 0;
+  const cart = [
+    {
+      product_ID: "B07DD95XF9",
+      quantity: 3,
+    },
+    {
+      product_ID: "B00AWB13E4",
+      quantity: 4,
+    },
+  ];
   const Products = [
     {
       img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
@@ -83,38 +93,6 @@ export default function ShoppingCart() {
       price: 50,
       productID: 1,
       description: "@katie_wasserman",
-      quantity: "1",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25",
-      title: "Mushrooms",
-      price: 10,
-      productID: 1,
-      description: "@silverdalex",
-      quantity: "1",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1567306301408-9b74779a11af",
-      title: "Tomato basil",
-      price: 15,
-      productID: 1,
-      description: "@shelleypauls",
-      quantity: "1",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1471357674240-e1a485acb3e1",
-      title: "Sea star",
-      price: 30,
-      productID: 1,
-      description: "@peterlaster",
-      quantity: "1",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6",
-      title: "Bike",
-      price: 500,
-      productID: 1,
-      description: "@southside_customs",
       quantity: "1",
     },
   ];
@@ -159,9 +137,9 @@ export default function ShoppingCart() {
       {/*content*/}
       <div style={{ display: "flex" }}>
         <div>
-          {Products.map((Product, index) => (
+          {cart.map((cart, index) => (
             <div key={index} style={{ padding: "3px" }}>
-              <ProductInstance img={Product.img} title={Product.title} price={Product.price} />
+              <ProductInstance product_ID={cart.product_ID} quantity={cart.quantity} />
             </div>
           ))}
         </div>

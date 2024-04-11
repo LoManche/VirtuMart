@@ -1,6 +1,7 @@
 import { TextField, Button } from "@mui/material";
 import SnackbarButton from "./snackBar";
 import { useState } from "react";
+let quantity = 1;
 
 function ProductQuantity() {
   const [numberInput, setNumberInput] = useState(1);
@@ -26,8 +27,9 @@ function ProductQuantity() {
   );
 }
 
-function getQuantity(quantity) {
-  return quantity;
+function getQuantity(input) {
+  quantity = input;
+  console.log(quantity);
 }
 
 function ProductStock({ stock }) {

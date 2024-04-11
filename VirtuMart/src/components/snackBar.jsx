@@ -12,12 +12,14 @@ export default function SnackbarButton({ buttonStyle, msg, alert, quantity }) {
     useEffect(() => {
       const loadData = async () => {
         try {
-          const product = await Api.addToCart({
+          const cart = await Api.addToCart({
             customer_id: "1",
             product_id: "B07DD95XF9",
             quantity: { quantity },
           });
           setCart(cart);
+          console.log(quantity);
+          console.log(cart);
         } catch (err) {
           handleError(err, () => {}, true);
           throw err;
