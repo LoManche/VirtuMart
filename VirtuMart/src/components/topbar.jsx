@@ -64,20 +64,6 @@ export default function Topbar({ type }) {
     setAlertMenu(event.currentTarget);
   };
 
-  React.useEffect(() => {
-    const loadData = async () => {
-      try {
-        const alert = await Api.notification();
-        setAlert(alert);
-      } catch (err) {
-        handleError(err, () => {}, true);
-        throw err;
-      }
-    };
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const logout = async () => {
     await Api.logout();
     setIsLogin(false);
@@ -90,6 +76,21 @@ export default function Topbar({ type }) {
     handleMobileMenuClose();
     navigate("/");
   };
+  React.useEffect(() => {
+    const loadData = async () => {
+      if (user) {
+        try {
+          const alert = await Api.notification({ customer_id: user.userId });
+          setAlert(alert);
+        } catch (err) {
+          handleError(err, () => {}, true);
+          throw err;
+        }
+      }
+    };
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -157,22 +158,26 @@ export default function Topbar({ type }) {
       sx={{
         display: { xs: "block", md: "none" },
       }}>
-      <MenuItem
-        onClick={(e) => {
-          e.preventDefault();
-          handleOpenModal(e);
-        }}>
-        <ListItemIcon>
-          {badgeContent === 0 ? (
-            <NotificationsIcon />
-          ) : (
-            <Badge badgeContent={badgeContent} color="error">
+      {isLogin && role === "customer" ? (
+        <MenuItem
+          onClick={(e) => {
+            e.preventDefault();
+            handleOpenModal(e);
+          }}>
+          <ListItemIcon>
+            {badgeContent === 0 ? (
               <NotificationsIcon />
-            </Badge>
-          )}
-        </ListItemIcon>
-        <p>Notification</p>
-      </MenuItem>
+            ) : (
+              <Badge badgeContent={badgeContent} color="error">
+                <NotificationsIcon />
+              </Badge>
+            )}
+          </ListItemIcon>
+          <p>Notification</p>
+        </MenuItem>
+      ) : (
+        <></>
+      )}
       <Modal
         open={openModal}
         onClose={handleCloseModal}
@@ -318,7 +323,6 @@ export default function Topbar({ type }) {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static" elevation={0} sx={{ bgcolor: "#FFFFFF" }}>
           <Toolbar>
-            <ICONBUTTON icon={<MenuIcon />} />
             <Button
               onClick={() => navigate("/")}
               variant="text"
@@ -365,21 +369,25 @@ export default function Topbar({ type }) {
               </Box>
             </Box>
             <Box sx={{ display: { xs: "none", sm: "flex", md: "flex" } }}>
-              <IconButton
-                size="large"
-                color="inherit"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleAlertMenuOpen(e);
-                }}>
-                {badgeContent === 0 ? (
-                  <NotificationsIcon />
-                ) : (
-                  <Badge badgeContent={badgeContent} color="error">
+              {isLogin && role === "customer" ? (
+                <IconButton
+                  size="large"
+                  color="inherit"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleAlertMenuOpen(e);
+                  }}>
+                  {badgeContent === 0 ? (
                     <NotificationsIcon />
-                  </Badge>
-                )}
-              </IconButton>
+                  ) : (
+                    <Badge badgeContent={badgeContent} color="error">
+                      <NotificationsIcon />
+                    </Badge>
+                  )}
+                </IconButton>
+              ) : (
+                <></>
+              )}
               <Menu
                 anchorEl={alertMenu}
                 id="account-menu"

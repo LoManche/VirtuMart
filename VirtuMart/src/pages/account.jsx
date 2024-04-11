@@ -95,6 +95,7 @@ export default function Account({ presetPage }) {
       setUser({ userId: res.userid, role: res.role });
       navigate("/");
     } catch (err) {
+      setAlertMessage("Incorrect email or password.");
       setOpen(true);
       handleError(err, "");
     }
@@ -109,6 +110,8 @@ export default function Account({ presetPage }) {
       setOtpForm({ email: input.email, otp: "" });
       localStorage.setItem("tempEmail", input.email);
     } catch (err) {
+      setAlertMessage("Error");
+      setOpen(true);
       handleError(err, "");
     }
   }
@@ -122,6 +125,8 @@ export default function Account({ presetPage }) {
       setSetupForm({ ...setupForm, email: input.email });
       setPage("setup");
     } catch (err) {
+      setAlertMessage("Incorrect OTP, plase re-submit your email");
+      setOpen(true);
       setPage("register");
       localStorage.removeItem("tempEmail");
       handleError(err, "");
@@ -155,6 +160,8 @@ export default function Account({ presetPage }) {
       localStorage.removeItem("tempEmail");
       setPage("login");
     } catch (err) {
+      setAlertMessage("Account setup error, please retry");
+      setOpen(true);
       console.log(err);
       handleError(err, "");
     }
@@ -166,6 +173,8 @@ export default function Account({ presetPage }) {
         email: input.email,
       });
     } catch (err) {
+      setAlertMessage("No user found");
+      setOpen(true);
       handleError(err, "");
     }
   }
@@ -178,6 +187,8 @@ export default function Account({ presetPage }) {
       });
       setPage("login");
     } catch (err) {
+      setAlertMessage("Error");
+      setOpen(true);
       handleError(err, "");
     }
   }

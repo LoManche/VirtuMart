@@ -38,9 +38,9 @@ router.get("/product/:id", queries.getProductById);
 router.post("/search", queries.searchProducts);
 
 // Shopping cart related APIs
-router.get("/cart", queries.getCart);
+router.post("/cart", queries.getCart);
 router.post("/cart/add", queries.addToCart);
-router.delete("/cart/remove", queries.removeFromCart);
+router.post("/cart/remove", queries.removeFromCart);
 router.post("/cart/update", queries.updateCart);
 
 // Review related APIs
@@ -52,8 +52,8 @@ router.get("/discount", queries.getDiscount);
 
 // Order related APIs
 router.post("/placeorder", isCustomerAuthenticated, queries.placeOrder);
-router.get("/order", isCustomerAuthenticated, queries.getAllOrder);
-router.get("/orderById", isCustomerAuthenticated, queries.getOrderById);
+router.post("/order", isCustomerAuthenticated, queries.getAllOrder);
+router.post("/orderById", isCustomerAuthenticated, queries.getOrderById);
 
 // Admin related APIs
 //router.use("/admin", isAdminAuthenticated);
