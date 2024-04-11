@@ -290,15 +290,17 @@ const Api = {
       await axios.post("/cart/add", { customer_id, product_id, quantity }),
     );
   },
-  removeFromCart: async function ({ c_id, p_id }) {
-    return handleServerResponse(await axios.post("/cart/remove", { c_id, p_id }));
+  removeFromCart: async function ({ customer_id, product_id }) {
+    return handleServerResponse(await axios.post("/cart/remove", { customer_id, product_id }));
   },
-  updateCart: async function ({ c_id, p_id, qty }) {
-    return handleServerResponse(await axios.post("/cart/update", { c_id, p_id, qty }));
+  updateCart: async function ({ customer_id, product_id, quantity }) {
+    return handleServerResponse(
+      await axios.post("/cart/update", { customer_id, product_id, quantity }),
+    );
   },
   addReview: async function ({ review, customer_id, product_id, rating }) {
     return handleServerResponse(
-      await axios.post("/review/add", { review, customer_id, product_id, rating }),
+      await axios.put("/review/add", { review, customer_id, product_id, rating }),
     );
   },
   //order
@@ -334,7 +336,7 @@ const Api = {
     return handleServerResponse(await axios.post("/order", { customer_id }));
   },
   getOrderById: async function ({ customer_id, order_id }) {
-    return handleServerResponse(await axios.post("/order", { customer_id, order_id }));
+    return handleServerResponse(await axios.post("/orderById", { customer_id, order_id }));
   },
   // //
   //   addToCart: async function ({ customer_id, product_id, quantity }) {
