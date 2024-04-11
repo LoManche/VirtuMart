@@ -1,38 +1,13 @@
 import ProductDetails from "../components/productInfo";
-import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import ProductCarousel from "../components/productCarousel";
 import { TextField, Button } from "@mui/material";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
 import Api from "../api";
 import handleError from "../components/handleError";
-
-function ProductShow({ thumbnails }) {
-  return (
-    <Carousel showArrows={true} autoplay={true} infiniteLoop={true}>
-      <div>
-        <img src={thumbnails[0].src} alt={thumbnails[0].alt} />
-      </div>
-      <div>
-        <img src={thumbnails[1].src} alt={thumbnails[1].alt} />
-      </div>
-      <div>
-        <img src={thumbnails[2].src} alt={thumbnails[2].alt} />
-      </div>
-      <div>
-        <img src={thumbnails[3].src} alt={thumbnails[3].alt} />
-      </div>
-      {/*
-      {thumbnails.map((item, index) => (
-        <div>
-          <img src={item[index].src} alt={item[index].alt} />
-        </div>
-      ))}
-    */}
-    </Carousel>
-  );
-}
+import { useParams } from "react-router-dom";
+import { useAppContext } from "../contexts/appContext";
 
 function HorizontalBars(ratings) {
   return (
@@ -66,46 +41,34 @@ function Ratings() {
     </div>
   );
 }
-
-function SubmitButton() {
-  return (
-    <div style={{ display: "flex" }}>
-      {/*<Button
-        style={{
-          backgroundColor: "white",
-          width: "50px",
-          height: "30px",
-        }}>
-        <img
-          style={{ maxWidth: "40px" }}
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/ceb61dcb7806c77ba41c36a7a4b20a5e1adf8a3d8aab7530f5d8fb110b3a1223?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
-        />
-      </Button>
-      */}
-      <Button
-        style={{
-          backgroundColor: "black",
-          color: "white",
-          borderRadius: "8px",
-          width: "70px",
-          height: "30px",
-        }}>
-        Submit
-      </Button>
-    </div>
-  );
-}
-
 function Review() {
+  const [rating, setRating] = useState(0);
+  const [review, setReview] = useState("");
+  const p_id = useParams()
+  const { user } = useAppContext();
+  //customer_id = user.userId
+  async function submitReview() {
+    await Api.addReview({ product_id: p_id, rating: rating, customer_id: user.userId, review: review });
+  }
   return (
     <div style={{ marginTop: "30px" }}>
-      <img
+      {/* <img
         loading="lazy"
         src="https://cdn.builder.io/api/v1/image/assets/TEMP/2d4f202be17199b06718a9abed5cfe11b0709fa2cf3ed64b1609df3e38af69e7?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
         alt="Product image"
         style={{ maxHeight: "27px" }}
-      />
+      /> */}
+      <div style={{ marginBottom: "10px" }}>
+        <TextField
+          id="outlined-basic"
+          label="Rate the product (1-5)"
+          type="number"
+          inputProps={{ min: 1, max: 5 }}
+          onChange={(e) => setRating(e.target.value)}
+          fullWidth
+        />
+      </div>
+      
       <div style={{ width: "500px", marginBottom: "10px" }}>
         <TextField
           id="outlined-basic"
@@ -113,88 +76,59 @@ function Review() {
           multiline
           minRows={5}
           fullWidth
+          onChange={(e) => setReview(e.target.value)}
         />
       </div>
-      <SubmitButton />
+      <Button onClick = {() => submitReview()}
+      style={{
+        backgroundColor: "black",
+        color: "white",
+        borderRadius: "8px",
+        width: "70px",
+        height: "30px",
+      }}
+      >
+      Submit
+    </Button>
     </div>
   );
 }
 
-function Avatar({ src, alt }) {
-  return (
-    <img
-      loading="lazy"
-      src={src}
-      alt={alt}
-      className="shrink-0 aspect-square w-[70px]"
-      style={{ maxHeight: "60px" }}
-    />
-  );
-}
-
-function UserIcon({ name, reviewDate }) {
-  return (
-    <div className="flex flex-col grow shrink-0 px-5 mt-2.5 basis-0 w-fit">
-      <div className="flex gap-5 text-2xl">
-        <div className="grow my-auto">{name}</div>
-        <img
-          loading="lazy"
-          src="https://cdn.builder.io/api/v1/image/assets/TEMP/2d4f202be17199b06718a9abed5cfe11b0709fa2cf3ed64b1609df3e38af69e7?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
-          alt=""
-          className="w-56 aspect-[6.67] fill-zinc-300"
-          style={{ maxHeight: "20px" }}
-        />
-      </div>
-      <div className="mt-5 text-lg">{reviewDate}</div>
-    </div>
-  );
-}
-
-function CommentInfo({ avatar, name, reviewDate, reviewText }) {
+function CommentInfo({ name, reviewDate, reviewText, rating }) {
   return (
     <article className="flex flex-col text-black">
-      <header
-        className="flex gap-5 items-start self-start leading-[150%] max-md:flex-wrap"
-        style={{ display: "flex" }}>
-        <Avatar src={avatar} alt={`${name}'s avatar`} />
-        <UserIcon name={name} reviewDate={reviewDate} />
+      <header style={{ display: "flex" }}>
+        <img
+          loading="lazy"
+          src="https://cdn.builder.io/api/v1/image/assets/TEMP/6fc6a0e455ce7e42e40157a69ccda3ee0b5a7106b18f3c409410d2ef5a389eb1?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
+          alt="image"
+          className="shrink-0 aspect-square w-[70px]"
+          style={{ maxHeight: "60px" }}
+        />
+        <div>
+          <p>{name}</p>
+          <p>Rating: {rating}/5</p>
+          <p>{reviewDate}</p>
+        </div>
       </header>
-      <p className="mt-6 w-full text-2xl leading-9 max-md:max-w-full">{reviewText}</p>
+      <p>{reviewText}</p>
     </article>
   );
 }
 
-function Comments() {
-  const reviews = [
-    {
-      id: 1,
-      avatar:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/6fc6a0e455ce7e42e40157a69ccda3ee0b5a7106b18f3c409410d2ef5a389eb1?apiKey=64e0584885e94e77ae2d2a5ac36293f7&",
-      name: "User name",
-      reviewDate: "Reviewed on 28th March, 2024",
-      reviewText:
-        "Some comments about how good or bad the product is!!!! Some comments about how good or bad the product is!!!!Some comments about how good or bad the product is!!!!Some comments about how good or bad the product is!!!!Some comments about how good or bad the product is!!!!Some comments about how good or bad the product is!!!!Some comments about how good or bad the product is!!!!",
-    },
-    {
-      id: 2,
-      avatar:
-        "https://cdn.builder.io/api/v1/image/assets/TEMP/6fc6a0e455ce7e42e40157a69ccda3ee0b5a7106b18f3c409410d2ef5a389eb1?apiKey=64e0584885e94e77ae2d2a5ac36293f7&",
-      name: "Another User",
-      reviewDate: "Reviewed on 29th March, 2024",
-      reviewText:
-        "Different comments about the product. Different comments about the product. Different comments about the product. Different comments about the product.",
-    },
-  ];
-
+function Comments({ reviews }) {
+  if (reviews.length === 0) {
+    return <p>No reviews yet</p>;
+  }
   return (
     <section>
-      {reviews.map((review) => (
+      {reviews.map((review, index) => (
         <CommentInfo
-          key={review.id}
-          avatar={review.avatar}
-          name={review.name}
-          reviewDate={review.reviewDate}
-          reviewText={review.reviewText}
+          key={index}
+          name={review.username}
+          reviewDate={review.dateofReview}
+          reviewText={review.review}
+          rating={review.rating}
         />
       ))}
     </section>
@@ -202,121 +136,136 @@ function Comments() {
 }
 
 export default function Product() {
-  const thumbnails = [
-    {
-      src: "https://cdn.builder.io/api/v1/image/assets/TEMP/fe41f674ed35f646b78ca021b755863e91a119564425ee799d6e9f7e2e5fa3e6?apiKey=64e0584885e94e77ae2d2a5ac36293f7&",
-      alt: "Thumbnail 1",
-    },
-    {
-      src: "https://cdn.builder.io/api/v1/image/assets/TEMP/61e2caebbac60173c56ab6870677863e2f513976fe9049844baef3473d93064d?apiKey=64e0584885e94e77ae2d2a5ac36293f7&",
-      alt: "Thumbnail 2",
-    },
-    {
-      src: "https://cdn.builder.io/api/v1/image/assets/TEMP/8496a77b109dc5df028507ef3efeb1328de198d0da4625c744d970765dc1d3c3?apiKey=64e0584885e94e77ae2d2a5ac36293f7&",
-      alt: "Thumbnail 3",
-    },
-    {
-      src: "https://cdn.builder.io/api/v1/image/assets/TEMP/fedcdbd43dbee31cf010d2ccb5afc3f81ca5210a3f4e4a24ef7dd42b9bbbf215?apiKey=64e0584885e94e77ae2d2a5ac36293f7&",
-      alt: "Thumbnail 4",
-    },
-  ];
+  // const reviews = [
+  //   {
+  //     rating: 5,
+  //     review: "Great Stuff!",
+  //     dateOfReview: "2024-04-09T16:00:00.000Z",
+  //     username: "User1",
+  //   },
+  //   {
+  //     rating: 5,
+  //     review: "Great Stuff!",
+  //     dateOfReview: "2024-04-10T16:00:00.000Z",
+  //     username: "User1",
+  //   },
+  //   {
+  //     rating: 5,
+  //     review: "Great Stuff!",
+  //     dateOfReview: "2024-04-10T16:00:00.000Z",
+  //     username: "User1",
+  //   },
+  //   {
+  //     rating: 5,
+  //     review: "Great Stuff!",
+  //     dateOfReview: "2024-04-10T16:00:00.000Z",
+  //     username: "User1",
+  //   },
+  // ];
+  // const recommendedProducts = [
+  //   {
+  //     img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
+  //     title: "Breakfast",
+  //     price: "$10",
+  //     productID: 1,
+  //     description: "@bkristastucchio",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
+  //     title: "Burger",
+  //     price: "$100",
+  //     productID: 2,
+  //     description: "@rollelflex_graphy726",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
+  //     title: "Camera",
+  //     price: "$1200",
+  //     productID: 3,
+  //     description: "@helloimnik",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c",
+  //     title: "Coffee",
+  //     price: "$50",
+  //     productID: 4,
+  //     description: "@nolanissac",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1533827432537-70133748f5c8",
+  //     title: "Hats",
+  //     price: "$200",
+  //     productID: 5,
+  //     description: "@hjrc33",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62",
+  //     title: "Honey",
+  //     price: "$100",
+  //     productID: 6,
+  //     description: "@arwinneil",
+  //   },
+  // ];
 
-  const recommendedProducts = [
-    {
-      img: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e",
-      title: "Breakfast",
-      price: "$10",
-      productID: 1,
-      description: "@bkristastucchio",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1551782450-a2132b4ba21d",
-      title: "Burger",
-      price: "$100",
-      productID: 2,
-      description: "@rollelflex_graphy726",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1522770179533-24471fcdba45",
-      title: "Camera",
-      price: "$1200",
-      productID: 3,
-      description: "@helloimnik",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1444418776041-9c7e33cc5a9c",
-      title: "Coffee",
-      price: "$50",
-      productID: 4,
-      description: "@nolanissac",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1533827432537-70133748f5c8",
-      title: "Hats",
-      price: "$200",
-      productID: 5,
-      description: "@hjrc33",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1558642452-9d2a7deb7f62",
-      title: "Honey",
-      price: "$100",
-      productID: 6,
-      description: "@arwinneil",
-    },
-  ];
-
-  const popularProducts = [
-    {
-      img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
-      title: "Basketball",
-      price: "$70",
-      originalPrice: "$100",
-      productID: 1,
-      description: "@tjdragotta",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1518756131217-31eb79b20e8f",
-      title: "Fern",
-      price: "$50",
-      productID: 1,
-      description: "@katie_wasserman",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25",
-      title: "Mushrooms",
-      price: "$10",
-      productID: 1,
-      description: "@silverdalex",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1567306301408-9b74779a11af",
-      title: "Tomato basil",
-      price: "$15",
-      productID: 1,
-      description: "@shelleypauls",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1471357674240-e1a485acb3e1",
-      title: "Sea star",
-      price: "$30",
-      productID: 1,
-      description: "@peterlaster",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6",
-      title: "Bike",
-      price: "$500",
-      productID: 1,
-      description: "@southside_customs",
-    },
-  ];
+  // const popularProducts = [
+  //   {
+  //     img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
+  //     title: "Basketball",
+  //     price: "$70",
+  //     originalPrice: "$100",
+  //     productID: 1,
+  //     description: "@tjdragotta",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1518756131217-31eb79b20e8f",
+  //     title: "Fern",
+  //     price: "$50",
+  //     productID: 1,
+  //     description: "@katie_wasserman",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25",
+  //     title: "Mushrooms",
+  //     price: "$10",
+  //     productID: 1,
+  //     description: "@silverdalex",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1567306301408-9b74779a11af",
+  //     title: "Tomato basil",
+  //     price: "$15",
+  //     productID: 1,
+  //     description: "@shelleypauls",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1471357674240-e1a485acb3e1",
+  //     title: "Sea star",
+  //     price: "$30",
+  //     productID: 1,
+  //     description: "@peterlaster",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6",
+  //     title: "Bike",
+  //     price: "$500",
+  //     productID: 1,
+  //     description: "@southside_customs",
+  //   },
+  // ];
   const [product, setProduct] = useState({});
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
+  const [popularProducts, setPopularProducts] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const p_id = useParams()
   useEffect(() => {
     const loadData = async () => {
       try {
-        const product = await Api.getProductById({ product_id: "B07DD95XF9" });
-        setProduct(product);
+        let prodandreviews = await Api.getProductById({ product_id: p_id});
+        let randomproduct = await Api.getRandomProducts();
+        console.log(prodandreviews)
+        setRecommendedProducts(randomproduct);
+        setProduct(prodandreviews.product);
+        setReviews(prodandreviews.reviews);
       } catch (err) {
         handleError(err, () => {}, true);
         throw err;
@@ -325,39 +274,45 @@ export default function Product() {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  console.log(product);
-  return (
-    <div>
-      <div style={{ display: "flex" }}>
-        <div style={{ margin: "0 70px 10px 50px", width: "500px" }}>
-          <ProductShow thumbnails={thumbnails}></ProductShow>
-        </div>
-        <div style={{ margin: "0 50px 10px 70px" }}>
-          <ProductDetails></ProductDetails>
-        </div>
-      </div>
-
+  if (product?.length > 0) {
+    return (
       <div>
-        <h2>Recommended Products</h2>
-        <ProductCarousel Products={recommendedProducts}></ProductCarousel>
-      </div>
+        <div style={{ display: "flex" }}>
+          <div style={{ margin: "0 70px 10px 50px", width: "500px" }}>
+            <img src={product[0].imgURL} alt={"image"} style={{ height: "500px" }} />
+          </div>
+          <div style={{ margin: "0 50px 10px 70px" }}>
+            {/* <h1>{product[0].title}</h1> */}
+            {/* <p>Rating: {product[0].rating}/5</p> */}
+            {/* <p>${product[0].price}</p> */}
+            <p>{product[0].description}</p>
+            <ProductDetails productData={product[0]}></ProductDetails>
+          </div>
+        </div>
 
-      <div>
-        <h2>Popular Products</h2>
-        <ProductCarousel Products={popularProducts}></ProductCarousel>
-      </div>
+        {/* <div>
+          <h2>Recommended Products</h2>
+          <ProductCarousel Products={recommendedProducts}></ProductCarousel>
+        </div>
 
-      <div style={{ display: "flex" }}>
-        <div style={{ margin: "50px" }}>
-          <Ratings></Ratings>
+        <div>
+          <h2>Popular Products</h2>
+          <ProductCarousel Products={popularProducts}></ProductCarousel>
+        </div> */}
+
+        <div style={{ display: "flex" }}>
+          {/* <div style={{ margin: "50px" }}>
+            <Ratings></Ratings>
+          </div> */}
+          <div style={{ margin: "50px" }}>
+            <Review></Review>
+          </div>
         </div>
         <div style={{ margin: "50px" }}>
-          <Review></Review>
+          <Comments reviews={reviews}></Comments>
         </div>
       </div>
-      <div style={{ margin: "50px" }}>
-        <Comments></Comments>
-      </div>
-    </div>
-  );
+    );
+  }
+  return;
 }

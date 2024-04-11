@@ -90,7 +90,7 @@ const Api = {
     return handleServerResponse(await axios.get("/product"));
   },
   getProductById: async function ({ product_id }) {
-    return handleServerResponse(await axios.get(`/product/${product_id}`));
+    return handleServerResponse(await axios.get(`/product/${product_id.productId}`));
   },
   search: async function ({ title, category, minPrice, maxPrice, stock }) {
     return handleServerResponse(
@@ -293,7 +293,9 @@ const Api = {
       }),
     );
   },
-
+  addReview: async function ({ product_id, rating, customer_id, review }) {
+    return handleServerResponse(axios.put("/review/add", { product_id: product_id.productId, rating, customer_id, review }));
+  },
   getReviews: async function ({ product_id }) {
     return handleServerResponse(
       await axios.get("/product/:asin", {
