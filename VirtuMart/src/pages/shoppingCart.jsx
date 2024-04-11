@@ -2,6 +2,10 @@ import ProductInstance from "../components/productInstance";
 import ProductCarousel from "../components/productCarousel";
 import { TextField, Button } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
+import { useEffect, useState } from "react";
+import Api from "../api";
+import { useAppContext } from "../contexts/appContext";
+import handleError from "../components/handleError";
 
 export function DefaultAddress() {
   return (
@@ -67,57 +71,73 @@ export function AddressInput() {
 export default function ShoppingCart() {
   const productID = "1";
   let subtotal = 0;
-  const Products = [
-    {
-      img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
-      title: "Basketball",
-      price: 70,
-      originalPrice: "$100",
-      productID: 1,
-      description: "@tjdragotta",
-      quantity: "1",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1518756131217-31eb79b20e8f",
-      title: "Fern",
-      price: 50,
-      productID: 1,
-      description: "@katie_wasserman",
-      quantity: "1",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25",
-      title: "Mushrooms",
-      price: 10,
-      productID: 1,
-      description: "@silverdalex",
-      quantity: "1",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1567306301408-9b74779a11af",
-      title: "Tomato basil",
-      price: 15,
-      productID: 1,
-      description: "@shelleypauls",
-      quantity: "1",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1471357674240-e1a485acb3e1",
-      title: "Sea star",
-      price: 30,
-      productID: 1,
-      description: "@peterlaster",
-      quantity: "1",
-    },
-    {
-      img: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6",
-      title: "Bike",
-      price: 500,
-      productID: 1,
-      description: "@southside_customs",
-      quantity: "1",
-    },
-  ];
+  // const Products = [
+  //   {
+  //     img: "https://images.unsplash.com/photo-1516802273409-68526ee1bdd6",
+  //     title: "Basketball",
+  //     price: 70,
+  //     originalPrice: "$100",
+  //     productID: 1,
+  //     description: "@tjdragotta",
+  //     quantity: "1",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1518756131217-31eb79b20e8f",
+  //     title: "Fern",
+  //     price: 50,
+  //     productID: 1,
+  //     description: "@katie_wasserman",
+  //     quantity: "1",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1597645587822-e99fa5d45d25",
+  //     title: "Mushrooms",
+  //     price: 10,
+  //     productID: 1,
+  //     description: "@silverdalex",
+  //     quantity: "1",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1567306301408-9b74779a11af",
+  //     title: "Tomato basil",
+  //     price: 15,
+  //     productID: 1,
+  //     description: "@shelleypauls",
+  //     quantity: "1",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1471357674240-e1a485acb3e1",
+  //     title: "Sea star",
+  //     price: 30,
+  //     productID: 1,
+  //     description: "@peterlaster",
+  //     quantity: "1",
+  //   },
+  //   {
+  //     img: "https://images.unsplash.com/photo-1589118949245-7d38baf380d6",
+  //     title: "Bike",
+  //     price: 500,
+  //     productID: 1,
+  //     description: "@southside_customs",
+  //     quantity: "1",
+  //   },
+  // ];
+  const { user } = useAppContext();
+  const [Products, setProducts] = useState([]);
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const Products = await Api.getCart({ customer_id: user.userId });
+        //const recommendedProduct = user? await Api.recommendation({customer_id: user.userId }): await Api.getRandomProducts();
+        setProducts(Products);
+      } catch (err) {
+        handleError(err, () => {}, true);
+        throw err;
+      }
+    };
+    loadData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   for (let i = 0; i < Products.length; i++) {
     subtotal += Products[i].price;

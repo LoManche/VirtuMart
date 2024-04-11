@@ -1,6 +1,11 @@
 import { TextField, Button } from "@mui/material";
 import SnackbarButton from "./snackBar";
+import { useAppContext } from "../contexts/appContext";
+import { useState } from "react";
+import Api from "../api";
+import handleError from "./handleError";
 
+import { useNavigate } from "react-router-dom";
 function ProductImage({ src, alt }) {
   return (
     <img
@@ -41,10 +46,18 @@ function ProductDescription({ children }) {
   );
 }
 
-function ProductQuantity() {
+function ProductQuantity({ quantity, setQuantity }) {
   return (
     <div>
-      <TextField style={{ width: "40px", margin: "5px" }} defaultValue="1" size="small" />
+      <TextField
+        style={{ width: "40px", margin: "5px" }}
+        value={quantity}
+        defaultValue="1"
+        size="small"
+        onChange={(e) => {
+          setQuantity(e.target.value);
+        }}
+      />
     </div>
   );
 }
@@ -57,7 +70,26 @@ function ProductStock() {
   );
 }
 
-function AddToCartButton() {
+function AddToCartButton({ productData, quantity, Navigate }) {
+  const { user } = useAppContext();
+  async function onClick(e) {
+    e.preventDefault;
+    if (user.userId && productData.asin) {
+      try {
+        const res = await Api.addToCart({
+          customer_id: user.userId,
+          product_id: productData.asin,
+          quantity: quantity,
+        });
+        console.log(res);
+      } catch (err) {
+        handleError(err, "");
+      }
+    } else {
+      Navigate("/account");
+    }
+  }
+
   return (
     <SnackbarButton
       buttonStyle={{
@@ -68,7 +100,13 @@ function AddToCartButton() {
         height: "50px",
       }}
       msg={"Add to Cart"}
-      alert={"Successfully Added"}></SnackbarButton>
+      onClick={(e) => {
+        onClick(e);
+      }}
+      alert={"Successfully Added"}>
+      {/* msg={"Add to Cart"}
+      alert={"Successfully Added"} */}
+    </SnackbarButton>
   );
 }
 
@@ -83,16 +121,22 @@ export default function ProductDetails({ productData }) {
   //   description: "Body text for describing why this product is simply a must-buy",
   // };
 
-  return (
-    <article className="flex flex-col justify-center text-xl font-medium leading-8 max-w-[515px] text-zinc-500">
-      <ProductName>{productData.title}</ProductName>
-      <ProductImage src={productData.imageSrc} alt={productData.imageAlt} />
-      <ProductRating rating={productData.rating} />
-      <ProductPrice price={productData.price} />
-      <ProductDescription>{productData.description}</ProductDescription>
-      <ProductQuantity />
-      <ProductStock />
-      <AddToCartButton />
-    </article>
-  );
+  const [quantity, setQuantity] = useState(1);
+  const Navigate = useNavigate();
+  if (Object.keys(productData).length > 0) {
+    return (
+      <article className="flex flex-col justify-center text-xl font-medium leading-8 max-w-[515px] text-zinc-500">
+        <ProductName>{productData.title}</ProductName>
+        <ProductImage src={productData.imageSrc} alt={productData.imageAlt} />
+        <ProductRating rating={productData.rating} />
+        <ProductPrice price={productData.price} />
+        <ProductDescription>{productData.description}</ProductDescription>
+        <ProductQuantity quantity={quantity} setQuantity={setQuantity} />
+        <ProductStock />
+        <AddToCartButton productData={productData} quantity={quantity} Navigate={Navigate} />
+      </article>
+    );
+  } else {
+    return <></>;
+  }
 }
