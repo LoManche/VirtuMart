@@ -3,21 +3,7 @@ import ProductCarousel from "../components/productCarousel";
 import { TextField, Button } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 
-function DefaultAddress({ customer_id }) {
-  const [customer, setCustomer] = useState({});
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const customer = await Api.getProfile({ customer_id });
-        setCustomer(customer);
-      } catch (err) {
-        handleError(err, () => {}, true);
-        throw err;
-      }
-    };
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+function DefaultAddress() {
   return (
     <div style={{ display: "flex" }}>
       <Checkbox
@@ -29,9 +15,9 @@ function DefaultAddress({ customer_id }) {
         }}
       />
       <div>
-        <p>{customer.address}</p>
-        <p>{customer.city}</p>
-        <p>{customer.country}</p>
+        <p>29C, Virtual Building, Virtual Street</p>
+        <p>Virtual City</p>
+        <p>Virtual Country</p>
       </div>
     </div>
   );
