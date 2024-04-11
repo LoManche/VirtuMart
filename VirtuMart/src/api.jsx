@@ -284,33 +284,7 @@ const Api = {
     return handleServerResponse(await axios.post("/cart", { customer_id }));
   },
   //productPage
-  getProduct: async function ({ asin }) {
-    return handleServerResponse(
-      await axios.get("/product/:asin", {
-        title,
-        imgURL,
-        rating,
-        price,
-        discount,
-        category_id,
-        stock,
-      }),
-    );
-  },
-  addReview: async function ({ product_id, rating, customer_id, review }) {
-    return handleServerResponse(axios.put("/review/add", { product_id: product_id.productId, rating, customer_id, review }));
-  },
-  getReviews: async function ({ product_id }) {
-    return handleServerResponse(
-      await axios.get("/product/:asin", {
-        review_id,
-        rating,
-        customer_id,
-        review,
-        dateofReview,
-      }),
-    );
-  },
+
   addToCart: async function ({ customer_id, product_id, quantity }) {
     return handleServerResponse(
       await axios.post("/cart/add", { customer_id, product_id, quantity }),
