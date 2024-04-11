@@ -1,4 +1,5 @@
 import axios from "axios";
+import { removeFromCart } from "../server/queries";
 axios.defaults.method = "POST";
 axios.defaults.baseURL = "http://localhost:3000/api";
 axios.defaults.headers.common["Content-Type"] = "application/json";
@@ -340,13 +341,8 @@ const Api = {
     );
   },
 
-  removeCartItem: async function ({ customer_id, cart_id }) {
-    return handleServerResponse(
-      await axios.delete("/cart", {
-        customer_id,
-        cart_id,
-      }),
-    );
+  removeFromCart: async function ({ product_id, customer_id }) {
+    return handleServerResponse(await axios.delete("/cart/remove"));
   },
 
   checkOut: async function ({
