@@ -113,10 +113,10 @@ export default function SearchResult() {
                   onClick={(e) => {
                     if (selectedIndex === key) {
                       setSelectedIndex(undefined);
-                      //   setFilter({ ...filter, category_id: null });
+                      setFilter({ ...filter, category_id: null });
                     } else {
                       setSelectedIndex(key);
-                      //   setFilter({ ...filter, category: category.category_id });
+                      setFilter({ ...filter, category: category.category_name });
                     }
                   }}>
                   {category.category_name}
