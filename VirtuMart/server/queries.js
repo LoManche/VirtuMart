@@ -1,6 +1,11 @@
-// Desc: This file contains all the queries that are used to interact with the database
-//       Each function must release the connection for better performance.
-// The following codes are written with the aid of GitHub Copilot
+// Programmer: Lo Yat Fung 1155158670, Lai Cheuk Lam 1155159309
+// Date: 2024-04-11
+// Called By: apiRoutes.js
+// Desciption: 
+//      This file contains all the queries that are used to interact with the database
+//      Each function must release the connection for better performance.
+//      The following codes are written with the aid of GitHub Copilot
+// Language: node.js, MySQL
 
 import mysql from "mysql2/promise";
 import MySQLStore from "express-mysql-session";
@@ -31,12 +36,10 @@ async function queryHandler(query, params) {
 
 //-----------------------------------------------------------------------------------------------
 // Login related functions
-// TODO: fix the session reminents problem
 export const handleLogin = async (req, res) => {
   const { email: emailFetch, password: passwordFetch, rememberMe } = req.body;
   try {
-    // Check if the user has logged in or not
-
+    // Check if the user has logged in or not, if yes, return the role and userid
     if (req.session.role && req.session.userid) {
       res.status(200).json({ role: req.session.role, userid: req.session.userid });
       return;
@@ -45,10 +48,12 @@ export const handleLogin = async (req, res) => {
     const customerquery = "SELECT * FROM customers WHERE email = ?";
     const admin = await queryHandler(adminquery, [emailFetch]);
     const customer = await queryHandler(customerquery, [emailFetch]);
+    // If no user found, return 404 and "No User Exist"
     if (admin.length === 0 && customer.length === 0) {
       res.status(404).type("text/plain").send("No User Exist");
       return;
     }
+    // If user found, check the password
     if (admin.length !== 0) {
       if (admin[0].password === passwordFetch) {
         req.session.regenerate((err) => {
@@ -64,7 +69,9 @@ export const handleLogin = async (req, res) => {
       } else {
         res.status(401).type("text/plain").send("Wrong Password");
       }
-    } else if (customer.length !== 0) {
+    } 
+    // If customer found, check the password
+    else if (customer.length !== 0) {
       if (customer[0].password === passwordFetch) {
         req.session.regenerate((err) => {
           if (err) {
@@ -90,6 +97,7 @@ export const handleLogin = async (req, res) => {
 };
 
 export const handleLogout = async (req, res) => {
+  // Destroy the session if logout is called
   req.session.destroy((err) => {
     if (err) {
       res.status(500).type("text/plain").send("Server Error");
@@ -98,7 +106,10 @@ export const handleLogout = async (req, res) => {
     }
   });
 };
-
+// Signup:
+// 1. Generate a random OTP
+// 2. Store the OTP in the database
+// 3. Send the OTP to the email
 export const signUp = async (req, res) => {
   const email = req.body.email;
   const OTP = Math.floor(100000 + Math.random() * 900000);
@@ -123,7 +134,9 @@ export const signUp = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
-
+// Signup OTP:
+// 1. Check if the OTP is correct, delete the OTP from the database whenever the OTP is entered(correct or not)
+// 2. If the OTP is correct, return 200 and 'OTP Matched', if not, return 401 and 'Wrong OTP'
 export const signUpOTP = async (req, res) => {
   try {
     const otp = req.body.otp;
@@ -150,6 +163,11 @@ export const signUpOTP = async (req, res) => {
   }
 };
 
+// Forgot Password:
+// 1. Delete the previous forgetpw entry if exists
+// 2. Check if the email exists in the database, if not, return 404 and 'No User Found'
+// 3. Generate a random OTP and hash it with the email
+// 4. Store the hashed OTP in the database and send the link to the customer's email
 export const forgotPassword = async (req, res) => {
   const email = req.body.email;
   try {
@@ -184,6 +202,10 @@ export const forgotPassword = async (req, res) => {
     res.status(404).type("text/plain").send(error);
   }
 };
+// Reset Password:
+// 1. Check if the hashed OTP exists in the database, if not, return 404 and 'Invalid'
+// 2. Update the password in the database if the hashed OTP exists
+// 3. Delete the hashed OTP from the database and return 200 with 'Password Reset Successful'
 export const resetPassword = async (req, res) => {
   try {
     const hashed = req.body.hashed;
@@ -204,6 +226,11 @@ export const resetPassword = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+
+// Change Password:
+// 1. Check if the old password is correct, if not, return 401 and 'Wrong Old password'
+// 2. Update the password in the database if the old password is correct
+// 3. Return 200 with 'Password Changed'
 export const changePassword = async (req, res) => {
   try {
     const { oldpassword, newpassword, customer_id } = req.body;
@@ -220,6 +247,7 @@ export const changePassword = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// Change Admin Password: similar to changePassword
 export const changeAdminPassword = async (req, res) => {
   try {
     const { oldpassword, newpassword, admin_id } = req.body;
@@ -236,6 +264,9 @@ export const changeAdminPassword = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// Signup Setup:
+// 1. Insert the customer's information into the database
+// 2. Return 200 with 'Success' if the insertion is successful
 export const signUpSetup = async (req, res) => {
   try {
     const { username, firstName, lastName, phone, address, city, state, password, email } =
@@ -249,6 +280,8 @@ export const signUpSetup = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// Get Customer Profile:
+// 1. Get the customer's information from the database and return them
 export const getCustomerProfile = async (req, res) => {
   try {
     const query =
@@ -262,6 +295,7 @@ export const getCustomerProfile = async (req, res) => {
 
 //-----------------------------------------------------------------------------------------------
 // Customer functions
+// Random Products: return 6 random products for the homepage
 export const getRandomProducts = async (req, res) => {
   try {
     const query = "SELECT * FROM products ORDER BY RAND() LIMIT 6";
@@ -271,7 +305,7 @@ export const getRandomProducts = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
-
+// Get All Products: return all the products with their categories names
 export const getAllProducts = async (req, res) => {
   try {
     const query =
@@ -282,7 +316,8 @@ export const getAllProducts = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
-
+// Get Product By ID: return the product and its reviews by the product ID
+// The format of the response is {product: product, reviews: reviews[]}
 export const getProductById = async (req, res) => {
   try {
     const query1 =
@@ -297,7 +332,9 @@ export const getProductById = async (req, res) => {
   }
 };
 
-// TODO: Test searchProducts
+// Search Products: return the products that match the search criteria
+// The search criteria are title, category, minPrice, maxPrice, and stock
+// Unspecified criteria will be set to default values
 export const searchProducts = async (req, res) => {
   try {
     const title = req.body.title || "%";
@@ -320,6 +357,7 @@ export const searchProducts = async (req, res) => {
   }
 };
 // Cart functions
+// Get Cart: return the products in the cart of the customer
 export const getCart = async (req, res) => {
   try {
     const query =
@@ -330,7 +368,7 @@ export const getCart = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
-
+// Add To Cart: add a product to the cart, by entering the customer_id, product_id and quantity
 export const addToCart = async (req, res) => {
   try {
     const { customer_id, product_id, quantity } = req.body;
@@ -341,7 +379,7 @@ export const addToCart = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
-
+// Remove From Cart: remove a product from the cart, by entering the customer_id and product_id
 export const removeFromCart = async (req, res) => {
   try {
     const c_id = req.body.customer_id;
@@ -353,7 +391,8 @@ export const removeFromCart = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
-
+// Update Cart: update the quantity of a product in the cart, by entering the customer_id, product_id and quantity
+// This serves as the function to update the quantity of a product in the cart.
 export const updateCart = async (req, res) => {
   try {
     const c_id = req.body.customer_id;
@@ -368,7 +407,9 @@ export const updateCart = async (req, res) => {
   }
 };
 
-// TODO: Test addReview
+// Review functions
+// Add Review: add a review to a product, by entering the customer_id, product_id, rating and review
+// and update the rating of the product by calculating the average rating of the product
 export const addReview = async (req, res) => {
   try {
     const query =
@@ -381,12 +422,15 @@ export const addReview = async (req, res) => {
     const rows = await queryHandler(query2, [req.body.product_id]);
     const rating = rows[0]["AVG(rating)"];
     const query3 = "UPDATE products SET rating = ? WHERE asin = ?";
+    await queryHandler(query3, [rating, req.body.product_id]);
     res.status(201).type("text/plain").send("Success");
   } catch (error) {
     console.log(error);
     res.status(500).type("text/plain").send(error);
   }
 };
+
+// Recommended Products: return 6 products that are in the same category as the products that the customer has bought
 export const getRecommendation = async (req, res) => {
   const customer_id = req.body.customer_id;
   //let connection;
@@ -405,6 +449,8 @@ export const getRecommendation = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// Get Notification: return the notifications of the customer
+// Notification are added externally by the admin(like promotion, discount, etc.)
 export const getNotification = async (req, res) => {
   try {
     const customer_id = req.body.customer_id;
@@ -415,6 +461,7 @@ export const getNotification = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// Discount Products: return 6 products that have discount
 export const getDiscount = async (req, res) => {
   try {
     const query = "SELECT * FROM products WHERE discount > 0 LIMIT 6";
@@ -424,7 +471,7 @@ export const getDiscount = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
-
+// Get All Orders: return all the orders of the customer
 export const getAllOrder = async (req, res) => {
   try {
     const { customer_id } = req.body;
@@ -436,7 +483,7 @@ export const getAllOrder = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
-
+// Get Order By ID: return the order and the products in the order by the order ID
 export const getOrderById = async (req, res) => {
   try {
     const { customer_id, order_id } = req.body;
@@ -450,7 +497,10 @@ export const getOrderById = async (req, res) => {
   }
 };
 
-// TODO: Testing this function
+// Place Order: place an order by entering the customer_id, subtotal, shippingcost, flat, address, city, country, postalCode, paymentMethod, and products
+// The order status will be set to 'Ordered' by default
+// The stock of the products will be updated after the order is placed
+// TODO: Untested
 export const placeOrder = async (req, res) => {
   const {
     customer_id,
@@ -505,7 +555,9 @@ export const placeOrder = async (req, res) => {
 
 //-----------------------------------------------------------------------------------------------
 // Admin functions
-// TODO: Test all the admin functions
+// All the admin functions are exactly what the name suggests
+
+// Get All Product Admin: return all the products with their categories names and the number of products sold
 export const getAllProductAdmin = async (req, res) => {
   try {
     const query = `SELECT p.asin,p.title,p.imgURL,p.rating,p.price,p.discount, c.category_id, c.category_name, p.description, p.stock, COALESCE(sum(mp.quantity), 0) as sold FROM products p
@@ -518,7 +570,7 @@ export const getAllProductAdmin = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
-
+// addProduct: add a product to the database by entering the asin, title, imgURL, rating, price, discount, category_id, description, and stock
 export const addProduct = async (req, res) => {
   try {
     const { asin, title, imgURL, rating, price, discount, category_id, description, stock } =
@@ -532,6 +584,7 @@ export const addProduct = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// updateProduct: update a product in the database by entering the asin, title, imgURL, rating, price, discount, category_id, description, and stock
 export const updateProduct = async (req, res) => {
   try {
     const { asin, title, imgURL, rating, price, discount, category_id, description, stock } =
@@ -545,6 +598,7 @@ export const updateProduct = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// deleteProduct: delete a product from the database by entering the asin
 export const deleteProduct = async (req, res) => {
   try {
     const asin = req.body.asin;
@@ -556,6 +610,7 @@ export const deleteProduct = async (req, res) => {
   }
 };
 
+// getAllCustomers: return all the customers in the database
 export const getAllCustomers = async (req, res) => {
   try {
     const query = "SELECT * FROM customers";
@@ -565,6 +620,7 @@ export const getAllCustomers = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// getCustomerById: return the customer by the customer_id
 export const getCustomerById = async (req, res) => {
   try {
     const query = "SELECT * FROM customers WHERE customer_id = ?";
@@ -574,6 +630,7 @@ export const getCustomerById = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// updateCustomer: update the customer by entering the customer_id, username, firstName, lastName, phone, address, city, state, password, and email
 export const updateCustomer = async (req, res) => {
   try {
     const {
@@ -608,6 +665,7 @@ export const updateCustomer = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// deleteCustomer: delete the customer by entering the customer_id
 export const deleteCustomer = async (req, res) => {
   try {
     const c_id = req.body.customer_id;
@@ -618,7 +676,7 @@ export const deleteCustomer = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
-
+// getAllCategories: return all the categories with the stock and sold of the products in the category
 export const getAllCategories = async (req, res) => {
   try {
     const query = `SELECT c.category_id, c.category_name, COALESCE(COALESCE(sum(p.stock), 0), 0) as stock, COALESCE(sum(mp.quantity), 0) as sold FROM categories c
@@ -632,6 +690,7 @@ export const getAllCategories = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// addCategory: add a category to the database by entering the category_name
 export const addCategory = async (req, res) => {
   try {
     const category = req.body.category_name;
@@ -642,6 +701,8 @@ export const addCategory = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+
+// updateCategory: update a category in the database by entering the category_id and category_name
 export const updateCategory = async (req, res) => {
   try {
     const c_id = req.body.category_id;
@@ -653,6 +714,7 @@ export const updateCategory = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// deleteCategory: delete a category from the database by entering the category_id
 export const deleteCategory = async (req, res) => {
   try {
     const c_id = req.body.category_id;
@@ -663,7 +725,7 @@ export const deleteCategory = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
-
+// getAllOrders: return all the orders in the database
 export const getAllAdmin = async (req, res) => {
   try {
     const query = "SELECT * FROM admin";
@@ -673,6 +735,7 @@ export const getAllAdmin = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// getAdminById: return the admin by the admin_id
 export const addAdmin = async (req, res) => {
   try {
     const adminname = req.body.adminname;
@@ -684,6 +747,7 @@ export const addAdmin = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// updateAdmin: update the admin by entering the admin_id, adminname, and password
 export const updateAdmin = async (req, res) => {
   try {
     const adminname = req.body.adminname;
@@ -696,6 +760,7 @@ export const updateAdmin = async (req, res) => {
     res.status(500).type("text/plain").send(error);
   }
 };
+// deleteAdmin: delete the admin by entering the admin_id
 export const deleteAdmin = async (req, res) => {
   try {
     const admin_id = req.body.admin_id;

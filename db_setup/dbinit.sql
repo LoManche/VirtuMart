@@ -1,4 +1,8 @@
--- setting up SQL(not finished)
+-- Programmer: Lo Yat Fung 1155158670
+-- Purpose: This file is used to create the database and tables for the project.
+--         It also inserts some sample data into the tables.
+--         The data is inserted from csv files and manually.
+-- setting up SQL database for the project
 create database if not exists virtumartdb;
 create user if not exists 'Mart'@'localhost' identified by 'Mart1234';
 SET GLOBAL event_scheduler = ON;

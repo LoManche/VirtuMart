@@ -1,6 +1,10 @@
-//import React from "react";
-//import { renderToString } from "react-dom/server";
-//import { StaticRouter } from "react-router-dom/server";
+// Programmer: Lo Yat Fung 1155158670, Lai Cheuk Lam 1155159309
+// Date: 2024-04-11
+// Description: This file is the main server file of the VirtuMart server.
+// Purpose: Initialize the server and set up the routes for the server using express.
+// The server will listen to the port 3000 and serve the app in the dist folder.
+// All api routes are defined in the apiRoutes.js file, accessed by /api/THEROUTE.
+// Using: server.js and queries.js
 import express from "express";
 import session from "express-session";
 import cors from "cors";
@@ -10,12 +14,17 @@ import bodyParser from "body-parser";
 
 import { sessionStore } from "./db.js";
 import router from "./apiRoutes.js";
-
+// Default port for the server
 const PORT = 3000;
+
 const app = express();
 const __dirname = process.cwd();
+
+// Limit the size of the request body
 app.use(bodyParser.json({ limit: "50mb" }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+
+// For development on local machine with cors
 app.use(
   cors({
     origin: "http://localhost:5173",
@@ -24,12 +33,14 @@ app.use(
   }),
 );
 
+// For production
 app.use(express.json());
 app.use(
   express.urlencoded({
     extended: true,
   }),
 );
+// Session configuration
 app.use(
   session({
     secret: "virtumartserverisawesome",
@@ -46,12 +57,13 @@ app.use(
   }),
 );
 
-// Serve the app in dist(created by npm run build)
+// Serve the app in dist(created by building the app using npm run build)
 app.use(express.static(path.join(__dirname, "dist")));
 
-// Login related APIs
+// APIs routes: all routes start with /api
 app.use("/api", router);
 
+// Catch all other routes and return the index file
 app.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "dist", "index.html"));
 });

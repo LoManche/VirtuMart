@@ -1,4 +1,7 @@
-// db.js
+// Programmer: Lo Yat Fung 1155158670, Lai Cheuk Lam 1155159309
+// Date: 2024-04-11
+// Purpose: Initialize the database connection, session store, email transporter and root URL for the server, and exporting them 
+// Called By: server.js and queries.js
 import mysql from "mysql2/promise";
 import session from 'express-session';
 import MySQLStoreModule from "express-mysql-session";

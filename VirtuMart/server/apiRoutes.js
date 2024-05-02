@@ -1,3 +1,10 @@
+// Programmer: Lo Yat Fung 1155158670, Lai Cheuk Lam 1155159309
+// Date: 2024-04-11
+// Purpose: 
+//    Create the API routes for the server, all the API routes are defined here. 
+// Called By: server.js
+// This file is called by server.js by exporting the router object, which contains all the API routes.
+// Requires: queries.js to implement the queries for the API routes
 import express from "express";
 const router = express.Router();
 import * as queries from "./queries.js";
@@ -18,7 +25,8 @@ function isCustomerAuthenticated(req, res, next) {
     res.status(401).send("Unauthorized");
   }
 }
-
+// API routes
+// Login and Signup related APIs
 router.post("/login", queries.handleLogin);
 router.post("/logout", queries.handleLogout);
 router.post("/signup", queries.signUp);
@@ -28,6 +36,7 @@ router.post("/forgotpassword", queries.forgotPassword);
 router.post("/resetpassword", queries.resetPassword);
 router.post("/changepassword", queries.changePassword);
 
+// Profile related APIs
 router.put("/profile", isCustomerAuthenticated, queries.updateCustomer);
 router.post("/getprofile", isCustomerAuthenticated, queries.getCustomerProfile);
 
@@ -56,7 +65,7 @@ router.get("/order", isCustomerAuthenticated, queries.getAllOrder);
 router.get("/orderById", isCustomerAuthenticated, queries.getOrderById);
 
 // Admin related APIs
-//router.use("/admin", isAdminAuthenticated);
+router.use("/admin", isAdminAuthenticated);
 
 router.get("/admin/product", queries.getAllProductAdmin);
 router.post("/admin/product/add", queries.addProduct);
@@ -78,5 +87,5 @@ router.get("/admin/admin", queries.getAllAdmin);
 router.post("/admin/admin/add", queries.addAdmin);
 router.put("/admin/admin/update", queries.updateAdmin);
 router.post("/admin/admin/delete", queries.deleteAdmin);
-
+// Exporting the router object
 export default router;
