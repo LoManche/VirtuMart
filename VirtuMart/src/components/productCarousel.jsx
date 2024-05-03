@@ -2,26 +2,19 @@ import ProductCard from "../components/productCard";
 import Carousel2 from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
+//to show recommended products in carousel
 export default function ProductCarousel({ Products }) {
   return (
     <Carousel2
-      additionalTransfrom={0}
       arrows
       autoPlaySpeed={3000}
       centerMode={false}
-      className=""
       containerClass="container-with-dots"
-      dotListClass=""
-      draggable={false}
-      focusOnSelect={false}
       infinite
       itemClass="padding: 5px"
       keyBoardControl
       minimumTouchDrag={80}
       pauseOnHover
-      renderArrowsWhenDisabled={false}
-      renderButtonGroupOutside={false}
-      renderDotsOutside={false}
       responsive={{
         desktop: {
           breakpoint: {
@@ -48,14 +41,9 @@ export default function ProductCarousel({ Products }) {
           partialVisibilityGutter: 30,
         },
       }}
-      rewind={false}
-      rewindWithAnimation={false}
-      rtl={false}
       shouldResetAutoplay
-      showDots={false}
-      sliderClass=""
-      slidesToSlide={3}
-      swipeable>
+      slidesToSlide={3}>//number of slides
+      //loop through the products and call ProductCard to display them as grid items
       {Products.map((item, index) => (
         <div key={index} style={{ padding: "3px" }}>
           <ProductCard
