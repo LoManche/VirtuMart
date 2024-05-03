@@ -5,7 +5,7 @@ import Alert from "@mui/material/Alert";
 
 export default function SnackbarButton({ buttonStyle, msg, alert }) {
   const [open, setOpen] = React.useState(false);
-
+//event handler to handle click, should sent product info to database, on success pops success message
   const handleClick = () => {
     setOpen(true);
   };
