@@ -3,6 +3,7 @@ import ProductCarousel from "../components/productCarousel";
 import { Button } from "@mui/material";
 import LinearProgress from "@mui/material/LinearProgress";
 
+//function to show order status as a progress bar
 function LinearDeterminate() {
   const [progress, setProgress] = React.useState(0);
   const state = 25;
@@ -24,7 +25,7 @@ function LinearDeterminate() {
 
   return <LinearProgress color="secondary" variant="determinate" value={state} />;
 }
-
+//function to display a single product
 function ProductInstance({ img, title, price, quantity }) {
   return (
     <div>
@@ -52,7 +53,7 @@ function ProductInstance({ img, title, price, quantity }) {
     </div>
   );
 }
-
+//to display order address
 function OrderAddress() {
   return (
     <div>
@@ -67,7 +68,7 @@ function Orderitem({ Products, subtotal }) {
   let state = 25;
   return (
     <div style={{ display: "flex" }}>
-      <div>
+      <div> //loop through products and call ProductInstance to display them
         {Products.map((Product, index) => (
           <div key={index} style={{ padding: "3px" }}>
             <ProductInstance
@@ -83,6 +84,7 @@ function Orderitem({ Products, subtotal }) {
       <div style={{ marginLeft: "30px" }}>
         <div style={{ margin: "10px 10px" }}>
           <h2 style={{ marginBottom: "0" }}>Delivery</h2>
+          //call LinearProgess to display order status as a progress bar
           <LinearProgress
             color="secondary"
             variant="determinate"
@@ -99,6 +101,7 @@ function Orderitem({ Products, subtotal }) {
             width: "430px",
             textAlign: "left",
           }}></hr>
+        //display order information
         <h2 style={{ margin: "1px 1px" }}>Address</h2>
         <hr
           style={{
@@ -127,6 +130,7 @@ function Orderitem({ Products, subtotal }) {
           }}></hr>
         <div style={{ display: "flex", width: "400px" }}>
           <div style={{ width: "200px" }}>
+            //loop through products to calculate order sum
             {Products.map((Product, index) => (
               <p key={index}>
                 {Product.title} *{Product.quantity}
