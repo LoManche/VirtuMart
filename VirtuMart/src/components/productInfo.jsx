@@ -1,46 +1,46 @@
 import { TextField, Button } from "@mui/material";
 import SnackbarButton from "./snackBar";
 
+//display product image 
 function ProductImage({ src, alt }) {
   return (
     <img
       loading="lazy"
       src={src}
       alt={alt}
-      className="mt-6 w-56 max-w-full aspect-[6.67] fill-zinc-300"
       style={{ maxHeight: "25px" }}
     />
   );
 }
-
-function ProductName({ children }) {
+//display product name
+function ProductName({ title }) {
   return (
-    <h1 className="w-full text-4xl font-semibold leading-10 text-black max-md:max-w-full">
-      {children}
+    <h1>
+      {title}
     </h1>
   );
 }
-
+//display product rating
 function ProductRating({ rating }) {
   return (
-    <div className="mt-6 w-full max-md:max-w-full" style={{ color: "#828282" }}>
+    <div>
       {rating} / 5
     </div>
   );
 }
-
+//display product price
 function ProductPrice({ price }) {
-  return <div className="mt-6 w-full text-2xl text-black max-md:max-w-full">${price}</div>;
+  return <div>${price}</div>;
 }
-
-function ProductDescription({ children }) {
+//display product description
+function ProductDescription({ description }) {
   return (
-    <p className="mt-6 w-full leading-8 max-md:max-w-full" style={{ color: "#828282" }}>
-      {children}
+    <p>
+      {description}
     </p>
   );
 }
-
+//textbox to input product quantity
 function ProductQuantity() {
   return (
     <div>
@@ -48,7 +48,7 @@ function ProductQuantity() {
     </div>
   );
 }
-
+//display  product stock status
 function ProductStock() {
   return (
     <div>
@@ -56,7 +56,7 @@ function ProductStock() {
     </div>
   );
 }
-
+//add to cart button, when pressed, notification will pop
 function AddToCartButton() {
   return (
     <SnackbarButton
