@@ -3,6 +3,7 @@ import ProductCarousel from "../components/productCarousel";
 import { TextField, Button } from "@mui/material";
 import Checkbox from "@mui/material/Checkbox";
 
+//get default address from database and display
 export function DefaultAddress() {
   return (
     <div style={{ display: "flex" }}>
@@ -23,6 +24,7 @@ export function DefaultAddress() {
   );
 }
 
+//for inputting new address for ordering if user choose to use new address
 export function AddressInput() {
   return (
     <div style={{ display: "flex" }}>
@@ -63,7 +65,7 @@ export function AddressInput() {
     </div>
   );
 }
-
+//display selected products
 export default function ShoppingCart() {
   const productID = "1";
   let subtotal = 0;
@@ -118,7 +120,7 @@ export default function ShoppingCart() {
       quantity: "1",
     },
   ];
-
+//loop through price of products to get subtotal
   for (let i = 0; i < Products.length; i++) {
     subtotal += Products[i].price;
   }
@@ -129,6 +131,7 @@ export default function ShoppingCart() {
       <div style={{ display: "flex" }}>
         <h1 style={{ margin: "0 10px 5px 100px", width: "700px" }}>Shopping Cart</h1>
         <div style={{ textAlign: "right", width: "700px" }}>
+          //button to delete selected products
           <Button
             style={{
               backgroundColor: "black",
@@ -141,6 +144,7 @@ export default function ShoppingCart() {
             }}>
             Delete Selected
           </Button>
+          //button to delete all products
           <Button
             style={{
               backgroundColor: "black",
@@ -158,7 +162,7 @@ export default function ShoppingCart() {
       <hr style={{ borderTop: "2px solid black", margin: "0 0" }}></hr>
       {/*content*/}
       <div style={{ display: "flex" }}>
-        <div>
+        <div>//loop though products and call component ProductInstance to display them
           {Products.map((Product, index) => (
             <div key={index} style={{ padding: "3px" }}>
               <ProductInstance img={Product.img} title={Product.title} price={Product.price} />
@@ -166,7 +170,7 @@ export default function ShoppingCart() {
           ))}
         </div>
         <hr></hr> {/*vertical divider*/}
-        <div style={{ marginLeft: "30px" }}>
+        <div style={{ marginLeft: "30px" }}>//div for address input
           <div>
             <DefaultAddress></DefaultAddress>
           </div>
@@ -180,7 +184,7 @@ export default function ShoppingCart() {
               width: "500px",
               textAlign: "left",
             }}></hr>
-          <div style={{ display: "flex", width: "400px" }}>
+          <div style={{ display: "flex", width: "400px" }}> //div for showing cart summary
             <div style={{ width: "200px" }}>
               {Products.map((Product, index) => (
                 <p key={index}>
@@ -204,6 +208,7 @@ export default function ShoppingCart() {
           <div style={{ textAlign: "right", width: "400px" }}>
             <h3>Subtotal: ${subtotal.toFixed(2)}</h3>
           </div>
+          //checkout button
           <Button
             style={{
               backgroundColor: "black",
