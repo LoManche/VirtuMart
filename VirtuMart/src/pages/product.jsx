@@ -9,6 +9,7 @@ import handleError from "../components/handleError";
 import { useParams } from "react-router-dom";
 import { useAppContext } from "../contexts/appContext";
 
+//bar chart to show ratings
 function HorizontalBars(ratings) {
   return (
     <BarChart
@@ -30,7 +31,7 @@ function HorizontalBars(ratings) {
     />
   );
 }
-
+//function to get ratings from database and display using HorizontalBars
 function Ratings() {
   const ratings = [80, 20, 10, 5, 1];
 
@@ -41,7 +42,9 @@ function Ratings() {
     </div>
   );
 }
+//text box and submit button to get review and send to databse
 function Review() {
+  //submit review api
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const p_id = useParams();
@@ -57,13 +60,8 @@ function Review() {
   }
   return (
     <div style={{ marginTop: "30px" }}>
-      {/* <img
-        loading="lazy"
-        src="https://cdn.builder.io/api/v1/image/assets/TEMP/2d4f202be17199b06718a9abed5cfe11b0709fa2cf3ed64b1609df3e38af69e7?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
-        alt="Product image"
-        style={{ maxHeight: "27px" }}
-      /> */}
       <div style={{ marginBottom: "10px" }}>
+        //text box for rating
         <TextField
           id="outlined-basic"
           label="Rate the product (1-5)"
@@ -75,6 +73,7 @@ function Review() {
       </div>
 
       <div style={{ width: "500px", marginBottom: "10px" }}>
+        //textbox for review comment
         <TextField
           id="outlined-basic"
           label="How did you like the product?"
@@ -84,6 +83,7 @@ function Review() {
           onChange={(e) => setReview(e.target.value)}
         />
       </div>
+      //submit button
       <Button
         onClick={() => submitReview()}
         style={{
@@ -98,16 +98,15 @@ function Review() {
     </div>
   );
 }
-
+//function to display individual review
 function CommentInfo({ name, reviewDate, reviewText, rating }) {
   return (
-    <article className="flex flex-col text-black">
+    <article>
       <header style={{ display: "flex" }}>
         <img
           loading="lazy"
           src="https://cdn.builder.io/api/v1/image/assets/TEMP/6fc6a0e455ce7e42e40157a69ccda3ee0b5a7106b18f3c409410d2ef5a389eb1?apiKey=64e0584885e94e77ae2d2a5ac36293f7&"
           alt="image"
-          className="shrink-0 aspect-square w-[70px]"
           style={{ maxHeight: "60px" }}
         />
         <div>
@@ -120,7 +119,7 @@ function CommentInfo({ name, reviewDate, reviewText, rating }) {
     </article>
   );
 }
-
+//loop through reviews from database, and call CommentInfo to display them
 function Comments({ reviews }) {
   if (reviews.length === 0) {
     return <p>No reviews yet</p>;
@@ -257,6 +256,7 @@ export default function Product() {
   //     description: "@southside_customs",
   //   },
   // ];
+  //get product data from database
   const [product, setProduct] = useState({});
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [popularProducts, setPopularProducts] = useState([]);
@@ -279,6 +279,7 @@ export default function Product() {
     loadData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  //display product information
   if (product?.length > 0) {
     return (
       <div>
