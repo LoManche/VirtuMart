@@ -1,3 +1,8 @@
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Purpose:
+//    Create the routing configuration for the website, allowing navigation between different pages
+
 import { Navigate, Route, Routes } from "react-router-dom";
 import Home from "./pages/home";
 import Topbar from "./components/topbar";
@@ -17,16 +22,9 @@ const NoNeedLoginROUTES = [
   { path: "*", element: <Navigate to="/" /> },
   { path: "/", element: <Home /> },
   { path: "/account", element: <Account />, type: "account" },
-  {
-    path: "/result",
-    element: <SearchResult />,
-  },
-  //uncomment these 2 lines
-  //{ path: "/shoppingCart", element: <Navigate to="/account" />, type: "account" },
-  //{ path: "/order", element: <Navigate to="/account" />, type: "account" },
+  { path: "/result", element: <SearchResult /> },
   /* Indirect pages */
   { path: "/product/:productId", element: <Product /> },
-  //delete these 2 lines
   { path: "/shoppingCart", element: <ShoppingCart /> },
   { path: "/order", element: <Order /> },
   {
@@ -79,8 +77,7 @@ function WithoutLoginRouter() {
 }
 
 export default function Router() {
-  const isLogin = useAppContext()?.isLogin; //for testing other functions, can set isLogin to true
-  //const user = { userId: localStorage.getItem("userId"), role: localStorage.getItem("role") }; //{ role: "admin" }; // useAppContext()?.user;
+  const isLogin = useAppContext()?.isLogin;
   const user = useAppContext()?.user;
 
   if (!isLogin) {

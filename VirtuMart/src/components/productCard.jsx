@@ -1,6 +1,11 @@
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Purpose:
+//    This is the module for showing product information in a card format, mainly the product image, product name and price will be shown
+
 /* eslint-disable react/prop-types */
 import Typography from "@mui/material/Typography";
-import { Box, CardMedia } from "@mui/material";
+import { Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 export default function ProductCard({
@@ -22,11 +27,6 @@ export default function ProductCard({
       onClick={() => {
         navigate(`/product/${productId}`);
       }}>
-      {/* <CardMedia
-        sx={{ height: "400px" }}
-        image={imageUrl}
-        style={{ height: "400px", borderRadius: 10, objectFit: "contain" }}
-      /> */}
       <Box display="flex" justifyContent="center" mb={1}>
         <Box width="300px">
           <img src={imageUrl} style={{ height: "200px", width: "100%", objectFit: "contain" }} />

@@ -1,3 +1,8 @@
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Purpose:
+//    Create the page for authentication, which include the functions to display and handle the input for Login, Register,and Forget Password.
+
 /* eslint-disable react/prop-types */
 import {
   Box,

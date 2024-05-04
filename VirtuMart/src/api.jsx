@@ -1,3 +1,8 @@
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Purpose:
+//    Create the API routes for front end functions to access the server API routes
+
 import axios from "axios";
 axios.defaults.method = "POST";
 axios.defaults.baseURL = "http://localhost:3000/api";
@@ -22,24 +27,6 @@ const handleServerResponse = (res) => {
   return res.data;
 };
 
-/* Example to use api to get data
-  const [products, setProducts] = useState(undefined);
-  const onLoadProducts = async () => {
-    try {
-      const products = await Api.allProduct();
-      setProducts(products);
-    } catch (err) {
-      handleError(err, () => {}, true);
-      throw err;
-    }
-  };
-
-  useEffect(() => {
-    onLoadProducts();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-*/
-//shopping cart, review, order api not yet included
 const Api = {
   // Authentication
   login: async function ({ email, password, rememberMe }) {
@@ -213,7 +200,7 @@ const Api = {
   },
   ///////////////////////////
   allCategory: async function () {
-    return handleServerResponse(await axios.get("/admin/category"));
+    return handleServerResponse(await axios.get("/category"));
   },
   adminAddCategory: async function ({ category_name }) {
     return handleServerResponse(await axios.post("/admin/category/add", { category_name }));
@@ -340,7 +327,6 @@ const Api = {
   getOrderById: async function ({ customer_id, order_id }) {
     return handleServerResponse(await axios.post("/orderById", { customer_id, order_id }));
   },
-  //shoppingCart
 };
 
 export default Api;

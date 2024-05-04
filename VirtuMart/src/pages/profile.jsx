@@ -1,3 +1,8 @@
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Purpose:
+//    This is the page for users to view or update their profile details, and change their passwords
+
 import { Fragment, useEffect, useState } from "react";
 import {
   Box,

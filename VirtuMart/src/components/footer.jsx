@@ -1,5 +1,10 @@
-import { Box, Button, Divider } from "@mui/material";
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Purpose:
+//    Create the footer of the website, which allow user to get back to the home page by clicking the website icon.
+// Called By: router.js
 
+import { Box, Button, Divider } from "@mui/material";
 import virtumartLogo from "../assets/VirtuMartLogo.png";
 import { useNavigate } from "react-router";
 export default function Footer() {

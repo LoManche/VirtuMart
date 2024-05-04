@@ -1,3 +1,8 @@
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Purpose:
+//    This is the page for handling the admin actions for managing categories, products, admins and users
+
 /* eslint-disable react/prop-types */
 import {
   Snackbar,

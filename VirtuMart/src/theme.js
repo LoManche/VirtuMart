@@ -1,3 +1,8 @@
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Purpose:
+//    This contains the theme settings for the web pages
+
 import { createTheme } from "@mui/material/styles";
 
 // color design tokens export
@@ -147,30 +152,30 @@ export const themeSettings = (mode) => {
           light: colors.greyscale[500],
         },
         background: {
-          default: colors.greyscale[600], //"#ffffff",
+          default: colors.greyscale[600],
         },
       },
     },
     typography: {
       fontFamily: ["sans-serif", "Source Sans Pro", "Sen"].join(","),
-      fontSize: 14, //10,
+      fontSize: 14,
       h1: {
-        fontSize: 40, //36,
+        fontSize: 40,
       },
       h2: {
-        fontSize: 32, //28,
+        fontSize: 32,
       },
       h3: {
-        fontSize: 24, //20,
+        fontSize: 24,
       },
       h4: {
-        fontSize: 20, //16,
+        fontSize: 20,
       },
       h5: {
-        fontSize: 16, //12,
+        fontSize: 16,
       },
       h6: {
-        fontSize: 14, //10,
+        fontSize: 14,
       },
     },
   };

@@ -1,7 +1,7 @@
 // Programmer: Lo Yat Fung 1155158670, Lai Cheuk Lam 1155159309
 // Date: 2024-04-11
-// Purpose: 
-//    Create the API routes for the server, all the API routes are defined here. 
+// Purpose:
+//    Create the API routes for the server, all the API routes are defined here.
 // Called By: server.js
 // This file is called by server.js by exporting the router object, which contains all the API routes.
 // Requires: queries.js to implement the queries for the API routes
@@ -41,6 +41,7 @@ router.put("/profile", isCustomerAuthenticated, queries.updateCustomer);
 router.post("/getprofile", isCustomerAuthenticated, queries.getCustomerProfile);
 
 // Product related APIs
+router.get("/category", queries.getAllCategories);
 router.get("/randomproduct", queries.getRandomProducts);
 router.get("/product", queries.getAllProducts);
 router.get("/product/:id", queries.getProductById);
@@ -78,7 +79,6 @@ router.put("/admin/customer/update", queries.updateCustomer);
 router.post("/admin/customer/delete", queries.deleteCustomer);
 router.post("/admin/changePassword", queries.changeAdminPassword);
 
-router.get("/admin/category", queries.getAllCategories);
 router.post("/admin/category/add", queries.addCategory);
 router.put("/admin/category/update", queries.updateCategory);
 router.post("/admin/category/delete", queries.deleteCategory);

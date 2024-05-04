@@ -1,3 +1,8 @@
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Purpose:
+//    This is the admin management page for showing the categories, products, admins and users tables
+
 import { useEffect, useState } from "react";
 import {
   Box,
@@ -77,7 +82,7 @@ const Admin = () => {
             <Avatar sx={{ bgcolor: green[300], width: 30, height: 30 }}>
               <IconButton
                 sx={{ color: green[50] }}
-                onClick={(e) => {
+                onClick={() => {
                   setType("category");
                   setActionType("edit");
                   setInitialData(params.row);
@@ -94,7 +99,7 @@ const Admin = () => {
             <Avatar sx={{ bgcolor: red[300], width: 30, height: 30 }}>
               <IconButton
                 sx={{ color: green[50] }}
-                onClick={(e) => {
+                onClick={() => {
                   setType("category");
                   setActionType("delete");
                   setInitialData(params.row);
@@ -165,7 +170,7 @@ const Admin = () => {
             <Avatar sx={{ bgcolor: green[300], width: 30, height: 30 }}>
               <IconButton
                 sx={{ color: green[50] }}
-                onClick={(e) => {
+                onClick={() => {
                   setType("product");
                   setActionType("edit");
                   setInitialData(params.row);
@@ -182,7 +187,7 @@ const Admin = () => {
             <Avatar sx={{ bgcolor: red[300], width: 30, height: 30 }}>
               <IconButton
                 sx={{ color: green[50] }}
-                onClick={(e) => {
+                onClick={() => {
                   setType("product");
                   setActionType("delete");
                   setInitialData(params.row);
@@ -247,7 +252,7 @@ const Admin = () => {
             <Avatar sx={{ bgcolor: green[300], width: 30, height: 30 }}>
               <IconButton
                 sx={{ color: green[50] }}
-                onClick={(e) => {
+                onClick={() => {
                   setType("customer");
                   setActionType("edit");
                   setInitialData(params.row);
@@ -264,7 +269,7 @@ const Admin = () => {
             <Avatar sx={{ bgcolor: red[300], width: 30, height: 30 }}>
               <IconButton
                 sx={{ color: green[50] }}
-                onClick={(e) => {
+                onClick={() => {
                   setType("customer");
                   setActionType("delete");
                   setInitialData(params.row);
@@ -303,7 +308,7 @@ const Admin = () => {
             <Avatar sx={{ bgcolor: green[300], width: 30, height: 30 }}>
               <IconButton
                 sx={{ color: green[50] }}
-                onClick={(e) => {
+                onClick={() => {
                   setType("admin");
                   setActionType("edit");
                   setInitialData(params.row);
@@ -320,7 +325,7 @@ const Admin = () => {
             <Avatar sx={{ bgcolor: red[300], width: 30, height: 30 }}>
               <IconButton
                 sx={{ color: green[50] }}
-                onClick={(e) => {
+                onClick={() => {
                   setType("admin");
                   setActionType("delete");
                   setInitialData(params.row);
@@ -473,7 +478,7 @@ const Admin = () => {
                       All Products
                     </Typography>
                     <Button
-                      onClick={(e) => {
+                      onClick={() => {
                         setType("product");
                         setActionType("add");
                         setPage("action");
@@ -506,7 +511,7 @@ const Admin = () => {
                       All Admins
                     </Typography>
                     <Button
-                      onClick={(e) => {
+                      onClick={() => {
                         setType("admin");
                         setActionType("add");
                         setPage("action");

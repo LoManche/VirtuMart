@@ -1,3 +1,8 @@
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Purpose:
+//    This is the module for showing the input fields for the profile page
+
 /* eslint-disable react/prop-types */
 
 import { Grid, TextField } from "@mui/material";

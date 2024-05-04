@@ -1,3 +1,8 @@
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Purpose:
+//    This exports the textfields used for email and password
+
 /* eslint-disable react/prop-types */
 import { TextField } from "@mui/material";
 

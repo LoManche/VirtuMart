@@ -1,7 +1,6 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { getTheme } from "./theme";
 import Router from "./router";
-
 import { AppContextProvider } from "./contexts/appContext";
 
 function App() {

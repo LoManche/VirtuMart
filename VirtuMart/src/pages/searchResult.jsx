@@ -1,3 +1,8 @@
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Purpose:
+//    This is the page for showing the search results, which user can search products by applying conditions such as the category, price range and whether the product is in stock.
+
 import { useEffect, useState } from "react";
 import Api from "../api";
 import handleError from "../components/handleError";
@@ -75,6 +80,7 @@ export default function SearchResult() {
   };
 
   const onSubmit = (e) => {
+    e.preventDefault();
     setReloadFlag(Math.random());
   };
 
@@ -110,7 +116,7 @@ export default function SearchResult() {
                   sx={{ pl: 6 }}
                   selected={selectedIndex === key}
                   key={key}
-                  onClick={(e) => {
+                  onClick={() => {
                     if (selectedIndex === key) {
                       setSelectedIndex(undefined);
                       setFilter({ ...filter, category_id: null });

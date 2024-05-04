@@ -1,7 +1,12 @@
+// Programmer: Ng Tiffany 1155158907
+// Date: 2024-04-11
+// Description:
+// This is the function for the top bar of the website, which allow user to get back to the home page by clicking the website icon.
+// It also contains a search bar for searching product, the buttons to navigate to the authentication, profile, admin, shopping cart pages
+
 /* eslint-disable react/prop-types */
 import * as React from "react";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MoreIcon from "@mui/icons-material/MoreVert";
@@ -36,10 +41,7 @@ export default function Topbar({ type }) {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-  const [alert, setAlert] = React.useState([
-    // { dateOfNotification: "11/4/2024", message: "You have ordered a product." },
-    // { dateOfNotification: "11/4/2024", message: "You have ordered a product." },
-  ]);
+  const [alert, setAlert] = React.useState([]);
 
   const badgeContent = alert.length;
   const { isLogin, setIsLogin, user, setUser } = useAppContext();
@@ -137,8 +139,6 @@ export default function Topbar({ type }) {
     setAlert([]);
   };
 
-  //  <Button onClick={handleOpen}>Open modal</Button>
-
   const mobileMenuId = "primary-search-account-menu-mobile";
   const renderMobileMenu = (
     <Menu
@@ -185,7 +185,7 @@ export default function Topbar({ type }) {
         aria-describedby="modal-modal-description">
         <Box sx={style}>
           {alert.length > 0 ? (
-            alert.map((alert, key) => {
+            alert.map((alert) => {
               return (
                 <>
                   <Typography id="modal-modal-title" variant="h6" component="h2" mt={1}>
@@ -495,9 +495,6 @@ export default function Topbar({ type }) {
                   <></>
                 )}
               </Menu>
-              {/*               
-              
-              <ICONBUTTON icon={<AccountCircle />} navigateTo={isLogin ? "/profile" : "/account"} /> */}
             </Box>
             <Box sx={{ display: { xs: "flex", sm: "none", md: "none" } }}>
               <IconButton
