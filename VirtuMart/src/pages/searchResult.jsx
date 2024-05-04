@@ -56,7 +56,6 @@ export default function SearchResult() {
         }
         setCalculatedRange([minPriceCal, maxPriceCal]);
         setFilter({ ...filter, minPrice: minPriceCal, maxPrice: maxPriceCal });
-        console.log(searchInput, filter, searchResult);
       } catch (err) {
         handleError(err, () => {}, true);
         throw err;
@@ -174,7 +173,7 @@ export default function SearchResult() {
                       price={item.price - item.discount}
                       description={item.description}
                       productName={item.title}
-                      productId={item.productID}
+                      productId={item.asin}
                       originalPrice={item.price}
                     />
                   </Grid>

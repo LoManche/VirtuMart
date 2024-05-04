@@ -213,7 +213,7 @@ const Api = {
   },
   ///////////////////////////
   allCategory: async function () {
-    return handleServerResponse(await axios.get("/admin/category"));
+    return handleServerResponse(await axios.get("/category"));
   },
   adminAddCategory: async function ({ category_name }) {
     return handleServerResponse(await axios.post("/admin/category/add", { category_name }));
